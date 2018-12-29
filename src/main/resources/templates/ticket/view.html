@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>12306车票查询</title>
+    <style type="text/css" title="audiojs">
+        .audiojs audio { position: absolute; left: -1px; }
+        .audiojs { width: 460px; height: 36px; background: #404040; overflow: hidden; font-family: monospace; font-size: 12px;background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444), color-stop(0.5, #555), color-stop(0.51, #444), color-stop(1, #444));           background-image: -moz-linear-gradient(center top, #444 0%, #555 50%, #444 51%, #444 100%);           -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);           -o-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); }
+        .audiojs .play-pause { width: 25px; height: 40px; padding: 4px 6px; margin: 0px; float: left; overflow: hidden; border-right: 1px solid #000; }
+        .audiojs p { display: none; width: 25px; height: 40px; margin: 0px; cursor: pointer; }
+        .audiojs .play { display: block; }
+        .audiojs .scrubber { position: relative; float: left; width: 280px; background: #5a5a5a; height: 14px; margin: 10px; border-top: 1px solid #3f3f3f; border-left: 0px; border-bottom: 0px; overflow: hidden; }
+        .audiojs .progress { position: absolute; top: 0px; left: 0px; height: 14px; width: 0px; background: #ccc; z-index: 1;           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ccc), color-stop(0.5, #ddd), color-stop(0.51, #ccc), color-stop(1, #ccc));           background-image: -moz-linear-gradient(center top, #ccc 0%, #ddd 50%, #ccc 51%, #ccc 100%); }
+        .audiojs .loaded { position: absolute; top: 0px; left: 0px; height: 14px; width: 0px; background: #000;           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #222), color-stop(0.5, #333), color-stop(0.51, #222), color-stop(1, #222));           background-image: -moz-linear-gradient(center top, #222 0%, #333 50%, #222 51%, #222 100%); }
+        .audiojs .time { float: left; height: 36px; line-height: 36px; margin: 0px 0px 0px 6px; padding: 0px 6px 0px 12px; border-left: 1px solid #000; color: #ddd; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); }
+        .audiojs .time em { padding: 0px 2px 0px 0px; color: #f9f9f9; font-style: normal; }
+        .audiojs .time strong { padding: 0px 0px 0px 2px; font-weight: normal; }
+        .audiojs .error-message { float: left; display: none; margin: 0px 10px; height: 36px; width: 400px; overflow: hidden; line-height: 36px; white-space: nowrap; color: #fff;           text-overflow: ellipsis; -o-text-overflow: ellipsis; -icab-text-overflow: ellipsis; -khtml-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -webkit-text-overflow: ellipsis; }
+        .audiojs .error-message a { color: #eee; text-decoration: none; padding-bottom: 1px; border-bottom: 1px solid #999; white-space: wrap; }
+        /*.audiojs .play { background: url("undefinedplayer-graphics.gif") -2px -1px no-repeat; }*/
+        /*.audiojs .loading { background: url("undefinedplayer-graphics.gif") -2px -31px no-repeat; }*/
+        /*.audiojs .error { background: url("undefinedplayer-graphics.gif") -2px -61px no-repeat; }*/
+        /*.audiojs .pause { background: url("undefinedplayer-graphics.gif") -2px -91px no-repeat; }*/
+        .playing .play, .playing .loading, .playing .error { display: none; }
+        .playing .pause { display: block; }
+        .loading .play, .loading .pause, .loading .error { display: none; }
+        .loading .loading { display: block; }
+        .error .time, .error .play, .error .pause, .error .scrubber, .error .loading { display: none; }
+        .error .error { display: block; }         .error .play-pause p { cursor: auto; }
+        .error .error-message { display: block; }
+    </style>
+    <script th:src="@{/js/common/common_js.js?scriptVersion=1.9111}" type="text/javascript"></script>
+    <script th:src="@{/js/query/GetJS}" type="text/javascript"></script>
+    <!-- 双日历 -->
+    <script th:src="@{/js/query/WdatePicker.js}" type="text/javascript" xml:space="preserve"></script>
+    <script th:src="@{/js/query/data.jcokies.js}" type="text/javascript" xml:space="preserve"></script>
+    <script th:src="@{/js/query/queryLeftTicket_js.js?scriptVersion=1.9111}" type="text/javascript" xml:space="preserve"></script>
+    <script th:src="@{/js/common/jquery.bgiframe.mi.js}" type="text/javascript" xml:space="preserve"></script>
+    <script th:src="@{/js/query/qrfwrfp}" type="text/javascript" xml:space="preserve"></script>
+    <script th:src="@{/js/common/captcha_js.js}" type="text/javascript" charset="utf-8" async="" ></script>
+
+    <link th:href="@{/css/common/validation.css}" rel="stylesheet">
+    <link th:href="@{/css/common/common_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/query/queryLeftTicket_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/query/queryLeftTicket_end_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/common/captcha_css.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{/css/common/local.css}" type="text/css" rel="stylesheet">
+</head>
+
+<body class="dhtmlx_winviewport  dhtmlx_winviewport  dhtmlx_winviewport dhtmlx_skin_dhx_terrace">
+<!--header start-->
+<div class="header"><div class="wrapper"><!-- 头部内容 -->
+    <div class="header-con"><h1 class="logo"><a name="g_href" data-type="1" data-href="index.html" data-redirect="Y" href="javascript:;">中国铁路12306</a>
+    </h1>
+        <div class="header-right"><!-- 搜索条 -->
+            <div class="header-search"><div class="search-bd"><input type="password" value="" style="display:none">
+                <input type="text" class="search-input" id="search-input" value="" auto-complete="new-password" placeholder="搜索车票/餐饮/常旅客/相关规章">
+                <!-- 搜索提示 -->
+                <div class="search-down"><a href="javascript:;" class="close">关闭</a>
+                    <ul class="search-down-list"></ul>
+                    <!-- 热门推荐 -->
+                    <!-- <div class="search-down-hot">
+                                                <h3 class="search-hot-tit">热门推荐</h3>
+                                                <div class="search-hot-key"><a href="#">车站</a><a href="#">进站乘车</a><a href="#">互联网购票</a></div>
+                                            </div> -->
+                </div>
+                <!-- 搜索历史 -->
+                <div class="search-history"><a href="javascript:;" class="history-clear">清除</a>
+                    <h3 class="search-history-tit">搜索历史</h3>
+                    <ul class="search-history-list"></ul>
+                </div>
+            </div>
+                <a class="search-btn" href="javascript:;"><i class="icon icon-search"></i>
+                </a>
+            </div>
+
+
+
+            <!-- 右侧菜单 -->
+            <ul class="header-menu">
+                <li class="menu-item menu-nav">
+                    <a name="g_href" data-type="2" data-href="view/index.html" data-redirect="Y" href="javascript:;" class="menu-nav-hd">我的12306
+                <i class="caret"></i>
+            </a>
+                <ul class="menu-nav-bd"><li><a style="color: #333;" name="g_href" data-type="2" data-href="view/train_order.html" data-redirect="Y" href="javascript:;">火车票订单</a>
+                </li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/lineUp_order.html" data-redirect="Y" href="javascript:;">候补订单</a>
+                    </li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/personal_travel.html" data-redirect="Y" href="javascript:;">我的行程</a>
+                    </li>
+                    <li class="nav-line"></li>
+                    <li><a style="color: #333;" name="g_href" data-type="10" data-href="queryMyOrder.html" data-redirect="Y" href="javascript:;">我的餐饮•特产</a>
+                    </li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/my_insurance.html" data-redirect="Y" href="javascript:;">我的保险</a>
+                    </li>
+                    <li><a style="color: #333;" name="g_href" data-type="3" data-href="welcome.html" data-redirect="Y" href="javascript:;">我的会员</a>
+                    </li>
+                    <li class="nav-line"></li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/information.html" data-redirect="Y" href="javascript:;">查看个人信息</a>
+                    </li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/userSecurity.html" data-redirect="Y" href="javascript:;">账户安全</a>
+                    </li>
+                    <li class="nav-line"></li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/passengers.html" data-redirect="Y" href="javascript:;">常用联系人</a>
+                    </li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/address_init.html" data-redirect="Y" href="javascript:;">车票快递地址</a>
+                    </li>
+                    <li class="nav-line"></li>
+                    <li><a style="color: #333;" name="g_href" data-type="2" data-href="view/icentre_serviceQuery.html" data-redirect="Y" href="javascript:;">温馨服务查询</a>
+                    </li>
+                </ul>
+            </li>
+                <li class="menu-item menu-line">|</li>
+                <li id="J-header-login" class="menu-item menu-login">
+                    您好，<a id="login_user" href="/login/view">登录</a>&nbsp; &nbsp;|
+                    <a id="regist_out" href="https://kyfw.12306.cn/otn/regist/init" class="ml" target="_blank">注册</a>
+                </li>
+            </ul>
+
+
+
+
+        </div>
+    </div>
+</div>
+    <!-- 导航 -->
+    <div class="nav-box"><ul class="nav"><li class="nav-item nav-item-w1"><a name="g_href" data-type="1" data-href="index.html" data-redirect="Y" href="javascript:;" class="nav-hd">首页</a>
+    </li>
+        <li class="nav-item nav-item-w1 active"><a href="javascript:void(0)" class="nav-hd">车票
+            <i class="icon icon-down"></i>
+        </a>
+            <div class="nav-bd"><div class="nav-bd-item nav-col2"><h3 class="nav-tit">购买</h3>
+                <ul class="nav-con"><li><a name="g_href" data-type="2" data-href="leftTicket/init?linktypeid=dc" data-redirect="Y" href="javascript:;">单程</a>
+                </li>
+                    <li><a name="g_href" data-type="2" data-href="leftTicket/init?linktypeid=wf" data-redirect="Y" href="javascript:;">往返</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="lcQuery/init" data-redirect="Y" href="javascript:;">接续换乘</a>
+                    </li>
+                    <li></li>
+                </ul>
+            </div>
+                <div class="nav-bd-item nav-col2"><h3 class="nav-tit">变更</h3>
+                    <ul class="nav-con"><li><a name="g_href" data-type="2" data-href="view/train_order.html?type=2" data-param="typefilt=4" data-redirect="Y" href="javascript:;">退票</a>
+                    </li>
+                        <li><a name="g_href" data-type="2" data-href="view/train_order.html?type=2" data-param="typefilt=2" data-redirect="Y" href="javascript:;">改签</a>
+                        </li>
+                        <li><a name="g_href" data-type="2" data-href="view/train_order.html?type=2" data-param="typefilt=3" data-redirect="Y" href="javascript:;">变更到站</a>
+                        </li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="nav-bd-item nav-col2"><h3 class="nav-tit border-none">更多</h3>
+                    <ul class="nav-con"><li><a name="g_href" data-type="1" data-href="view/ticket/zt_card.html" data-redirect="Y" href="javascript:;">中铁银通卡</a>
+                    </li>
+                        <li class="border-none"><a name="g_href" data-type="1" data-href="view/ticket/through_train.html" data-redirect="Y" href="javascript:;">广九直通车</a>
+                        </li>
+                        <li><a name="g_href" data-type="1" data-href="view/ticket/railway.html" data-redirect="Y" href="javascript:;">市郊快速铁路</a>
+                        </li>
+                        <li><a name="g_href" data-type="1" data-href="view/ticket/international_train.html" data-redirect="Y" href="javascript:;">国际列车</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item "><a href="javascript:void(0)" class="nav-hd ">团购服务
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col6 "><ul class="nav-con "><li><a name="g_href" data-type="1" data-href="view/group/group_management.html?type=1" data-redirect="Y" href="javascript:;">务工人员</a>
+            </li>
+                <li><a name="g_href" data-type="1" data-href="view/group/group_management.html?type=2" data-redirect="Y" href="javascript:;">学生团体</a>
+                </li>
+            </ul>
+            </div>
+            </div>
+        </li>
+        <li class="nav-item "><a href="javascript:void(0) " class="nav-hd ">会员服务
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col6"><ul class="nav-con "><li><a name="g_href" data-type="3" data-href="index.html" data-redirect="Y" href="javascript:;">会员管理</a>
+            </li>
+                <li><a name="g_href" data-type="3" data-href="index.html" data-redirect="Y" href="javascript:;">积分账户</a>
+                </li>
+                <li><a name="g_href" data-type="3" data-href="index.html" data-redirect="Y" href="javascript:;">积分兑换</a>
+                </li>
+                <li><a name="g_href" data-type="3" data-href="index.html" data-redirect="Y" href="javascript:;">会员专享</a>
+                </li>
+                <li class="border-none "><a name="g_href" data-type="3" data-href="welcome.html" data-redirect="Y" href="javascript:;">会员中心</a>
+                </li>
+            </ul>
+            </div>
+            </div>
+        </li>
+        <li class="nav-item "><a href="javascript:void(0) " class="nav-hd ">站车服务
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col4 "><ul class="nav-con "><li><a name="g_href" data-type="2" data-href="view/icentre_qxyyInfo.html" data-redirect="Y" href="javascript:;">重点旅客预约</a>
+            </li>
+                <li><a name="g_href" data-type="1" data-href="view/station/hand.html" data-redirect="Y" href="javascript:;">便民托运</a>
+                </li>
+                <li><a name="g_href" data-type="1" data-href="view/station/shared_Car.html" data-redirect="Y" href="javascript:;">共享汽车</a>
+                </li>
+                <li><a name="g_href" data-type="4" data-href="czyd_2143/" data-redirect="Y" href="javascript:;">车站引导</a>
+                </li>
+                <li><a name="g_href" data-type="2" data-href="view/icentre_lostInfo.html" data-redirect="Y" href="javascript:;">遗失物品查找</a>
+                </li>
+                <li><a name="g_href" data-type="1" data-href="view/station/train_intro.html" data-redirect="Y" href="javascript:;">动车组介绍</a>
+                </li>
+                <li><a name="g_href" data-type="1" data-href="view/station/custom_PickUp.html" data-redirect="Y" href="javascript:;">定制接送</a>
+                </li>
+                <li><a name="g_href" data-type="4" data-href="zcfc_2548/" data-redirect="Y" href="javascript:;">站车风采</a>
+                </li>
+            </ul>
+            </div>
+            </div>
+        </li>
+        <li class="nav-item "><a href="javascript:void(0) " class="nav-hd ">商旅服务
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col6 "><ul class="nav-con "><li><a name="g_href" data-type="10" data-href="index.html" data-redirect="Y" href="javascript:;">餐饮•特产</a>
+            </li>
+                <li><a name="g_href" data-type="5" data-href="" data-redirect="Y" href="javascript:;">旅游</a>
+                </li>
+                <li><a name="g_href" data-type="2" data-href="view/my_insurance.html" data-redirect="Y" href="javascript:;">保险</a>
+                </li>
+            </ul>
+            </div>
+            </div>
+        </li>
+        <li class="nav-item "><a href="javascript:void(0) " class="nav-hd ">出行指南
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col2 "><h3 class="nav-tit ">常见问题</h3>
+                <ul class="nav-con "><li><a name="g_href" data-type="2" data-href="gonggao/ticketType.html" data-redirect="Y" href="javascript:;">车票</a>
+                </li>
+                    <li><a name="g_href" data-type="2" data-href="gonggao/ticketWindow.html" data-redirect="Y" href="javascript:;">购票</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="gonggao/windowEndorse.html" data-redirect="Y" href="javascript:;">改签、变更到站</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="gonggao/windowRefund.html" data-redirect="Y" href="javascript:;">退票</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="gonggao/help.html" data-redirect="Y" href="javascript:;" class="txt-lighter">更多&gt;&gt;</a>
+                    </li>
+                    <li></li>
+                </ul>
+            </div>
+                <div class="nav-bd-item nav-col2 "><h3 class="nav-tit ">旅客须知</h3>
+                    <ul class="nav-con "><li><a name="g_href" data-type="2" data-href="gonggao/usersNeedToKnow.html?linktypeid=txt" data-redirect="Y" href="javascript:;">铁路电子客票</a>
+                    </li>
+                        <li><a name="g_href" data-type="2" data-href="gonggao/saleTicketMeans.html?linktypeid=means5" data-redirect="Y" href="javascript:;">身份核验</a>
+                        </li>
+                        <li><a name="g_href" data-type="2" data-href="gonggao/help.html" data-redirect="Y" href="javascript:;" class="txt-lighter">更多&gt;&gt;</a>
+                        </li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="nav-bd-item nav-col2 "><h3 class="nav-tit border-none ">相关章程</h3>
+                    <ul class="nav-con "><li><a name="g_href" data-type="2" data-href="gonggao/saleTicketMeans.html?linktypeid=means1" data-redirect="Y" href="javascript:;">铁路互联网售票暂行办法</a>
+                    </li>
+                        <li class="border-none "><a name="g_href" data-type="2" data-href="gonggao/saleTicketMeans.html?linktypeid=means2" data-redirect="Y" href="javascript:;">铁路旅客运输规程</a>
+                        </li>
+                        <li style="text-overflow: ellipsis;white-space: nowrap;"><a name="g_href" data-type="2" data-href="gonggao/saleTicketMeans.html?linktypeid=means6" data-redirect="Y" href="javascript:;">铁路进站乘车禁止和限制携带品公告</a>
+                        </li>
+                        <li class="border-none" style="text-overflow: ellipsis;white-space: nowrap;"><a name="g_href" data-type="2" data-href="gonggao/saleTicketMeans.html?linktypeid=means7" data-redirect="Y" href="javascript:;">广深港高速铁路跨境旅客运输组织规则</a>
+                        </li>
+                        <li><a name="g_href" data-type="2" data-href="gonggao/help.html" data-redirect="Y" href="javascript:;" class="txt-lighter">更多&gt;&gt;</a>
+                        </li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item last "><a href="javascript:void(0) " class="nav-hd ">信息查询
+            <i class="icon icon-down "></i>
+        </a>
+            <div class="nav-bd "><div class="nav-bd-item nav-col5 "><h3 class="nav-tit border-none ">常用查询</h3>
+                <ul class="nav-con "><li><a name="g_href" data-type="2" data-href="zwdch/init" data-redirect="Y" href="javascript:;">正晚点</a>
+                </li>
+                    <li><a name="g_href" data-type="2" data-href="queryTrainInfo/init" data-redirect="Y" href="javascript:;">时刻表</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="leftTicketPrice/initPublicPrice" data-redirect="Y" href="javascript:;">公布票价</a>
+                    </li>
+                    <li><a name="g_href" data-type="1" data-href="view/infos/ticket_check.html" data-redirect="Y" href="javascript:;">检票口</a>
+                    </li>
+                    <li><a name="g_href" data-type="1" data-href="view/infos/sale_time.html" data-redirect="Y" href="javascript:;">起售时间</a>
+                    </li>
+                    <li><a name="g_href" data-href="https://forecast.lytq.com/pc.html" data-redirect="N" href="javascript:;">天气</a>
+                    </li>
+                    <li><a name="g_href" data-type="1" data-href="view/infos/jiaotong.html" data-redirect="Y" href="javascript:;">交通查询</a>
+                    </li>
+                    <li><a name="g_href" data-type="2" data-href="queryAgencySellTicket/init" data-redirect="Y" href="javascript:;">代售点</a>
+                    </li>
+                    <li><a name="g_href" data-type="1" data-href="view/infos/service_number.html" data-redirect="Y" href="javascript:;">客服电话</a>
+                    </li>
+                    <li></li>
+                </ul>
+            </div>
+                <div class="nav-bd-item "><ul class="nav-con nav-con-pt"><li class="border-none"><a name="g_href" data-type="1" data-href="index.html#index_ads" data-redirect="Y" href="javascript:;">最新发布</a>
+                </li>
+                    <li class="border-none"><a name="g_href" data-type="6" data-href="queryDishonest/init" data-redirect="Y" href="javascript:;">信用信息</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </li>
+    </ul>
+    </div>
+</div>
+<!--header end-->
+
+
+<!--页面主体  开始-->
+<div class="content">
+    <div style="display: none">
+        <!--<div class="audiojs " classname="audiojs" id="audiojs_wrapper0"><audio preload="auto" loop="true" src="/otn/resources/js/framework/audio/message.wav"></audio>          <div class="play-pause">             <p class="play"></p>             <p class="pause"></p>             <p class="loading"></p>             <p class="error"></p>           </div>           <div class="scrubber">             <div class="progress" style="width: 0px;"></div>             <div class="loaded" style="width: 0px;"></div>           </div>           <div class="time">             <em class="played">00:00</em>/<strong class="duration">00:01</strong>           </div>           <div class="error-message"></div></div>-->
+    </div>
+    <div id="jplayerId" style="display: none"></div>
+    <!--步骤 开始-->
+    <!--公告 开始-->
+    <div class="notice" id="scroll" style="display: none;"><strong style="width: 60px;">温馨提示：</strong>
+        <div class="notice_in"><ul style="cursor:pointer"><li style="color:#FB7403">列车运行图调整，12月30日之后车票预售期调整为30天，12月29日及之前的车票正常发售。</li>
+        </ul>
+        </div>
+        <a href="#nogo" class="i-close" shape="rect"></a>
+    </div>
+    <!--公告 结束-->
+    <!--车票搜索框 开始-->
+    <div class="sear-box quick-sear-box"><form id="queryLeftForm" method="get" enctype="application/x-www-form-urlencoded"><div class="dfc" id="dfc"><ul><li><input name="singleRoundType" type="radio" id="dc" class="radio" checked="checked" value="dc">
+        <label for="dc" id="dc_label" class="cursor">单程</label>
+    </li>
+        <li><input name="singleRoundType" type="radio" id="wf" class="radio" value="wc">
+            <label for="wf" id="wf_label" class="cursor">往返</label>
+        </li>
+    </ul>
+    </div>
+        <div class="s-info" id="place_area"><ul><li><span class="label"><label id="fromStationText_label">出发地</label>
+</span>
+            <div class="inp-w"><input id="fromStation" type="hidden" value="HZH" name="leftTicketDTO.from_station">
+                <input type="text" id="fromStationText" class="inp-txt inp_selected" value="" name="leftTicketDTO.from_station_name">
+                <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
+            </div>
+        </li>
+            <li class="i-change i-change2" id="change_station" style="background-position: -67px -96px; cursor: pointer;"></li>
+            <li><span class="label"><label id="toStationText_label"> 目的地</label>
+</span>
+                <div class="inp-w"><input id="toStation" type="hidden" value="" name="leftTicketDTO.to_station">
+                    <input type="text" id="toStationText" class="inp-txt inp_selected" value="" name="leftTicketDTO.to_station_name">
+                    <span class="i-city" id="toStation_icon_image" style="cursor: pointer;"></span>
+                </div>
+            </li>
+            <li><span class="label"> 出发日</span>
+                <div class="inp-w" style="z-index:1200"><input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" value="" readonly="readonly">
+                    <!--	<div id="train_date_" style="position: absolute; height: 250px;z-index:1200;left:0; top:30px;"></div>-->
+                    <span id="date_icon_1" class="i-date"></span>
+                </div>
+                <!--<div class="inp-w">
+                                                <input th:value="${train_date}" type="text" class="inp-txt" name="leftTicketDTO.train_date" id="train_date"
+                                                    value="" readonly="readonly"></input> <span id="date_icon_1" class="i-date"></span>
+                                            </div>-->
+            </li>
+            <li class="no-change"><span class="label"> 返程日</span>
+                <div class="inp-w" id="back_div" style="z-index:1100"><input type="text" class="inp-txt" name="back_train_date" id="back_train_date" value="" readonly="readonly" disabled="disabled">
+                    <!--	<div id="back_train_date_" style="position: absolute; height: 250px;z-index:1100;left:0; top:30px;"></div>-->
+                    <span id="date_icon_2" class="i-date"></span>
+                </div>
+                <!--<div class="inp-w" id="back_div">
+                                                <input th:value="${back_train_date}" type="text" class="inp-txt" name="back_train_date" id="back_train_date"
+                                                    value="" readonly="readonly"></input> <span id="date_icon_2" class="i-date"></span>
+                                            </div>-->
+            </li>
+        </ul>
+        </div>
+        <div class="quick-s"><ul><li><input type="radio" id="sf1" class="radio" name="sf" checked="checked">
+            <label id="sf1_label" for="sf1" class="cursor">普通</label>
+        </li>
+            <li><input type="radio" id="sf2" class="radio" name="sf">
+                <label id="sf2_label" for="sf2" class="cursor">学生</label>
+            </li>
+        </ul>
+            <div class="btn-area"><a href="javascript:" id="query_ticket" class="btn92s" shape="rect">查询</a>
+
+            </div>
+        </div>
+    </form>
+    </div>
+    <!--车票搜索框 开始-->
+    <div class="sear-sel" id="sear-sel"><div id="date_range" class="sear-sel-hd clearfix"><ul><li class="sel" alt="show"><span style="cursor: pointer;" class="first hide">12-14</span>
+        <span class="first">12-14 周五</span>
+    </li>
+        <li class=""><span style="cursor: pointer;" class="">12-15</span>
+            <span class="hide">12-15 周六</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-16</span>
+            <span class="hide">12-16 周日</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-17</span>
+            <span class="hide">12-17 周一</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-18</span>
+            <span class="hide">12-18 周二</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-19</span>
+            <span class="hide">12-19 周三</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-20</span>
+            <span class="hide">12-20 周四</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-21</span>
+            <span class="hide">12-21 周五</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-22</span>
+            <span class="hide">12-22 周六</span>
+        </li>
+        <li><span style="cursor: pointer;">12-23</span>
+            <span class="hide">12-23 周日</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-24</span>
+            <span class="hide">12-24 周一</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-25</span>
+            <span class="hide">12-25 周二</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-26</span>
+            <span class="hide">12-26 周三</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-27</span>
+            <span class="hide">12-27 周四</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-28</span>
+            <span class="hide">12-28 周五</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-29</span>
+            <span class="hide">12-29 周六</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">12-30</span>
+            <span class="hide">12-30 周日</span>
+        </li>
+        <li><span style="cursor: pointer;">12-31</span>
+            <span class="hide">12-31 周一</span>
+        </li>
+        <li class=""><span style="cursor: pointer;" class="">01-01</span>
+            <span class="hide">01-01 周二</span>
+        </li>
+        <li class="end"><span style="cursor: pointer;" class="">01-02</span>
+            <span class="hide">01-02 周三</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-03</span>
+            <span class="hide">01-03 周四</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-04</span>
+            <span class="hide">01-04 周五</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-05</span>
+            <span class="hide">01-05 周六</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-06</span>
+            <span class="hide">01-06 周日</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-07</span>
+            <span class="hide">01-07 周一</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-08</span>
+            <span class="hide">01-08 周二</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-09</span>
+            <span class="hide">01-09 周三</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-10</span>
+            <span class="hide">01-10 周四</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-11</span>
+            <span class="hide">01-11 周五</span>
+        </li>
+        <li style="display: none;"><span style="cursor: pointer;">01-12</span>
+            <span class="hide">01-12 周六</span>
+        </li>
+    </ul>
+        <div class="clear"></div>
+    </div>
+        <div class="sear-sel-bd quick-buy-sel quick-buy-open" id="sear-sel-bd" style="height: 17px"><!--展开式高度设置为204px，合拢时为72px-->
+            <div class="pos-top" style="margin-right:20px;">发车时间：
+                <select class="select-small" id="cc_start_time"><option value="00002400">00:00--24:00</option>
+                    <option value="00000600">00:00--06:00</option>
+                    <option value="06001200">06:00--12:00</option>
+                    <option value="12001800">12:00--18:00</option>
+                    <option value="18002400">18:00--24:00</option>
+                </select>
+            </div>
+            <div class="section clearfix"><div class="section-hd">车次类型：</div>
+                <div class="section-bd" id="cc_train_type_btn_all"><span class="btn-all" id="train_type_btn_all" style="cursor: pointer;">全部</span>
+                    <ul id="_ul_station_train_code"><li><input name="cc_type" value="G" type="checkbox" class="check" id="checkbox_bhALTIXLAM"><label for="checkbox_bhALTIXLAM" style="cursor: pointer;">GC-高铁/城际</label></li><li><input name="cc_type" value="D" type="checkbox" class="check" id="checkbox_P8TyWdteoo"><label for="checkbox_P8TyWdteoo" style="cursor: pointer;">D-动车</label></li><li><input name="cc_type" value="Z" type="checkbox" class="check" id="checkbox_ENZU1fcaZJ"><label for="checkbox_ENZU1fcaZJ" style="cursor: pointer;">Z-直达</label></li><li><input name="cc_type" value="T" type="checkbox" class="check" id="checkbox_x2IVnJpMRd"><label for="checkbox_x2IVnJpMRd" style="cursor: pointer;">T-特快</label></li><li><input name="cc_type" value="K" type="checkbox" class="check" id="checkbox_J8aZk7ZAiy"><label for="checkbox_J8aZk7ZAiy" style="cursor: pointer;">K-快速</label></li><li><input name="cc_type" value="QT" type="checkbox" class="check" id="checkbox_qWwQHIFdvV"><label for="checkbox_qWwQHIFdvV" style="cursor: pointer;">其他</label></li></ul>
+                </div>
+            </div>
+            <div class="section clearfix"><div class="section-hd">出发车站：</div>
+                <div class="section-bd" id="cc_from_station_name_all"><span class="btn-all" id="from_station_name_all" style="cursor: pointer;">全部</span>
+                    <ul id="from_station_ul">
+                        <li><input type="checkbox" class="check" name="cc_from_station" value="杭州东" id="cc_from_station_杭州东_check"><label class="cursor" for="cc_from_station_杭州东_check" id="cc_from_station_杭州东">杭州东</label></li>
+
+                        <li><input type="checkbox" class="check" name="cc_from_station" value="杭州" id="cc_from_station_杭州_check"><label class="cursor" for="cc_from_station_杭州_check" id="cc_from_station_杭州">杭州</label></li>
+                    </ul>
+                </div>
+            </div>
+            <!--
+                            <div class="section clearfix">
+                                <div class="section-hd">出发时段：</div>
+                                <div class="section-bd" id="cc_start_time_btn_all">
+                                    <span class="btn-all" id="start_time_btn_all">全部</span>
+                                    <ul>
+                                        <li><input type="checkbox" class="check" value="00000600" name="cc_start_time"></input><label for="">凌晨（0-6点）</label></li>
+                                        <li><input type="checkbox" class="check" value="06001200" name="cc_start_time"></input><label for="">上午（6-12点）</label></li>
+                                        <li><input type="checkbox" class="check" value="12001800" name="cc_start_time"></input><label for="">下午（12-18点）</label></li>
+                                        <li><input type="checkbox" class="check" value="18002400" name="cc_start_time"></input><label for="">晚上（18-24点）</label></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            -->
+            <div class="section clearfix"><div class="section-hd">到达车站：</div>
+                <div class="section-bd" id="cc_to_station_name_all"><span class="btn-all" id="to_station_name_all" style="cursor: pointer;">全部</span>
+                    <ul id="to_station_ul">
+                        <li><input type="checkbox" class="check" name="cc_to_station" value="上海虹桥" id="cc_to_station_上海虹桥_check"><label class="cursor" for="cc_to_station_上海虹桥_check" id="cc_to_station_上海虹桥">上海虹桥</label></li>
+
+                        <li><input type="checkbox" class="check" name="cc_to_station" value="上海南" id="cc_to_station_上海南_check"><label class="cursor" for="cc_to_station_上海南_check" id="cc_to_station_上海南">上海南</label></li>
+
+                        <li><input type="checkbox" class="check" name="cc_to_station" value="上海" id="cc_to_station_上海_check"><label class="cursor" for="cc_to_station_上海_check" id="cc_to_station_上海">上海</label></li>
+                    </ul>
+                </div>
+            </div>
+            <!--
+                            <div class="section clearfix">
+                                <div class="section-hd">到达时段：</div>
+                                <div class="section-bd" id="cc_arrive_time_btn_all">
+                                    <span class="btn-all" id="arrive_time_btn_all">全部</span>
+                                    <ul>
+                                        <li><input type="checkbox" class="check" value="00000600" name="cc_arrive_time"></input><label for="">凌晨（0-6点）</label></li>
+                                        <li><input type="checkbox" class="check" value="06001200" name="cc_arrive_time"></input><label for="">上午（6-12点）</label></li>
+                                        <li><input type="checkbox" class="check" value="12001800" name="cc_arrive_time"></input><label for="">下午（12-18点）</label></li>
+                                        <li><input type="checkbox" class="check" value="18002400" name="cc_arrive_time"></input><label for="">晚上（18-24点）</label></li>
+                                    </ul>
+                                </div>
+                            </div>
+                             -->
+            <div class="section pt2 clearfix"><div class="section-hd" id="memb">乘车人：</div>
+                <div class="section-bd pt2" id="setion_postion" style="width:688px;"><span class="wrap-left"><a href="javascript:" class="btn-small" onclick="$.showSelectBuyer()" shape="rect">请选择</a>
+</span>
+                </div>
+                <span style="color:red;width:auto;">您可点击“成人乘车人”添加儿童票。</span>
+            </div>
+            <div class="section clearfix"><div class="section-hd" id="train_first">优先车次：</div>
+                <div class="section-bd pt2" id="prior_train"><span id="showYxTrainSpan" class="wrap-left"><a href="javascript:" class="btn-small" onclick="$.showYxTrain()" shape="rect">请选择</a>
+</span>
+                    <span style="display: none;" name="prior_train-span" class="wrap-left add-cc"><input type="text" maxlength="5" class="inp-small" id="inp-train" style="text-transform:uppercase" value="  请输入" onkeypress="$.checkTrain(event,this)">
+<a href="javascript:" class="btn-add" id="add-train" shape="rect"></a>
+</span>
+                </div>
+            </div>
+            <div class="section clearfix"><div class="section-hd" id="seat_first">优先席别：</div>
+                <div class="section-bd pt2" id="prior_seat"><span class="wrap-left"><a href="javascript:" class="btn-small" onclick="$.showSelectSeat()" shape="rect">请选择</a>
+</span>
+                </div>
+            </div>
+            <div class="section pt2 clearfix"><div class="section-hd" id="select_date">备选日期：</div>
+                <div class="section-bd pt2" id="prior_date"><span class="wrap-left"><a href="javascript:" class="btn-small" id="train_date" onclick="$.showSelectDate()" shape="rect">请选择</a>
+</span>
+                </div>
+            </div>
+            <div class="section pt2 clearfix"><div class="section-hd" id="ad_setting">高级设置：</div>
+                <div class="section-bd pt2"><span class="mr17"><select id="_prior" class="select-small" style="width:75px;margin-right:10px"><option value="1">席别优先</option>
+<option value="2">车次优先</option>
+</select>
+</span>
+                    <span class="mr17"><input type="checkbox" class="check" id="autoSubmit">
+<label for="autoSubmit" id="autoSubmitTxt" style="cursor: pointer; color: rgb(51, 51, 51);">自动提交</label>
+</span>
+                    <span class="mr17"><input type="checkbox" class="check" id="partSubmit">
+<label for="partSubmit" id="partSubmitTxt" style="cursor: pointer; color: rgb(51, 51, 51);">余票不足时部分提交</label>
+</span>
+                    <a href="javascript:" class="btn-small mr5" id="tryPlayer" shape="rect">试听提示音乐</a>
+                    <a href="javascript:" id="clearAll" class="btn-small" shape="rect">清空所有选项</a>
+                </div>
+            </div>
+            <div class="section cc-pos" style="display:none"><div class="section-hd">车次：</div>
+                <div class="section-bd" id="train_combo_box_div"><span class="inptxt w90" id="train_combo_box" style="float: left; display: none;"></span>
+                    <div class="dhx_combo_box " style="width: 90px;"><input autocomplete="off" type="text" class="dhx_combo_input" style="width: 68px;"><input type="hidden" name="cc"><input type="hidden" name="cc_new_value" value="true"><span style="display: none;" class="i-clear dhx_combo_img_iClear" id="iLcear"></span></div></div>
+            </div>
+        </div>
+        <div class="quick-gif" style="top:58px">
+            <!--<a href="javascript:" id="show_more" class="down" shape="rect" style="cursor: pointer;">订票帮手</a>-->
+        </div>
+        <!--箭头方向修改<a href="#nogo" class="up"></a>-->
+    </div>
+    <!--车票搜索框 结束-->
+    <div class="sear-result" id="sear-result" style="display: block;">
+        <span class="fr"><input type="checkbox" class="check" id="avail_jf">
+            <label for="avail_jf" style="cursor: pointer;">显示积分兑换车次</label>
+            <input type="checkbox" class="check" id="avail_ticket">
+            <label for="avail_ticket" style="cursor: pointer;">显示全部可预订车次</label>
+        </span>
+        <p><strong></strong>共计<strong id="trainum"></strong>个车次</p>
+        <p id="lc_msg"></p>
+    </div>
+    <div class="t-list" id="t-list">
+        <table>
+            <thead>
+            <tr class="th" id="float">
+                <th width="90" colspan="1" rowspan="1">车次</th>
+                <th width="100" colspan="1" rowspan="1">出发站<br clear="none">
+                    到达站</th>
+                <th width="82" colspan="1" rowspan="1" id="startendtime"><span class="b1" id="s_time" style="cursor: pointer;">出发时间</span><br><span class="b2" id="r_time" style="cursor: pointer;">到达时间</span></th>
+                <th width="82" colspan="1" rowspan="1"><span class="b3" id="l_s" style="cursor: pointer;">历时</span>
+                </th>
+                <th width="49" colspan="1" rowspan="1">商务座<br clear="none">
+                    特等座</th>
+                <th width="49" colspan="1" rowspan="1">一等座</th>
+                <th width="49" colspan="1" rowspan="1">二等座</th>
+                <th width="49" colspan="1" rowspan="1">高级<br clear="none">
+                    软卧</th>
+                <th width="49" colspan="1" rowspan="1">软卧</th>
+                <th width="49" colspan="1" rowspan="1">动卧</th>
+                <th width="49" colspan="1" rowspan="1">硬卧</th>
+                <th width="49" colspan="1" rowspan="1">软座</th>
+                <th width="49" colspan="1" rowspan="1">硬座</th>
+                <th width="49" colspan="1" rowspan="1">无座</th>
+                <th width="49" colspan="1" rowspan="1">其他</th>
+                <th class="last" colspan="1" rowspan="1">备注</th>
+            </tr>
+            </thead>
+            <tbody id="queryLeftTable">
+
+            </tbody>
+        </table>
+        <!-- 当查询有余票结果后，在table下显示还可以选择接续换乘查询换乘车次的提示 -->
+        <div class="tips-txt mt10" id="_lc_link_foot" style=""><p>如果查询结果中没有满足需求的车次</p>
+            <p>显示的卧铺票价均为上铺票价，供您参考。具体票价以您确认支付时实际购买的铺别票价为准。</p>
+        </div>
+        <div class="t-list-bd" id="t-list-bd"><div class="no-ticket" id="no_filter_ticket" style="display: none"><span class="i-no"></span>
+            <p><!-- 没有符合筛选条件的车次，请修改筛选条件！<br />您可以<a href="#" id="show_all_query_result">显示全部</a>或<a href="/otsweb/zzzcx/init">使用中转查询功能</a>查询换乘车次。-->
+
+
+                没有符合筛选条件的车次，请修改筛选条件<br clear="none">
+                或<a href="#" id="show_all_query_result" shape="rect">显示全部车次</a>
+                ！
+            </p>
+        </div>
+            <div class="no-ticket" id="no_filter_ticket_3" style="display: none"><span class="i-no"></span>
+                <p>
+                    没有查询到符合条件的车次，5秒后继续查询，请稍后！
+                </p>
+            </div>
+            <div class="no-ticket" id="no_filter_ticket_4" style="display: none"><span class="i-no"></span>
+                <p>
+                    没有符合筛选条件的车次，5秒后开始查询备选日期，请稍后！
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="no-ticket" id="no_filter_ticket_2" style="display: none"><span class="i-no"></span>
+        <p>
+            很抱歉，按您的查询条件，当前未找到从<span id="no_filter_ticket_fromstation"></span>
+            到<span id="no_filter_ticket_tostation"></span>
+            的列车。
+        </p>
+    </div>
+    <div class="no-ticket" id="no_filter_ticket_6" style="display: none"><span class="i-no"></span>
+        <p>对不起，您操作频率过快，请稍后再试！</p>
+    </div>
+</div>
+<!--页面主体  结束-->
+
+<!-- 检索车站下拉框 -->
+<div id="search_div" style="z-index: 1000; position: absolute; top: 153px; left: 302.5px;"><div id="form_cities" style="overflow: hidden; left: 0px; top: 30px; display: none;"><div id="top_cities">简拼/全拼/汉字或↑↓</div>
+    <div id="panel_cities"><div class="citylineover" id="citem_0" cturn="0" style="background-color: rgb(200, 227, 252);"><span class="ralign">北京北</span><span style="float:right;" class="ralign">beijingbei</span></div>
+        <div class="cityline" id="citem_1" cturn="1"><span class="ralign">北京东</span><span style="float:right;" class="ralign">beijingdong</span></div>
+        <div class="cityline" id="citem_2" cturn="2"><span class="ralign">北京</span><span style="float:right;" class="ralign">beijing</span></div>
+        <div class="cityline" id="citem_3" cturn="3"><span class="ralign">北京南</span><span style="float:right;" class="ralign">beijingnan</span></div>
+        <div class="cityline" id="citem_4" cturn="4"><span class="ralign">北京西</span><span style="float:right;" class="ralign">beijingxi</span></div>
+        <div class="cityline" id="citem_5" cturn="5"><span class="ralign">广州南</span><span style="float:right;" class="ralign">guangzhounan</span></div>
+    </div>
+    <div id="flip_cities" style="display: block;"><div class="citypage"><a href="" class="cur" onclick="$.stationFor12306.city_showlist(0);return false;">1</a><a href="" onclick="$.stationFor12306.city_showlist(1);return false;">2</a><a href="" onclick="$.stationFor12306.city_showlist(2);return false;">3</a><a href="" onclick="$.stationFor12306.city_showlist(3);return false;">4</a><a href="" onclick="$.stationFor12306.city_showlist(4);return false;">5</a><a href="" class="pagetxt" onclick="$.stationFor12306.city_showlist(1);return false;">&gt;&gt;</a></div></div>
+</div>
+</div>
+<!-- 选择车站下拉框 -->
+<div id="choice_div" style="z-index: 2000; position: absolute; top: 153px; left: 302.5px;">
+    <div id="form_cities2" style="overflow: hidden; display: none; left: 0px; top: 30px;"><div id="panel_cities2">
+        <div class="com_hotresults" id="thetable" style="width:440px">
+            <div style="width:100%;">
+                <div class="ac_title">
+                    <span>拼音支持首字母输入</span>
+                    <a class="ac_close" style="cursor:pointer" title="关闭" onclick="$.stationFor12306.closeShowCity()"></a>
+                </div><ul class="AbcSearch clx" id="abc">
+                <li index="1" method="liHotTab" onclick="$.stationFor12306.js(1)" id="nav_list1" class="action">热门</li>
+                <li index="2" method="liHotTab" onclick="$.stationFor12306.js(2)" id="nav_list2" class="">ABCDE</li>
+                <li index="3" method="liHotTab" onclick="$.stationFor12306.js(3)" id="nav_list3">FGHIJ</li>
+                <li index="4" method="liHotTab" onclick="$.stationFor12306.js(4)" id="nav_list4">KLMNO</li>
+                <li index="5" method="liHotTab" onclick="$.stationFor12306.js(5)" id="nav_list5">PQRST</li>
+                <li index="6" method="liHotTab" onclick="$.stationFor12306.js(6)" id="nav_list6">UVWXYZ</li>
+            </ul><ul class="popcitylist" style="overflow: auto; max-height: 280px; height: 191px; display: block;" method="hotData" id="ul_list1"><li class="ac_even openLi ac_odd" title="北京" data="BJP">北京</li><li class="ac_even openLi ac_odd" title="上海" data="SHH">上海</li><li class="ac_even openLi ac_odd" title="天津" data="TJP">天津</li><li class="ac_even openLi ac_odd" title="重庆" data="CQW">重庆</li><li class="ac_even openLi ac_odd" title="长沙" data="CSQ">长沙</li><li class="ac_even openLi ac_odd" title="长春" data="CCT">长春</li><li class="ac_even openLi ac_odd" title="成都" data="CDW">成都</li><li class="ac_even openLi ac_odd" title="福州" data="FZS">福州</li><li class="ac_even openLi ac_odd" title="广州" data="GZQ">广州</li><li class="ac_even openLi ac_odd" title="贵阳" data="GIW">贵阳</li><li class="ac_even openLi ac_odd" title="呼和浩特" data="HHC">呼和浩特</li><li class="ac_even openLi ac_odd" title="哈尔滨" data="HBB">哈尔滨</li><li class="ac_even openLi ac_odd" title="合肥" data="HFH">合肥</li><li class="ac_even openLi ac_odd" title="杭州" data="HZH">杭州</li><li class="ac_even openLi ac_odd" title="海口" data="VUQ">海口</li><li class="ac_even openLi ac_odd" title="济南" data="JNK">济南</li><li class="ac_even openLi ac_odd" title="昆明" data="KMM">昆明</li><li class="ac_even openLi ac_odd" title="拉萨" data="LSO">拉萨</li><li class="ac_even openLi ac_odd" title="兰州" data="LZJ">兰州</li><li class="ac_even openLi ac_odd" title="南宁" data="NNZ">南宁</li><li class="ac_even openLi ac_odd" title="南京" data="NJH">南京</li><li class="ac_even openLi ac_odd" title="南昌" data="NCG">南昌</li><li class="ac_even openLi ac_odd" title="沈阳" data="SYT">沈阳</li><li class="ac_even openLi ac_odd" title="石家庄" data="SJP">石家庄</li><li class="ac_even openLi ac_odd" title="太原" data="TYV">太原</li><li class="ac_even openLi ac_odd" title="乌鲁木齐南" data="WMR">乌鲁木齐南</li><li class="ac_even openLi ac_odd" title="武汉" data="WHN">武汉</li><li class="ac_even openLi ac_odd" title="西宁" data="XNO">西宁</li><li class="ac_even openLi ac_odd" title="西安" data="XAY">西安</li><li class="ac_even openLi ac_odd" title="银川" data="YIJ">银川</li><li class="ac_even openLi ac_odd" title="郑州" data="ZZF">郑州</li><li class="ac_even openLi ac_odd" title="深圳" data="SZQ">深圳</li><li class="ac_even openLi ac_odd" title="厦门" data="XMS">厦门</li></ul><div id="ul_list2" style="height: 0px; display: block;"><ul class="popcitylist" style="overflow: auto; max-height: 260px; display: none;"><li class="ac_letter">A</li><li class="ac_even openLi ac_odd" title="阿尔山" data="ART">阿尔山</li><li class="ac_even openLi ac_odd" title="安康" data="AKY">安康</li><li class="ac_even openLi ac_odd" title="阿克苏" data="ASR">阿克苏</li><li class="ac_even openLi ac_odd" title="阿里河" data="AHX">阿里河</li><li class="ac_even openLi ac_odd" title="阿拉山口" data="AKR">阿拉山口</li><li class="ac_even openLi ac_odd" title="安平" data="APT">安平</li><li class="ac_even openLi ac_odd" title="安庆" data="AQH">安庆</li><li class="ac_even openLi ac_odd" title="安顺" data="ASW">安顺</li><li class="ac_even openLi ac_odd" title="鞍山" data="AST">鞍山</li><li class="ac_even openLi ac_odd" title="安阳" data="AYF">安阳</li><li class="ac_even openLi ac_odd" title="昂昂溪" data="AAX">昂昂溪</li><li class="ac_even openLi ac_odd" title="阿城" data="ACB">阿城</li></ul><ul class="popcitylist" style="overflow: auto; max-height: 260px; display: none;"><li class="ac_letter">B</li><li class="ac_even openLi ac_odd" title="北京北" data="VAP">北京北</li><li class="ac_even openLi ac_odd" title="北京东" data="BOP">北京东</li><li class="ac_even openLi ac_odd" title="北京" data="BJP">北京</li><li class="ac_even openLi ac_odd" title="北京南" data="VNP">北京南</li><li class="ac_even openLi ac_odd" title="北京西" data="BXP">北京西</li><li class="ac_even openLi ac_odd" title="北安" data="BAB">北安</li><li class="ac_even openLi ac_odd" title="蚌埠" data="BBH">蚌埠</li><li class="ac_even openLi ac_odd" title="白城" data="BCT">白城</li><li class="ac_even openLi ac_odd" title="北海" data="BHZ">北海</li><li class="ac_even openLi ac_odd" title="白河" data="BEL">白河</li><li class="ac_even openLi ac_odd" title="白涧" data="BAP">白涧</li><li class="ac_even openLi ac_odd" title="宝鸡" data="BJY">宝鸡</li></ul><ul class="popcitylist" style="overflow: auto; max-height: 260px; display: none;"><li class="ac_letter">C</li><li class="ac_even openLi ac_odd" title="重庆北" data="CUW">重庆北</li><li class="ac_even openLi ac_odd" title="重庆" data="CQW">重庆</li><li class="ac_even openLi ac_odd" title="重庆南" data="CRW">重庆南</li><li class="ac_even openLi ac_odd" title="重庆西" data="CXW">重庆西</li><li class="ac_even openLi ac_odd" title="长春" data="CCT">长春</li><li class="ac_even openLi ac_odd" title="长春南" data="CET">长春南</li><li class="ac_even openLi ac_odd" title="长春西" data="CRT">长春西</li><li class="ac_even openLi ac_odd" title="成都东" data="ICW">成都东</li><li class="ac_even openLi ac_odd" title="成都南" data="CNW">成都南</li><li class="ac_even openLi ac_odd" title="成都" data="CDW">成都</li><li class="ac_even openLi ac_odd" title="长沙" data="CSQ">长沙</li><li class="ac_even openLi ac_odd" title="长沙南" data="CWQ">长沙南</li></ul><ul class="popcitylist" style="overflow: auto; max-height: 260px; display: none;"><li class="ac_letter">D</li><li class="ac_even openLi ac_odd" title="大明湖" data="JAK">大明湖</li><li class="ac_even openLi ac_odd" title="大安北" data="RNT">大安北</li><li class="ac_even openLi ac_odd" title="大成" data="DCT">大成</li><li class="ac_even openLi ac_odd" title="丹东" data="DUT">丹东</li><li class="ac_even openLi ac_odd" title="东方红" data="DFB">东方红</li><li class="ac_even openLi ac_odd" title="东莞东" data="DMQ">东莞东</li><li class="ac_even openLi ac_odd" title="大虎山" data="DHD">大虎山</li><li class="ac_even openLi ac_odd" title="敦化" data="DHL">敦化</li><li class="ac_even openLi ac_odd" title="敦煌" data="DHJ">敦煌</li><li class="ac_even openLi ac_odd" title="德惠" data="DHT">德惠</li><li class="ac_even openLi ac_odd" title="东京城" data="DJB">东京城</li><li class="ac_even openLi ac_odd" title="大涧" data="DFP">大涧</li></ul><ul class="popcitylist" style="overflow: auto; max-height: 260px; display: none;"><li class="ac_letter">E</li><li class="ac_even openLi ac_odd" title="额济纳" data="EJC">额济纳</li><li class="ac_even openLi ac_odd" title="二连" data="RLC">二连</li><li class="ac_even openLi ac_odd" title="恩施" data="ESN">恩施</li><li class="ac_even openLi ac_odd" title="峨边" data="EBW">峨边</li><li class="ac_even openLi ac_odd" title="二道沟门" data="RDP">二道沟门</li><li class="ac_even openLi ac_odd" title="二道湾" data="RDX">二道湾</li><li class="ac_even openLi ac_odd" title="鄂尔多斯" data="EEC">鄂尔多斯</li><li class="ac_even openLi ac_odd" title="二龙" data="RLD">二龙</li><li class="ac_even openLi ac_odd" title="二龙山屯" data="ELA">二龙山屯</li><li class="ac_even openLi ac_odd" title="峨眉" data="EMW">峨眉</li><li class="ac_even openLi ac_odd" title="二密河" data="RML">二密河</li><li class="ac_even openLi ac_odd" title="恩平" data="PXQ">恩平</li></ul></div><div id="ul_list3" style="height: 0px; display: none;"></div><div id="ul_list4" style="height: 0px; display: none;"></div><div id="ul_list5" style="height: 0px; display: none;"></div><div id="ul_list6" style="height: 0px; display: none;"></div><div id="flip_cities2" style="display: none;">«&nbsp;上一页&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor:pointer" class="cityflip" onclick="$.stationFor12306.pageDesigh(16,1,2)">下一页&nbsp;»</a></div></div></div></div>
+</div>
+</div>
+
+<!-- 选择乘车人 -->
+<div id="sel-buyer" class="quick-box sel-rank" style="display:none;width: 515px;"><div class="quick-box-hd"><a onclick="$.closeSelectBuyer()" href="javascript:void(0);" shape="rect">关闭</a>
+    <a onclick="$.reloadPassenger()" href="javascript:void(0);" shape="rect">刷新</a>
+    <div class="inp-wrap"><input id="searchPassenger" type="text" class="inp-txt" placeholder="输入乘客姓名" />
+        <a href="javascript:void(0);" id="passenger_a_close" class="del" shape="rect"></a>
+    </div>
+
+    常用联系人
+</div>
+    <div class="first-train-list"><ul id="buyer-list"></ul>
+        <div id="passenger_page" class="train-page" style="display: none;"></div>
+    </div>
+</div>
+<!-- 选择乘车人结束 -->
+<!-- 选择优先席别 -->
+<div id="sel-seat" class="quick-box sel-rank" style="display:none;width: 350px;"><div class="quick-box-hd"><a onclick="$.closeSelectSeat()" href="javascript:void(0);" shape="rect">关闭</a>
+
+    选择席别（最多选择五个优先席别）
+</div>
+    <div class="first-train-list"><ul id="seat-list"><li name="商务座" scode="SWZ">商务座</li>
+        <li name="特等座" scode="TZ">特等座</li>
+        <li name="一等座" scode="ZY">一等座</li>
+        <li name="二等座" scode="ZE">二等座</li>
+        <li name="高级软卧" scode="GR">高级软卧</li>
+        <li name="软卧" scode="RW">软卧</li>
+        <li name="硬卧" scode="YW">硬卧</li>
+        <li name="动卧" scode="SRRB">动卧</li>
+        <li name="高级动卧" scode="YYRW">高级动卧</li>
+        <li name="软座" scode="RZ">软座</li>
+        <li name="硬座" scode="YZ">硬座</li>
+        <li name="无座" scode="WZ">无座</li>
+    </ul>
+    </div>
+</div>
+<!-- 选择优先席别结束 -->
+<!-- 选择优先日期-->
+<div id="sel-date" class="quick-box sel-rank" style="display:none;width: 710px;"><div class="quick-box-hd"><a onclick="$.closeSelectDate()" href="javascript:void(0);" shape="rect">关闭</a>
+
+    选择日期（最多选择5个备选日期）
+</div>
+    <div class="first-train-list"><ul id="date-list"><li name="2018-12-25">2018-12-25</li>
+        <li name="2018-12-26">2018-12-26</li>
+        <li name="2018-12-27">2018-12-27</li>
+        <li name="2018-12-28">2018-12-28</li>
+        <li name="2018-12-29">2018-12-29</li>
+        <li name="2018-12-30">2018-12-30</li>
+        <li name="2018-12-31">2018-12-31</li>
+        <li name="2019-01-01">2019-01-01</li>
+        <li name="2019-01-02">2019-01-02</li>
+        <li name="2019-01-03">2019-01-03</li>
+        <li name="2019-01-04">2019-01-04</li>
+        <li name="2019-01-05">2019-01-05</li>
+        <li name="2019-01-06">2019-01-06</li>
+        <li name="2019-01-07">2019-01-07</li>
+        <li name="2019-01-08">2019-01-08</li>
+        <li name="2019-01-09">2019-01-09</li>
+        <li name="2019-01-10">2019-01-10</li>
+        <li name="2019-01-11">2019-01-11</li>
+        <li name="2019-01-12">2019-01-12</li>
+        <li name="2019-01-13">2019-01-13</li>
+        <li name="2019-01-14">2019-01-14</li>
+        <li name="2019-01-15">2019-01-15</li>
+        <li name="2019-01-16">2019-01-16</li>
+        <li name="2019-01-17">2019-01-17</li>
+        <li name="2019-01-18">2019-01-18</li>
+        <li name="2019-01-19">2019-01-19</li>
+        <li name="2019-01-20">2019-01-20</li>
+        <li name="2019-01-21">2019-01-21</li>
+        <li name="2019-01-22">2019-01-22</li>
+        <li name="2019-01-23">2019-01-23</li>
+        <li name="2019-01-24">2019-01-24</li>
+        <li name="2019-01-25">2019-01-25</li>
+        <li name="2019-01-26">2019-01-26</li>
+        <li name="2019-01-27">2019-01-27</li>
+        <li name="2019-01-28">2019-01-28</li>
+        <li name="2019-01-29">2019-01-29</li>
+        <li name="2019-01-30">2019-01-30</li>
+        <li name="2019-01-31">2019-01-31</li>
+        <li name="2019-02-01">2019-02-01</li>
+        <li name="2019-02-02">2019-02-02</li>
+        <li name="2019-02-03">2019-02-03</li>
+        <li name="2019-02-04">2019-02-04</li>
+        <li name="2019-02-05">2019-02-05</li>
+        <li name="2019-02-06">2019-02-06</li>
+        <li name="2019-02-07">2019-02-07</li>
+        <li name="2019-02-08">2019-02-08</li>
+        <li name="2019-02-09">2019-02-09</li>
+        <li name="2019-02-10">2019-02-10</li>
+        <li name="2019-02-11">2019-02-11</li>
+        <li name="2019-02-12">2019-02-12</li>
+        <li name="2019-02-13">2019-02-13</li>
+        <li name="2019-02-14">2019-02-14</li>
+        <li name="2019-02-15">2019-02-15</li>
+        <li name="2019-02-16">2019-02-16</li>
+        <li name="2019-02-17">2019-02-17</li>
+        <li name="2019-02-18">2019-02-18</li>
+        <li name="2019-02-19">2019-02-19</li>
+        <li name="2019-02-20">2019-02-20</li>
+        <li name="2019-02-21">2019-02-21</li>
+        <li name="2019-02-22">2019-02-22</li>
+        <li name="2019-02-23">2019-02-23</li>
+        <li name="2019-02-24">2019-02-24</li>
+        <li name="2019-02-25">2019-02-25</li>
+        <li name="2019-02-26">2019-02-26</li>
+        <li name="2019-02-27">2019-02-27</li>
+        <li name="2019-02-28">2019-02-28</li>
+        <li name="2019-03-01">2019-03-01</li>
+    </ul>
+    </div>
+</div>
+<!-- 选择优先席别结束 -->
+<!-- 快捷购票提示信息 -->
+<div class="quick-tips" id="showquick1" style="display: none;width:200px;z-index:4000;"><span style="line-height:22px; color:#666;">选中后，在点击“查询”按钮时，系统将按您设置的查询条件自动、持续查询车票。当查询到满足条件的车票时，查询将自动停止。</span>
+</div>
+<div class="quick-tips" id="showquick2" style="display: none"><!--<span style="line-height:22px; color:#666;">闪购高级选项。选中后，“自动提交”默认选中，当系统查询到满足闪购选项的车票但票额少于选定的乘车人时，允许系统按票额数量忽略排在后面的乘车人，自动提交订单。</span> -->
+    <span style="line-height:22px; color:#666;">如果网站查询同一车次只有部分符合您设定条件的车票时，将按您设定的乘车人和席别优先顺序进行提交。</span>
+</div>
+<div class="quick-tips" id="showquick3" style="display: none;"><!-- <span style="line-height:22px; color:#666;">闪购高级选项。选中后，在点击“查询”按钮时系统将自动、持续查询车票，并在查询到满足闪购选项的车票时自动提交订单。</span>-->
+    <span style="line-height:22px; color:#666;">勾选本选项并点击查询后，网站将自动查询符合设定条件的车票信息，如有符合条件的车次，将自动提交订单信息。</span>
+</div>
+<div class="quick-tips" id="showquick4" style="display: none"><span style="line-height:22px; color:#666;">您可以从常用联系人中选择最多5个乘车人，网站将按您设定的先后顺序自动选择。</span>
+</div>
+<div class="quick-tips" id="showquick6" style="display: none"><span style="line-height:22px; color:#666;">您可以设定最多5个席别，网站将根据您设定的席别先后顺序和同一车次的余票情况自动选择。</span>
+</div>
+<div class="quick-tips" id="showquick5" style="display: none"><span style="line-height:22px; color:#666;">您可以设定最多5个车次，网站将根据您设定的车次先后顺序和同一车次的余票情况自动选择。</span>
+</div>
+<div class="quick-tips" id="showquick8" style="display: none"><span style="line-height:22px; color:#666;">您可以在当前日期外另行设定最多5个出发日，网站将根据您设定的先后顺序和余票情况自动选择。</span>
+</div>
+<div id="getTicket" style="display: none;margin-right: 1px;margin-bottom: 1px;height: 140px"><div class="mark" style="height: 20px"></div>
+    <div class="up-box" style="height: 140px"><div class="up-box-hd">恭喜您，查到有票车次了<a href="javascript:$jpopup.startOrHiden()" shape="rect">关闭</a>
+    </div>
+        <div class="up-box-bd" style="height: 140px"><div class="tit" id="filterRes"></div>
+            <div class="lay-btn" style="margin-left: -245px"><a href="javascript:" class="btn92s" id="showOnlyTicA" shape="rect">仅显示选定车次</a>
+                <a href="javascript:$jpopup.startOrHiden()" class="btn92" shape="rect">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 快捷购票提示信息结束 -->
+<!-- 提交订单核对车票信息弹出层 start -->
+<div id="autosubmitcheckticketinfo" style="display: none; top:600px;left:200px;"><div class="mark"></div>
+    <div class="up-box w664" id="content_autosubmitcheckticketinfo"><div class="up-box-hd">
+        已查到车票，请核对以下信息
+    </div>
+        <div class="up-box-bd ticket-check"><div class="info2" id="autosubmit_check_ticket_tit" style="width:550px;"></div>
+            <table class="table-a"><tr><th width="28" rowspan="1" colspan="1">序号</th>
+                <th rowspan="1" colspan="1">席别</th>
+                <th id="bed_show" style="display: none;" rowspan="1" colspan="1">铺别</th>
+                <th rowspan="1" colspan="1">票种</th>
+                <th rowspan="1" colspan="1">姓名</th>
+                <th rowspan="1" colspan="1">证件类型</th>
+                <th rowspan="1" colspan="1">证件号码</th>
+                <th rowspan="1" colspan="1">手机号码</th>
+            </tr>
+                <tbody id="autosubmit_check_ticketInfo"></tbody>
+            </table>
+            <!-- <p style="color: #3177BF;" id="notice_1_id">
+
+                                  注：1.系统将随机为您申请席位，暂不支持自选席位。
+
+                            </p>
+
+
+                            <div class="seat-sel seat-sel-round" id="id-seat-sel" style="display: none;">
+                                <div class="seat-sel-hd"><div class="tips-xz">选座喽</div>已选座<span id='selectNo'>1/4</span></div>
+                                <div class="seat-sel-bd">
+                                    第一排
+                                    <div class="sel-item" id="yideng1"  style="display: none;">
+                                        一等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="1A">A</a></li>
+                                            <li><a href="javascript:" id="1C">C</a></li>
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="1D">D</a></li>
+                                            <li><a href="javascript:" id="1F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+                                    <div class="sel-item" id="erdeng1"  style="display: none;">
+                                            二等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="1A">A</a></li>
+                                            <li><a href="javascript:" id="1B">B</a></li>
+                                            <li><a href="javascript:" id="1C">C</a></li>
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="1D">D</a></li>
+                                            <li><a href="javascript:" id="1F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+                                    <div class="sel-item" id="tedeng1"  style="display: none;">
+                                        特等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="1A">A</a></li>
+                                            <li><a href="javascript:" id="1C">C</a></li>
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="1F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+
+                                    第二排
+                                    <div class="sel-item"   id="yideng2"  style="display: none;">
+                                        一等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="2A">A</a></li>
+                                            <li><a href="javascript:" id="2C">C</a></li>
+
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="2D">D</a></li>
+                                            <li><a href="javascript:" id="2F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+                                    <div class="sel-item"    id="erdeng2"  style="display: none;">
+                                        二等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="2A">A</a></li>
+                                            <li><a href="javascript:" id="2B">B</a></li>
+                                            <li><a href="javascript:" id="2C">C</a></li>
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="2D">D</a></li>
+                                            <li><a href="javascript:" id="2F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+                                    <div class="sel-item"   id="tedeng2"  style="display: none;">
+                                        特等座
+                                        <div class="txt">窗</div>
+                                        <ul class="seat-list">
+                                            <li><a href="javascript:" id="2A">A</a></li>
+                                            <li><a href="javascript:" id="2C">C</a></li>
+                                        </ul>
+                                        <div class="txt">过道</div>
+                                         <ul class="seat-list">
+                                            <li><a href="javascript:" id="2F">F</a></li>
+                                        </ul>
+                                        <div class="txt txt-last">窗</div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="seat-sel seat-sel-round" id="id-bed-sel" style="display: none;">
+                                <div class="seat-sel-hd">
+                                    <div class="tips-xz">选铺喽</div>
+                                        已选铺<span  id='selectBedNo'>1/4</span>
+                                </div>
+                                <div class="seat-sel-bd">
+                                    <div class="sel-item">
+                                        <div class="bed-yw">硬卧</div>
+                                        <div class="bed-item">
+                                            <div class="txt">下铺</div>
+                                            <div class="number-control-mini">
+                                                <a href="javascript:" class="num-reduce" onclick="javascript:numSet('reduce','x_no');">-</a>
+                                                <span class="num" id="x_no">1</span>
+                                                <a href="javascript:" class="num-increase" onclick="javascript:numSet('add','x_no');">+</a>
+                                            </div>
+                                        </div>
+                                        <div class="bed-item" style="display: none;" id="mid_bed">
+                                            <div class="txt">中铺</div>
+                                            <div class="number-control-mini">
+                                                <a href="javascript:" class="num-reduce" onclick="javascript:numSet('reduce','z_no');">-</a>
+                                                <span class="num"  id="z_no">0</span>
+                                                <a href="javascript:" class="num-increase" onclick="javascript:numSet('add','z_no');">+</a>
+                                            </div>
+                                        </div>
+                                        <div class="bed-item">
+                                            <div class="txt">上铺</div>
+                                            <div class="number-control-mini">
+                                                <a href="javascript:" class="num-reduce" onclick="javascript:numSet('reduce','s_no');">-</a>
+                                                <span class="num" id="s_no">0</span>
+                                                <a href="javascript:" class="num-increase" onclick="javascript:numSet('add','s_no');">+</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+            <p id="sy_ticket_num_id"><!--  尊敬的旅客，本次列车您选择的席别尚有余票<strong>1135</strong>张，无座<strong>840</strong>张。特此提醒。<br /> 请确认信息是否正确。如正确请点击“确定”，系统将为您分配席位。-->
+            </p>
+            <p id="orange_msg" style="color: orange;">
+                请确认以上信息是否正确，稍后系统将自动提交...
+            </p>
+            <div class="yzm" style="display: none;"><form id="randCodeForm_id" onsubmit="javascript:return false;" method="get" enctype="application/x-www-form-urlencoded"><ul><div id="mypasscode2" data-code_type="passenger" data-touclick-type="inside"></div>
+            </ul>
+            </form>
+            </div>
+            <div class="lay-btn captchaButton passengerInfo-inside" data-touclick-name="other"></div>
+            <div class="lay-btn"><a id="back_edit" href="javascript:" class="btn92" shape="rect">返回修改</a>
+                <a style="display: none;" href="javascript:" class="btn92s" id="qr_submit1" shape="rect">确认</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 提交订单核对车票信息弹出层 end -->
+<!-- 交易提示框 start  -->
+<div id="transforNotice_id" style="display: none; margin-left: 30%; margin-top: 30%;"><div class="mark"></div>
+    <div class="up-box" id="content_transforNotice_id"><div class="up-box-hd" id="up-box-hd_id"><!--  <a id="closeTranforDialog_id" style="display: none;" href="javascript:">关闭</a>-->
+
+
+        提示
+
+
+
+    </div>
+        <div class="up-box-bd"><div class="up-con clearfix"><span class="icon i-work" id="iamge_status_id"></span>
+            <div class="r-txt" id="orderResultInfo_id"><!--  信息提示 -->
+            </div>
+        </div>
+            <div class="lay-btn" id="lay-btn_id"><!-- <a href="javascript:" id="qr_closeTranforDialog_id" style="display: none;" class="btn92s">确认</a> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 无验证码用户未登录弹出登录层 -->
+<!-- 无验证码用户未登录弹出登录层 -->
+<!-- 用户未登录弹出登录层 -->
+<div id="relogin" style="display: none; z-index: 100px;margin: 0px auto 110px;"><div class="mark"></div>
+    <div class="up-box up-box-login" id="content"><div class="up-box-hd">请登录<a id="relogin_close" href="javascript:" shape="rect">关闭</a>
+    </div>
+        <form id="loginForm" method="get" enctype="application/x-www-form-urlencoded"><div class="up-box-bd"><div class="login"><ul><li><span class="formCont" style="float: left;"><span class="label">登录名：</span>
+<input id="username" name="loginUserDTO.user_name" type="text" class="inptxt w200" tabindex="1" />
+</span>
+        </li>
+            <li><span class="formCont" style="float: left;"><span class="label">密码：</span>
+<input id="password" name="userDTO.password" type="password" class="inptxt w200" tabindex="2" />
+<a href="https://kyfw.12306.cn/otn/forgetPassword/initforgetMyPassword" id="forget_my_password_id" shape="rect" target="_blank">忘记用户名/密码？</a>
+</span>
+            </li>
+            <li id="mypasscode1" data-code_type="login" data-touclick-type="inside" data-page-identity="leftTicket-login" style="display: none">
+                <!--要引入的验证码标签 -->
+                <script>var targettype=['Z','Z'];var targetdiv=['mypasscode1','mypasscode2'];var targetelement=['','other'];</script>
+                <script th:src="@{/js/common/new.js}" xml:space="preserve"></script>
+            </li>
+            <!--
+                                    //inside: class="dl  captchaButton leftTicket-login-button-inside"
+                                    //float: class="dl  captchaButton captchaFloatButton leftTicket-login-button-float"
+                                    -->
+            <li class="dl  captchaButton leftTicket-login-button-float" data-touclick-name="" style="margin-top:6px"><a href="javascript:" class="btn200s" id="loginSubAsyn" tabindex="4" shape="rect">登录</a>
+            </li>
+            <li class="zc"><a href="https://kyfw.12306.cn/otn/regist/init" class="btn200" shape="rect" target="_blank">快速注册</a>
+            </li>
+            <li class="txt" style="height:4px"></li>
+            <li style="margin-top: -4px;"><span><h2 style="height: 25px;line-height: 25px;font-size: 14px;">温馨提示：</h2>
+</span>
+            </li>
+            <li style="margin-top: -12px;line-height: 20px;color: #666666"><span>1、12306.cn网站每日06:00~23:00提供服务</span>
+            </li>
+            <li style="margin-top: -12px;line-height: 20px;color: #666666"><span>2、在12306.cn网站购票、改签和退票须不晚于开车前30分钟；办理“变更到站”业务时，请不晚于开车前48小时。</span>
+            </li>
+        </ul>
+        </div>
+        </div>
+        </form>
+    </div>
+</div>
+<!-- 用户未登录弹出层 end -->
+<form id="_es_hiddenform" method="post" enctype="application/x-www-form-urlencoded"><input type="hidden" name="_json_att" value="" />
+</form>
+<div class="station" style="display:none;" id="train_stop"><b></b>
+    <div class="station-info" id="stationinfo"></div>
+    <div class="station-hd"><span class="zx">站序</span>
+        <span class="zm">站名</span>
+        <span class="dzsj">到站时间</span>
+        <span class="cfsj">出发时间</span>
+        <span class="tlsj">停留时间</span>
+        <a class="close" title="关闭" href="##" onclick="closeTrainStop()" shape="rect"></a>
+    </div>
+    <div class="station-bd"><table><tbody id="train_table"></tbody>
+    </table>
+    </div>
+</div>
+<div id="floatTable" class="t-list" style="display: none;width: 978px;"><table><tr class="th"><th width="90" rowspan="1" colspan="1">车次</th>
+    <th width="100" rowspan="1" colspan="1"><div class="two-line"><span>出发站</span>
+        <br clear="none" />
+        <span>到达站</span>
+    </div>
+    </th>
+    <th width="82" rowspan="1" colspan="1"><div class="two-line" id="floatstartendtime"></div>
+    </th>
+    <th width="82" rowspan="1" colspan="1"><span class="b3" id="other_span_lishi">历时</span>
+    </th>
+    <th width="49" rowspan="1" colspan="1">商务座<br clear="none" />
+        特等座</th>
+    <!-- <th width="49">特等座</th> -->
+    <th width="49" rowspan="1" colspan="1">一等座</th>
+    <th width="49" rowspan="1" colspan="1">二等座</th>
+    <th width="49" rowspan="1" colspan="1">高级<br clear="none" />
+        软卧</th>
+    <th width="49" rowspan="1" colspan="1">软卧</th>
+    <th width="49" rowspan="1" colspan="1">动卧</th>
+    <th width="49" rowspan="1" colspan="1">硬卧</th>
+    <th width="49" rowspan="1" colspan="1">软座</th>
+    <th width="49" rowspan="1" colspan="1">硬座</th>
+    <th width="49" rowspan="1" colspan="1">无座</th>
+    <th width="49" rowspan="1" colspan="1">其它</th>
+    <th class="last" rowspan="1" colspan="1">备注</th>
+</tr>
+</table>
+</div>
+<div class="station" style="display:none;" id="train_div_"><b></b>
+    <div class="station-info" id="train_span_"><span class="item1">T69</span>
+        <span class="item2">北京南<em>--></em>
+乌鲁木齐</span>
+        <span class="item3">特快</span>
+        <span class="item4">空调</span>
+    </div>
+    <div class="station-hd"><span class="zx">站序</span>
+        <span class="zm">站名</span>
+        <span class="dzsj">到站时间</span>
+        <span class="cfsj">出发时间</span>
+        <span class="tlsj">停留时间</span>
+        <a class="close" title="关闭" href="javascript:" onclick="myStopStation.close()"></a>
+    </div>
+    <div class="station-bd"><table><tbody id="train_table_"></tbody>
+    </table>
+    </div>
+</div>
+<div class="up-box w600" style="display: none;" id="confirmG1234"><div class="up-box-hd">继续预定<a id="close_conifrmdialog_G1234" href="javascript:" shape="rect">关闭</a>
+</div>
+    <div class="up-box-bd"><div class="up-con clearfix"><span class="icon i-opt"></span>
+        <div class="r-txt"><div class="tit">您购买的G1234次列车需在到达“天津西”站后换乘，车厢号、席位号不变，是否继续购票？</div>
+        </div>
+    </div>
+        <div class="lay-btn"><a id="cancel_dialog_G1234" href="javascript:" class="btn92" shape="rect">取消</a>
+            <a href="javascript:" class="btn92s" id="goto_integration_G1234" shape="rect">继续</a>
+        </div>
+    </div>
+</div>
+<div class="up-box" id="notifysession" style="display: none;"><div class="up-box-hd">温馨提示<a href="#nogo" id="close_notifysession" shape="rect">关闭</a>
+</div>
+    <div class="up-box-bd"><div class="up-con clearfix"><span class="icon i-win"></span>
+        <div class="r-txt"><div class="tit">本次登录成功！该用户已在其他地点登录，前次登录将被强制退出！</div>
+        </div>
+    </div>
+        <div class="lay-btn"><a href="#" class="btn92s" id="goto_notifysession" shape="rect">确定</a>
+        </div>
+    </div>
+</div>
+<div class="up-box w600" style="display: none;" id="confirmChangeStudentToAdult"><div class="up-box-hd">选择乘车人<a id="close_conifrmdialog_student_to_adult" href="javascript:" shape="rect">关闭</a>
+</div>
+    <div class="up-box-bd"><div class="up-con clearfix"><span class="icon i-opt"></span>
+        <div class="r-txt"><div class="tit" id="conifrmdialog_student_to_adult_context">当前选择的优先席别有不支持学生票的，是否选择购买成人票？</div>
+        </div>
+    </div>
+        <div class="lay-btn"><a id="cancel_dialog_student_to_adult" href="javascript:" class="btn92" shape="rect">否</a>
+            <a href="javascript:" class="btn92s" id="goto_student_to_adult" shape="rect">是</a>
+        </div>
+    </div>
+</div>
+
+<!-- 优先车次开始 -->
+<div id="yxtraindiv" class="quick-box sel-rank" style="display:none;width: 485px;"><div class="quick-box-hd"><a id="yxtrain_close" href="javascript:void(0);" shape="rect">关闭</a>
+    <div class="inp-wrap"><input id="yxtraininput" type="text" class="inp-txt" placeholder="请输入车次" />
+        <a href="javascript:void(0);" id="yxtrain_a_close" class="del" shape="rect"></a>
+    </div>
+
+    选择车次（最多选择5个车次）
+</div>
+    <div class="first-train-list"><ul id="yxtrain_code"></ul>
+        <div id="yxtrain_loading" class="train-loading"><img th:src="@{/images/query/loading.gif}" alt="" />
+        </div>
+        <div id="yxtrain_empty" class="train-empty">没有查询到车次</div>
+        <div id="yxTrain_page" class="train-page" style="display: none;"></div>
+    </div>
+</div>
+<!-- 优先车次结束 -->
+<div class="mask" style="display: none;"></div>
+<div style="display: none;" class="modal-login"><div class="modal-login-tit"><h2>您尚未登录</h2>
+    <a href="javascript:;" class="close" shape="rect"><i class="icon icon-close"></i>
+    </a>
+</div>
+    <!--  仅显示账户登录添加样式login-box-account，验证码隐藏添加样式 login-box-account-nocode -->
+    <div class="login-box">
+        <ul class="login-hd">
+        <!--<li class="login-hd-code active">-->
+            <!--<a href="javascript:;" shape="rect">扫码登录</a>-->
+        <!--</li>-->
+        <li class="login-hd-account">
+            <a href="javascript:;" shape="rect">账号登录</a>
+        </li>
+    </ul>
+        <div class="login-bd">
+            <!-- 扫码登录 -->
+            <!--<div class="login-code" style="display: none;"><div id="J-login-code-loading" class="login-code-loading" style="display: none;">-->
+                <!--<img th:src="@{/images/query/loading.gif}" />-->
+            <!--</div>-->
+                <!--<div id="J-login-code-con" class="login-code-con"><div class="login-code-main"><div class="code-pic"><img id="J-qrImg" />-->
+                    <!--<div id="J-code-error-mask" style="display: none;" class="code-error-mask"></div>-->
+                    <!--<div id="J-code-error" style="display: none;" class="code-error"><p>二维码已失效</p>-->
+                        <!--<a href="javascript:;" class="btn btn-primary" shape="rect">刷新</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                    <!--<div class="code-tips"><img th:src="@{/images/query/code-tips.png}" alt="" />-->
+                    <!--</div>-->
+                <!--</div>-->
+                    <!--<div class="login-code-txt">打开<span class="txt-primary">12306手机APP</span>-->
+                        <!--扫描二维码</div>-->
+                    <!--<div class="login-code-txt"><a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary" shape="rect">注册12306账号</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div id="J-login-code-success" class="login-code-con login-code-success hide"><img th:src="@{/images/query/login-success.png}" alt="" />-->
+                    <!--<h3>扫描成功！</h3>-->
+                    <!--<p>请勿刷新页面，在手机上确认登录！</p>-->
+                <!--</div>-->
+                <!--<ul class="login-code-ft"><li><i class="icon icon-scan"></i>-->
+                    <!--扫一扫登录</li>-->
+                    <!--<li><i class="icon icon-quick"></i>-->
+                        <!--更快</li>-->
+                    <!--<li class="last"><i class="icon icon-safe"></i>-->
+                        <!--更安全</li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!-- 账号登录 -->
+            <div class="login-account" style="display: none;">
+                <div class="login-item">
+                <label for="user" class="item-label">
+                    <i class="icon icon-user"></i>
+                </label>
+                <input type="text" class="input" id="J-userName" placeholder="用户名／邮箱／手机号" />
+            </div>
+                <div class="login-item"><label for="pwd" class="item-label"><i class="icon icon-pwd"></i>
+                </label>
+                    <input type="password" class="input" id="J-password" placeholder="密码" />
+                </div>
+                <div class="login-pwd-code"><!-- 验证码区域 -->
+                    <div style="border: 0; width: 300px; height: 188px; margin: 0 10px;" class="touclick-wrapper lgcode-2018"><div class="lgcode-error" style="display: none;"></div>
+                        <div class="lgcode-success" style="display: none;"></div>
+                        <div class="lgcode-refresh"></div>
+                        <div id="J-loginImgArea" class="loginImg"><img id="J-loginImg" class="imgCode" alt="" src="" style="display: inline;" />
+                        </div>
+                        <div class="lgcode-loading" style="display: none;"><img th:src="@{/images/query/loading.gif}" alt="" style="display: none;" />
+                        </div>
+                        <div id="J-passCodeCoin"></div>
+                    </div>
+                </div>
+                <div class="login-error" id="J-login-error"><i class="icon icon-plaint-fill"></i>
+                    <span>用户名或密码输入错误</span>
+                </div>
+                <div class="login-btn">
+                    <a id="J-login" href="javascript:;" class="btn btn-primary form-block" shape="rect">立即登录</a>
+                </div>
+                <div class="login-txt">
+                    <a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary" shape="rect" target="_blank">注册12306账号</a>
+                    | <a href="https://kyfw.12306.cn/otn/forgetPassword/initforgetMyPassword" class="txt-lighter" shape="rect" target="_blank">忘记密码？</a>
+                </div>
+            </div>
+        </div>
+        <div class="login-ft"><p>1、12306.cn网站每日06:00~23:00提供服务。</p>
+            <p>2、在12306.cn网站购票、改签和退票须不晚于开车前30分钟；办理“变更到站”业务时，请不晚于开车前48小时。</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/query/station_name.js?station_version=1.9077}" xml:space="preserve"></script>
+<script type="text/javascript" th:src="@{/js/query/favorite_name.js}" xml:space="preserve"></script>
+<script type="text/javascript" th:src="@{/js/query/queryLeftTicket_end_js.js?scriptVersion=1.9111}" xml:space="preserve"></script>
+
+<script xml:space="preserve">
+    /*<![CDATA[*/
+    //为了国际化，需要定义后台获取的字符串
+    $.views.helpers({
+        buttonText : function() {
+            return '\u9884\u8BA2';
+        }
+    });
+    $.views.helpers({
+        isNum : function(value) {
+            //alert(value);
+            return parseInt(value);
+        }
+    });
+    $.views.helpers({
+        changeLiShi : function(value) {
+            if (value.substring(0,1) == "0") {
+                if (value.substring(1,2) == "0") {
+                    if (value.substring(3,4) == "0") {
+                        value = value.substring(4,5) + "分";
+                    } else {
+                        value = value.substring(3,5) + "分";
+                    }
+                } else {
+                    value = value.substring(1,2) + "小时" + value.substring(3,5) + "分";
+                }
+            } else {
+                if (value.substring(3,5) == "00") {
+                    value = value.substring(0,2) + "小时";
+                } else {
+                    value = value.substring(0,2) + "小时" + value.substring(3,5) + "分";;
+                }
+            }
+            return value;
+        }
+    });
+    $.views.helpers({
+        changeArriveDate : function(value1, value2) {
+            value1 = value1.replace(":", "");
+            value2 = value2.replace(":", "");
+            hour_value = Number(value1.substring(0,2)) + Number(value2.substring(0,2));
+            min_value = Number(value1.substring(2,4)) + Number(value2.substring(2,4));
+            if (min_value >= 60) {
+                hour_value = hour_value + 1;
+            }
+            if (hour_value >= 24 && hour_value < 48) {
+                return "次日";
+            } else if(hour_value >= 48 && hour_value < 72) {
+                return "两日";
+            } else if(hour_value >= 72) {
+                return "三日";
+            } else {
+                return "当日";
+            }
+        }
+    });
+    var from_station = '';
+    var from_station_name = '';
+    var to_station = '';
+    var to_station_name = '';
+    var trainDate = '2018-12-13';
+    var backTrainDate = '2018-12-13';
+    var page_show_flag = null;
+    var purposeCodeFromIndex = null;
+    var roundReferTime = null;
+    var studentComPerArr=['2018-06-01','2018-09-30','2018-12-01','2018-12-31','2019-01-01','2019-03-31'];
+    var studentMindate='2018-12-13';
+    var studentMaxdate='2019-01-11';
+    var otherMindate = '2018-12-13';
+    var otherMaxdate = '2019-01-11';
+    // 日期范围传参
+    //var init_train_no = null;
+    var init_minPeriod = '2018-12-13';
+    var init_maxPeriod = '2019-01-11';
+    //var init_train_date = null;
+    //var init_back_train_date = null;
+    var back_train_date = null;
+    // 客运首页进入传参
+    //var index_from_station = null;
+    var index_to_station = null;
+    //var index_from_station_name = null;
+    //var index_to_station_name = null;
+    var index_train_date = null;
+    //var index_back_train_date = null;
+    //var index_tour_flag = null;
+    // 学生票传参，用于判断
+    var stu_start_train_date = '2018-06-01 00:00:00&2018-12-01 00:00:00&2018-01-01 00:00:00';
+    var stu_end_tain_date = '2018-09-30 00:00:00&2018-12-31 00:00:00&2018-03-31 00:00:00';
+    var stu_buy_date = '2018-12-13&2019-01-11';
+    var other_buy_date = '2018-12-13&2019-01-11';
+    // 从确认乘客信息页面返回至余票查询页面传参
+    //var step_tour_flag = null;
+    //var step_from_station = null;
+    //var step_from_station_name = null;
+    //var step_to_station = null;
+    //var step_to_station_name = null;
+    //var step_train_date = null
+    //var step_back_train_date = null
+    // 从订单确认页面预订返程返回至余票查询页面传参
+    //var fc_from_station = null;
+    //var fc_from_station_name = null;
+    //var fc_to_station = null;
+    //var fc_to_station_name = null;
+    //var fc_train_date = null
+    //var fc_back_train_date = null;
+    //var fc_tour_flag = null;
+    // 改签
+    //var gc_from_station = null;
+    //var gc_from_station_name = null;
+    //var gc_to_station = null;
+    //var gc_to_station_name = null;
+    //var gc_train_date = null
+    //var gc_back_train_date = null;
+    //var gc_tour_flag = null;
+    // 旅程类型传参，用于判断跳转
+    var train_tour_flag = 'other';
+    var tour_flag='';
+    var dateArr =['12-13','12-14','12-15','12-16','12-17','12-18','12-19','12-20','12-21','12-22','12-23','12-24','12-25','12-26','12-27','12-28','12-29','12-30','12-31','01-01','01-02','01-03','01-04','01-05','01-06','01-07','01-08','01-09','01-10','01-11'];
+    var fullDateArr =['2018-12-13','2018-12-14','2018-12-15','2018-12-16','2018-12-17','2018-12-18','2018-12-19','2018-12-20','2018-12-21','2018-12-22','2018-12-23','2018-12-24','2018-12-25','2018-12-26','2018-12-27','2018-12-28','2018-12-29','2018-12-30','2018-12-31','2019-01-01','2019-01-02','2019-01-03','2019-01-04','2019-01-05','2019-01-06','2019-01-07','2019-01-08','2019-01-09','2019-01-10','2019-01-11'];
+    var otherDateArr = ['2018-12-13','2018-12-14','2018-12-15','2018-12-16','2018-12-17','2018-12-18','2018-12-19','2018-12-20','2018-12-21','2018-12-22','2018-12-23','2018-12-24','2018-12-25','2018-12-26','2018-12-27','2018-12-28','2018-12-29','2018-12-30','2018-12-31','2019-01-01','2019-01-02','2019-01-03','2019-01-04','2019-01-05','2019-01-06','2019-01-07','2019-01-08','2019-01-09','2019-01-10','2019-01-11'];
+    var ClickWho =''
+    var isstudentDate=false
+    var isInMaintenanceHours = false;
+    var isSuperLogin = false;
+    //快捷购票添加
+    var passengerAll=null;
+    var passengerChecked=[];//已选常用联系人
+    var xbChecked=[];//已选席别
+    var rqChecked=[];//已选日期
+    var ccSelected=[];//已选车次
+
+    var autoSearchTime=5000;
+    var noticeContent = null;
+
+    var isSaveQueryLog='N';
+
+    var other_control=30;
+    var stu_control=30;
+    var isDwTicketResign='N';
+    var DW_TRAINS=['D4805','D4807','D4831','D901','D902','D903','D904','D905','D906','D907','D908','D909','D910','D915','D921','D922','D923','D924','D927','D928','D931','D932','D934','D933','D935','D936','D937','D938','D965','D925','D926','D941','D942','D943','D944'];
+    var canChangeToStation=null;
+    var if_show_pass_code_login = 'Y';
+    var intervalTime=null;
+    var queryOrderWaitTimeInterval='3000';
+    var canChooseSeats=null;
+    var choose_Seats=null;
+    var canChooseBeds=null;
+    var isCanChooseMid=null;
+
+    var hainan_limit_from_telcode=',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
+    var hainan_limit_to_telcode=',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
+    var hainan_limit_start_traindate='2018-12-23';
+    var hainan_limit_msg='';
+
+    var is_uam_login='Y';
+
+    /*]]>*/
+</script>
+<script id="queryPriceTemplate" type="text/x-jsrender" xml:space="preserve">
+<!--
+    <td colspan="4"></td>
+	{{if  A9 != null && P != null}}
+		<td width="46" align="center"></td>
+	{{else}}
+		{{if  A9 != null}}
+    		<td width="46" align="center" class="p-num">{{>A9}}</td>
+    	{{else}}
+			{{if P != null}}
+				<td width="46" align="center" class="p-num">{{>P}}</td>
+    		{{else}}
+    			<td width="46" align="center"></td>
+			{{/if}}
+    	{{/if}}
+	{{/if}}
+
+    {{if M != null}}
+    <td width="46" align="center" class="p-num">{{>M}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+
+    {{if O != null}}
+    <td width="46" align="center" class="p-num">{{>O}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+
+    {{if A6 != null}}
+    <td width="46" align="center" class="p-num">{{>A6}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+
+
+	{{if A4 != null}}
+    <td width="46" align="center" class="p-num">{{>A4}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+
+    {{if F != null}}
+    <td width="46" align="center" class="p-num">{{>F}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+    {{if A3 != null}}
+    <td width="46" align="center" class="p-num">{{>A3}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+     {{if A2 != null}}
+    <td width="46" align="center" class="p-num">{{>A2}}</td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+    {{if A1 != null}}
+    <td width="46" align="center" class="p-num">{{>A1}}
+    </td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+	{{if WZ != null}}
+    <td width="46" align="center" class="p-num">{{>WZ}}
+    </td>
+    {{else}}
+    <td width="46" align="center"></td>
+    {{/if}}
+{{if MIN!=null}}
+    <td width="51" align="center">
+		<div class="sleeper" id="sleeper-price_{{>train_no}}">
+        <p class="p-num">{{>MIN}}</p>
+        <div class="tp-list" id="tp-list-price_{{>train_no}}" style="display:none;">
+        <b></b>
+        <ul>
+		{{for OT}}
+            <li>{{>#data}}</li>
+		{{/for}}
+        </ul>
+        </div>
+   	 </div>
+	</td>
+{{else}}
+<td width="46" align="center"></td>
+{{/if}}
+<td align="center" width="78" class="no-br">{{>}}</td>
+-->
+</script>
+<script id="autoSubCheckTicketInfoTemplate" type="text/x-jsrender" xml:space="preserve">
+<tr><td align="center" rowspan="1" colspan="1">{{:#index+1}}</td>
+<td rowspan="1" colspan="1">{{>seat_type_name}}</td>
+<td rowspan="1" colspan="1">{{>ticket_type_name}}</td>
+<td rowspan="1" colspan="1">{{>name}}</td>
+<td rowspan="1" colspan="1">{{>id_type_name}}</td>
+<td rowspan="1" colspan="1">{{>id_no}}</td>
+<td rowspan="1" colspan="1">{{>phone_no}}</td>
+</tr>
+</script>
+<script id="autoSubCheckTicketInfoTemplate_chooseBeds" type="text/x-jsrender" xml:space="preserve">
+<!--
+<tr>
+	<td align="center" >{{:#index+1}}</td>
+
+	<td>{{>seat_type_name}}</td>
+
+
+	{{if "3" == seat_type}}
+		<td>
+			<select style="height: 27px;FONT-SIZE: 12px;FONT-FAMILY: '宋体','Verdana';BACKGROUND-COLOR: #FFFFF0;color: #FB7403;MARGIN-LEFT: 3px;" id="ticketype_{{:#index}}">
+             	<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_0" selected="selected">不限</option>
+				<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_3">上铺 </option>
+				<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_2">中铺 </option>
+				<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_1">下铺 </option>
+			</select>
+		</td>
+	{{else "4" == seat_type}}
+		<td>
+			<select style="height: 27px;FONT-SIZE: 12px;FONT-FAMILY: '宋体','Verdana';BACKGROUND-COLOR: #FFFFF0;color: #FB7403;MARGIN-LEFT: 3px;"  id="ticketype_{{:#index}}">
+             	<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_0" selected="selected">不限</option>
+				<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_3">上铺 </option>
+				<option value="{{>seat_type}}#{{>ticket_type}}#{{>name}}#{{>id_no}}_1">下铺 </option>
+			</select>
+		</td>
+	{{else}}
+		<td></td>
+	{{/if}}
+
+
+
+	<td>{{>ticket_type_name}}</td>
+
+	<td>{{>name}}</td>
+
+	<td>{{>id_type_name}}</td>
+
+	<td>{{>id_no}}</td>
+
+	<td>{{>phone_no}}</td>
+
+</tr>
+-->
+</script>
+<script id="autoSubTicketTitTemplate" type="text/x-jsrender" xml:space="preserve">
+<strong class="mr5">{{>date}}（{{>week}}）</strong>
+<strong class="ml5">{{>station_train_code}}</strong>
+次<strong class="ml5">{{>from_station}}</strong>
+站
+	<strong>（{{>start_time}}开）—{{>to_station}}</strong>
+站<strong>（{{>arrive_time}}到）</strong>
+</script>
+<script id="fromStationNameTemplate" type="text/x-jsrender" xml:space="preserve">
+<!--
+    <li><input type="checkbox" class="check" name="cc_from_station" value="{{>value}}" id="cc_from_station_{{>value}}_check"></input><label class="cursor"  for="cc_from_station_{{>value}}_check" id="cc_from_station_{{>value}}">{{>value}}</label></li>
+-->
+</script>
+<script id="toStationNameTemplate" type="text/x-jsrender" xml:space="preserve">
+<!--
+    <li><input type="checkbox" class="check" name="cc_to_station" value="{{>value}}" id="cc_to_station_{{>value}}_check"></input><label class="cursor"  for="cc_to_station_{{>value}}_check" id="cc_to_station_{{>value}}">{{>value}}</label></li>
+-->
+</script>
+<script id="seatTypeTemplate" type="text/x-jsrender" xml:space="preserve">
+<!--
+    <li><input type="checkbox" class="check" value="{{>key}}" name="cc_seat_type" id="cc_seat_type_{{>key}}_check"></input><label class="cursor" for="cc_seat_type_{{>key}}_check" id="cc_seat_type_{{>key}}">{{>value}}</label></li>
+-->
+</script>
+<script id="stationinfoTemplate" type="text/x-jsrender" xml:space="preserve">
+<!--
+<span class="item1">{{>key}}</span><span class="item2">{{>key}}<em>\-\-\></em>{{>key}}</span><span class="item3">{{>key}}</span><span class="item4">{{>key}}</span>
+-->
+</script>
+<!-- 农历日历 -->
+<script type="text/javascript" th:src="@{/js/query/data.jcalendar.js}" xml:space="preserve"></script>
+<script type="text/javascript" th:src="@{/js/common/jquery.SuperSlide.js}" xml:space="preserve"></script>
+<script type="text/javascript" xml:space="preserve">
+(function ($) {
+    $(document).ready(function() {
+        // 判断是否已登录
+        $.popup_uamIsLogin();
+        // $.popup_getConf();
+        // 进入页面即查询
+        $("#query_ticket").click();
+        // 弹框登陆按钮点击
+        $('#J-login').click(function() {
+                var userName = $('#J-userName').val()
+                var password = $('#J-password').val()
+                var mobile = /^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])\d{8}$/;
+                var tel = /^[A-Za-z]{1}([A-Za-z0-9]|[_]) {0,29}$/;
+                var tel_other = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+
+                if (!userName) {
+                    $.popup_show_login_error('请输入用户名！')
+                    return false;
+                }
+                // if(!tel.test(userName) && !tel_other.test(userName) && !mobile.test(userName)) {
+                //     $.popup_show_login_error('登录名格式不正确！')
+                //     return false;
+                // }
+                if (!password) {
+                    $.popup_show_login_error('请输入密码！')
+                    return false;
+                }
+                if (password && password.length < 6) {
+                    $.popup_show_login_error('密码长度不能少于6位！')
+                    return false;
+                }
+
+                if (popup_is_login_passCode == 'Y') {
+                    if ($('#J-passCodeCoin div').length == 0) {
+                        $.popup_show_login_error('请选择验证码！')
+                        return false;
+                    }
+                } else {
+                    // 不需要验证码，直接返回校验通过
+                    popup_ifSuccessCode = true;
+                }
+
+                $.popup_login();
+        });
+
+        $('.login-code-main').hover(function(){
+            $('.login-code-main .code-pic').stop().animate({
+                'left' : 0
+            },300,function(){
+                $('.login-code-main .code-tips').show()
+            })
+        },function(){
+            $('.login-code-main .code-tips').hide();
+            $('.login-code-main .code-pic').stop().animate({
+                'left' : '80px'
+            },300)
+        })
+
+        $('.modal-login').hide();
+        $('.mask').hide();
+
+        // 关闭弹出框
+        $('.modal-login .close').on('click', function() {
+            $('.modal-login').hide();
+            $('.mask').hide();
+            $.popup_clearInterval();
+        })
+
+    });
+})(jQuery);
+</script>
+
+<link th:href="@{/css/query/calendarNew.css}" rel="stylesheet">
+
+
+
+<!--<div dhxbox="1" style="z-index: 20000; position: fixed; left: 641.5px; top: 299px;"><img src="/images/query/loading.gif"></div>-->
+</body>
+</html>

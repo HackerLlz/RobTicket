@@ -1,0 +1,5 @@
+/*!
+ * captcha Css Library
+ * v2.0.1(2014-11-4 01:19)
+ */
+.touclick-bgimg{background-image:url(captcha.png)}.touclick-ie6-bgimg{background-image:url(captcha_ie6.gif)}.touclick{width:331px;height:210px;overflow:hidden;display:none;font-size:0;}.touclick-wrapper{position:relative;border:2px solid #e3e1de;background-color:#fff;width:313px;margin:8px}.touclick-img-par{margin-left:10px;background-repeat:no-repeat}.touclick-image{width:293px;height:190px}.touclick-wait{position:absolute}.touclick-arrow{position:absolute;display:none;font-size:0}.touclick-aleft,.touclick-aright{width:9px;height:14px}.touclick-atop,.touclick-abottom{width:14px;height:9px}.touclick-aleft{background-position:0px -68px;left:-9px}.touclick-aright{background-position:0px -82px;right:-9px}.touclick-atop{background-position:0px -50px;top:-9px}.touclick-abottom{background-position:0px -59px;bottom:-9px}.touclick-reload{cursor:pointer;width:54px;height:25px;position:absolute;left:246px;top:3px}.touclick-reload-normal{background-position:0 0px}.touclick-reload-click{background-position:0 -25px}.touclick-hov{position:absolute;background-position:0 -96px;width:27px;height:27px;font-size:0;}

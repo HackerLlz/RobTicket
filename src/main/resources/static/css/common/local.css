@@ -1,0 +1,28 @@
+/*!
+ * captcha css for touclick
+ * localcss 2014.11.15
+ */
+
+ /*leftTicket-autoSubmit*/
+ .leftTicket-autoSubmit-button-inside{
+ 	height:auto
+ }
+ .leftTicket-autoSubmit-button-float{
+ 	position:relative;
+ 	
+ }
+ /*end*/
+ /*leftTicket-login*/
+ .leftTicket-login-button-inside{
+ 	
+ }
+ .leftTicket-login-button-float{
+ 	
+ }
+ /*end*/
+ 
+ /*passengerInfo*/
+ .passengerInfo-inside{
+ 	height:auto;
+ }
+ /*end*/
