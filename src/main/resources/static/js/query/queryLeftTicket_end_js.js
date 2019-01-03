@@ -1274,6 +1274,10 @@ var queryLeftTicket_count = 10;
 var ifAlertCode = false;
 var intervalTime;
 var isInitLoad = true;
+
+var canWebBuyFlag;
+var trainNumber;
+
 (function() {
 	var a;
 	var a3 = null;
@@ -1763,27 +1767,68 @@ var isInitLoad = true;
 			b8(cw, cr[cs].queryLeftNewDTO.wz_num, "WZ_", cr[cs].queryLeftNewDTO.train_no, cr[cs].queryLeftNewDTO.yp_ex, "W1", cr[cs].queryLeftNewDTO.controlled_train_flag);
 			b8(cw, cr[cs].queryLeftNewDTO.qt_num, "QT_", cr[cs].queryLeftNewDTO.train_no, cr[cs].queryLeftNewDTO.yp_ex, "", cr[cs].queryLeftNewDTO.controlled_train_flag);
 			if ("Y" == cr[cs].queryLeftNewDTO.canWebBuy) {
-				cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" class="btn72" onclick="checkG1234(\'');
-				cw.push(cr[cs].secretStr);
-				cw.push("','");
-				cw.push(cr[cs].queryLeftNewDTO.start_time);
-				cw.push("','");
-				cw.push(cr[cs].queryLeftNewDTO.train_no);
-				cw.push("','");
-				cw.push(cr[cs].queryLeftNewDTO.from_station_telecode);
-				cw.push("','");
-				cw.push(cr[cs].queryLeftNewDTO.to_station_telecode);
-				cw.push("')\">");
-				cw.push(buttonText());
-				if (cr[cs].queryLeftNewDTO.exchange_train_flag == 1) {
-					cw.push("<i class='ico-dh'></i>")
-				}
-				cw.push("</a>");
-				cw.push("</td>")
+				// cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" class="btn72" onclick="checkG1234(\'');
+				// cw.push(cr[cs].secretStr);
+				// cw.push("','");
+				// cw.push(cr[cs].queryLeftNewDTO.start_time);
+				// cw.push("','");
+				// cw.push(cr[cs].queryLeftNewDTO.train_no);
+				// cw.push("','");
+				// cw.push(cr[cs].queryLeftNewDTO.from_station_telecode);
+				// cw.push("','");
+				// cw.push(cr[cs].queryLeftNewDTO.to_station_telecode);
+                // cw.push("',");
+                // cw.push(true);
+				// cw.push(")\">");
+				// cw.push(buttonText());
+				// if (cr[cs].queryLeftNewDTO.exchange_train_flag == 1) {
+				// 	cw.push("<i class='ico-dh'></i>")
+				// }
+				// cw.push("</a>");
+				// cw.push("</td>")
+
+                cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" style="color: red;" class="btn72" onclick="checkG1234(\'');
+                cw.push(cr[cs].secretStr);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.start_time);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.train_no);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.from_station_telecode);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.to_station_telecode);
+                cw.push("',");
+                cw.push(false);
+                cw.push(")\">");
+                cw.push("抢票");
+                if (cr[cs].queryLeftNewDTO.exchange_train_flag == 1) {
+                    cw.push("<i class='ico-dh'></i>")
+                }
+                cw.push("</a>");
+                cw.push("</td>")
 			} else {
-				cw.push('<td align="center" width="80" class="no-br">');
-				cw.push(cr[cs].buttonTextInfo);
-				cw.push("</td>")
+				// cw.push('<td align="center" width="80" class="no-br">');
+				// cw.push(cr[cs].buttonTextInfo);
+				// cw.push("</td>")
+                cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" style="color: red;" class="btn72" onclick="checkG1234(\'');
+                cw.push(cr[cs].secretStr);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.start_time);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.train_no);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.from_station_telecode);
+                cw.push("','");
+                cw.push(cr[cs].queryLeftNewDTO.to_station_telecode);
+                cw.push("',");
+                cw.push(false);
+                cw.push(")\">");
+                cw.push("抢票");
+                if (cr[cs].queryLeftNewDTO.exchange_train_flag == 1) {
+                    cw.push("<i class='ico-dh'></i>")
+                }
+                cw.push("</a>");
+                cw.push("</td>")
 			}
 			cw.push("</tr>");
 			cw.push('<tr datatran="' + cr[cs].queryLeftNewDTO.station_train_code + '" id="price_');
@@ -5856,15 +5901,6 @@ var isInitLoad = true;
 		}
 		if ("undefined" == typeof(submitForm)) {
 			var cv = "secretStr=" + cE + "&train_date=" + $("#train_date").val() + "&back_train_date=" + $("#back_train_date").val() + "&tour_flag=" + cr + "&purpose_codes=" + cl() + "&query_from_station_name=" + $("#fromStationText").val() + "&query_to_station_name=" + $("#toStationText").val() + "&" + cC
-            var orderRequestData = {
-                "secretStr": cE,
-				"trainDate": $("#train_date").val(),
-                "backTrainDate": $("#back_train_date").val(),
-                "tourFlag": cr,
-				"purposeCodes": cl(),
-                "fromStation": $("#fromStationText").val(),
-                "toStation": $("#toStationText").val()
-			};
 		} else {
 			var cs = submitForm();
 			var cD = cs.split(":::");
@@ -5889,68 +5925,89 @@ var isInitLoad = true;
 		}
 		var cC = checkusermdId != undefined ? "&_json_att=" + encodeURIComponent(checkusermdId) : "";
 
-		var orderRequestUrl = '/ticket/orderRequest';
-		$.ajax({
-			type: "post",
-			// url: ctx + "leftTicket/submitOrderRequest",
-			url: orderRequestUrl,
-            data: cv,
-			// data: JSON.stringify(cv),
-            // contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-			dataType: 'json',
-			async: false,
-			success: function(cF) {
-				if (cF.status) {
-					if (cF.data == "Y") {
-						dhtmlx.alert({
-							title: "温馨提示",
-							ok: "确定",
-							text: "您选择的列车距开车时间很近了，请确保有足够的时间抵达车站，并办理换取纸质车票、安全检查、实名制验证及检票等手续，以免耽误您的旅行。",
-							type: "alert-warn",
-							callback: function() {
-								aX(cr, train_tour_flag)
-							}
-						})
-					} else {
-						aX(cr, train_tour_flag)
-					}
-				}
-				else {
-					if (!cF.messages) {
-                        $(".mask").fadeIn();
-                        $(".login-box .login-hd-code").addClass("active").siblings().removeClass("active");
-                        $(".login-box .login-code").show().siblings().hide();
-                        $(".login-box").slide({
-                            titCell: ".login-hd li",
-                            mainCell: ".login-bd",
-                            titOnClassName: "active",
-                            trigger: "click",
-                        });
-                        $(".modal-login").css("top", ($(window).height() - $(".modal-login").height()) / 2 + $(window).scrollTop() + "px").css("left", ($(window).width() - $(".modal-login").width()) / 2 + $(window).scrollLeft() + "px").show();
-                        $.popup_initLogin(true);
-                        $(".modal-login").fadeIn();
-                        $.pop_secretStr = cs;
-                        $.pop_start_time = cr
+		if(canWebBuyFlag) {
+			// 预定订单请求
+            var orderRequestUrl = '/ticket/orderRequest';
+            $.ajax({
+                type: "post",
+                // url: ctx + "leftTicket/submitOrderRequest",
+                url: orderRequestUrl,
+                data: cv,
+                // data: JSON.stringify(cv),
+                // contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                dataType: 'json',
+                async: false,
+                success: function(cF) {
+                    if (cF.status) {
+                        if (cF.data == "Y") {
+                            dhtmlx.alert({
+                                title: "温馨提示",
+                                ok: "确定",
+                                text: "您选择的列车距开车时间很近了，请确保有足够的时间抵达车站，并办理换取纸质车票、安全检查、实名制验证及检票等手续，以免耽误您的旅行。",
+                                type: "alert-warn",
+                                callback: function() {
+                                    aX(cr, train_tour_flag)
+                                }
+                            })
+                        } else {
+                            aX(cr, train_tour_flag)
+                        }
+                    }
+                    else {
+                        if (!cF.messages) {
+                            $(".mask").fadeIn();
+                            $(".login-box .login-hd-code").addClass("active").siblings().removeClass("active");
+                            $(".login-box .login-code").show().siblings().hide();
+                            $(".login-box").slide({
+                                titCell: ".login-hd li",
+                                mainCell: ".login-bd",
+                                titOnClassName: "active",
+                                trigger: "click",
+                            });
+                            $(".modal-login").css("top", ($(window).height() - $(".modal-login").height()) / 2 + $(window).scrollTop() + "px").css("left", ($(window).width() - $(".modal-login").width()) / 2 + $(window).scrollLeft() + "px").show();
+                            $.popup_initLogin(true);
+                            $(".modal-login").fadeIn();
+                            $.pop_secretStr = cs;
+                            $.pop_start_time = cr
 
-                        // 刷新验证码
-                        $('.lgcode-refresh').unbind('click').click(function() {
-                            $('.lgcode-refresh').addClass('lgcode-refresh-click')
+                            // 刷新验证码
+                            $('.lgcode-refresh').unbind('click').click(function() {
+                                $('.lgcode-refresh').addClass('lgcode-refresh-click')
 
-                            if (popup_is_uam_login == 'Y') {
-                                $.popup_refreshPassCode(false);
-                            } else {
-                                $.popup_refreshPassCode_location(false);
-                            }
+                                if (popup_is_uam_login == 'Y') {
+                                    $.popup_refreshPassCode(false);
+                                } else {
+                                    $.popup_refreshPassCode_location(false);
+                                }
 
-                            setTimeout(function () {
-                                $('.lgcode-refresh').removeClass('lgcode-refresh-click')
-                            }, 100)
-                        })
-                        $('.lgcode-refresh').click();
-					}
-				}
-			}
-		})
+                                setTimeout(function () {
+                                    $('.lgcode-refresh').removeClass('lgcode-refresh-click')
+                                }, 100)
+                            })
+                            $('.lgcode-refresh').click();
+                        }
+                    }
+                }
+            })
+		}
+		else {
+			// 抢票
+            var robRequestUrl = '/rob/view';
+            var robRequestData = {
+                "secretStr": cE,
+                "trainDate": $("#train_date").val(),
+                "backTrainDate": $("#back_train_date").val(),
+                "tourFlag": cr,
+                "purposeCodes": cl(),
+                "fromStation": $("#fromStationText").val(),
+                "toStation": $("#toStationText").val(),
+
+                "fromStationCode":  $("#fromStation").val(),
+                "toStationCode":  $("#toStation").val(),
+                "trainNumber": trainNumber
+            };
+            otsRedirect("post", robRequestUrl, robRequestData);
+		}
 	}
 
 	function aX(cs, cr) {
@@ -8088,7 +8145,9 @@ var isInitLoad = true;
 	}
 })();
 
-function checkG1234(g, f, c, h, b) {
+function checkG1234(g, f, c, h, b, flag) {
+    canWebBuyFlag = flag;
+    trainNumber = c;
 	var a = "99999GGGGG";
 	var e = "##CCT##PPT##CPT##PXT##SBT##PBD##JOD##HPD##SHD##QTP##TSP##TJP##";
 	var d = "##CBP##DIP##JGK##ZEK##UUH##NKH##ESH##OHH##AOH##";

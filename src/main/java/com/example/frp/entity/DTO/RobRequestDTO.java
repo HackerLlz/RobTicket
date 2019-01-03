@@ -3,6 +3,7 @@ package com.example.frp.entity.DTO;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.example.frp.common.paramAlias.ParamAlias;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,13 +20,11 @@ import java.util.Date;
  * @JsonFormat(pattern="yyyy-MM-dd")
  */
 @Data
-public class LeftTicketDTO {
+public class RobRequestDTO {
     private String secretStr;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date trainDate;
+    private String trainDate;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
     private String backTrainDate;
 
     private String tourFlag;
@@ -35,4 +34,10 @@ public class LeftTicketDTO {
     private String fromStation;
 
     private String toStation;
+
+    private String fromStationCode;
+
+    private String toStationCode;
+
+    private String trainNumber;
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>抢票界面</title>
+</head>
+<body>
+<form action="/passenger/view" method="post">
+    <input type="text" name="url" value="confirmPassenger/initDc" />
+    <input type="submit" />
+</form>
+<input id="" type="text" value="" />
+
+<input id="submit" type="button" />
+
+</body>
+
+<script>
+    $('#submit').click(function () {
+        var doRobUrl = '/rob/doRob';
+        var doRobData = {
+            passengerTicketStr: getpassengerTickets(),
+            oldPassengerStr: getOldPassengers(),
+            randCode: "",
+            purpose_codes: ticketInfoForPassengerForm.purpose_codes,
+
+            key_check_isChange: ticketInfoForPassengerForm.key_check_isChange,
+            leftTicketStr: ticketInfoForPassengerForm.leftTicketStr,
+            train_location: ticketInfoForPassengerForm.train_location,
+
+            choose_seats: j(),
+            seatDetailType: h(),
+            whatsSelect: $.whatsSelect(true) ? "1" : "0"
+        };
+        $.ajax({
+            type: "POST",
+            url: doRobUrl,
+            async: false,
+            data: JSON.stringify(doRobData),
+            contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
+            dataType: "json",    // 加了data就不用再转json对象了
+            // xhrFields: {
+            //     withCredentials: true
+            // },
+            success: function (data) {
+
+            },
+            error: function () {
+            }
+        });
+    });
+</script>
+</html>

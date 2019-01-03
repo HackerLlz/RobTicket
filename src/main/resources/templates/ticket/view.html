@@ -1269,6 +1269,7 @@
 <script type="text/javascript" th:src="@{/js/query/station_name.js?station_version=1.9077}" xml:space="preserve"></script>
 <script type="text/javascript" th:src="@{/js/query/favorite_name.js}" xml:space="preserve"></script>
 <script type="text/javascript" th:src="@{/js/query/queryLeftTicket_end_js.js?scriptVersion=1.9111}" xml:space="preserve"></script>
+<script type="text/javascript" th:src="@{/js/common/myJscript.js}" xml:space="preserve"></script>
 
 <script xml:space="preserve">
     /*<![CDATA[*/
@@ -1326,26 +1327,43 @@
             }
         }
     });
+
+    //设定日期
+    var date = new Date();
+    var today = date.format("yyyy-MM-dd");
+    date.setTime(date.getTime()+24*60*60*1000);
+    var tomorrow = date.format("yyyy-MM-dd");
+    date.setTime(date.getTime()+28*24*60*60*1000);
+    var end_date = date.format("yyyy-MM-dd");
+
+
     var from_station = '';
     var from_station_name = '';
     var to_station = '';
     var to_station_name = '';
-    var trainDate = '2018-12-13';
-    var backTrainDate = '2018-12-13';
+    // var trainDate = '2018-12-13';
+    // var backTrainDate = '2018-12-13';
+    var trainDate = today;
+    var backTrainDate = tomorrow;
+
     var page_show_flag = null;
     var purposeCodeFromIndex = null;
     var roundReferTime = null;
     var studentComPerArr=['2018-06-01','2018-09-30','2018-12-01','2018-12-31','2019-01-01','2019-03-31'];
-    var studentMindate='2018-12-13';
-    var studentMaxdate='2019-01-11';
-    var otherMindate = '2018-12-13';
-    var otherMaxdate = '2019-01-11';
+
+    // 控制日历可选范围
+    var studentMindate=today;
+    var studentMaxdate=end_date;
+    var otherMindate = today;
+    var otherMaxdate = end_date;
     // 日期范围传参
     //var init_train_no = null;
-    var init_minPeriod = '2018-12-13';
-    var init_maxPeriod = '2019-01-11';
-    //var init_train_date = null;
-    //var init_back_train_date = null;
+    // var init_minPeriod = '2018-12-13';
+    // var init_maxPeriod = '2019-01-11';
+    var init_minPeriod = today;
+    var init_maxPeriod = end_date;
+    // var init_train_date = null;
+    // var init_back_train_date = null;
     var back_train_date = null;
     // 客运首页进入传参
     //var index_from_station = null;
@@ -1358,8 +1376,10 @@
     // 学生票传参，用于判断
     var stu_start_train_date = '2018-06-01 00:00:00&2018-12-01 00:00:00&2018-01-01 00:00:00';
     var stu_end_tain_date = '2018-09-30 00:00:00&2018-12-31 00:00:00&2018-03-31 00:00:00';
-    var stu_buy_date = '2018-12-13&2019-01-11';
-    var other_buy_date = '2018-12-13&2019-01-11';
+
+    // 日期选择范围（解决不在日期范围内）
+    var stu_buy_date = today + '&' + end_date;
+    var other_buy_date = today + '&' + end_date;
     // 从确认乘客信息页面返回至余票查询页面传参
     //var step_tour_flag = null;
     //var step_from_station = null;
@@ -1610,6 +1630,9 @@
         // $.popup_getConf();
         // 进入页面即查询
         $("#query_ticket").click();
+        // 选择只看G和D
+        $("#cc_train_type_btn_all .check").get(0).click();
+        $("#cc_train_type_btn_all .check").get(1).click();
         // 弹框登陆按钮点击
         $('#J-login').click(function() {
                 var userName = $('#J-userName').val()

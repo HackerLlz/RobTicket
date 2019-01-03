@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.example.frp.common.tool.HttpUtils;
+import com.example.frp.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,9 @@ public class TicketController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
     private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
     private static final String PATH = "ticket/";
-    private static String QUERY_URL = "leftTicket/queryX";
+
+    @Autowired
+    private TicketService ticketService;
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view() {
@@ -37,10 +41,7 @@ public class TicketController {
     @ResponseBody
     public String listTicket(@RequestBody String payload) {
         logger.info("开始查询车票， 入参:{}", payload);
-        String url = BASE_URL + QUERY_URL;
-        String result = HttpUtils.doGet(url, payload, false);
-        // 12306会定期更改查询url
-        changeQueryUrl(result);
+        String result = ticketService.listTicket(payload);
         return result;
     }
 
@@ -83,21 +84,10 @@ public class TicketController {
         return result;
     }
 
-    private void changeQueryUrl(String result) {
-        if (result.startsWith("{") && result.length() < 100) {
-            JSONObject jsonObject = JSON.parseObject(result);
-            if (!(Boolean)jsonObject.get("status")) {
-                // Controler用的是一个单例
-                QUERY_URL = jsonObject.getString("c_url");
-                logger.info("已改变QUERY_URL为：{}", QUERY_URL);
-            }
-        }
-    }
-
     private String changeMessages(String result) {
         if (result.startsWith("{")) {
             JSONObject jsonObject = JSON.parseObject(result);
-            if (!ObjectUtils.isEmpty(jsonObject.get("messages"))) {
+            if (!ObjectUtils.isEmpty(jsonObject.get("messages")) && jsonObject.get("messages").toString().startsWith("[\"您还有未处理的订单")) {
                 logger.info("开始改变messages：{}", jsonObject.get("messages"));
                 String[] mgs = new String[]{"您还有未处理的订单，请您到<a href=\"https://kyfw.12306.cn/otn/view/train_order.html\" target=\"_blank\">[未完成订单]</a>进行处理!"};
                 jsonObject.put("messages", mgs);

@@ -295,12 +295,18 @@ public class HttpUtils {
                 boolean first = true;
                 for (Map.Entry<String, Object> o : jsonObject.entrySet()) {
                     if (o.getValue() instanceof String) {
+                        String value = null;
+                        try {
+                            value = URLEncoder.encode((String)o.getValue(), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                         if(first){
-                            sb.append("?").append(o.getKey()).append("=").append(o.getValue());
+                            sb.append("?").append(o.getKey()).append("=").append(value);
                             first = false;
                         }
                         else {
-                            sb.append("&").append(o.getKey()).append("=").append(o.getValue());
+                            sb.append("&").append(o.getKey()).append("=").append(value);
                         }
                     }
                 }

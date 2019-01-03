@@ -2,7 +2,7 @@ package com.example.frp.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.frp.common.tool.HttpUtils;
-import com.example.frp.common.tool.StringUtils;
+import com.example.frp.common.tool.StrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -33,7 +33,7 @@ public class PassengerController {
     @RequestMapping(value = "view", method = RequestMethod.POST)
     public String view(@RequestBody String payload, Model model) {
         logger.info("开始跳转到乘客界面， 入参:{}", payload);
-        String url = StringUtils.findVlaue("url", "=", 0, null, payload);
+        String url = StrUtils.findVlaue("url", "=", 0, null, payload);
         try {
             url = BASE_URL + URLDecoder.decode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -104,7 +104,7 @@ public class PassengerController {
     }
 
     private void addValueToModel(String name, String afterName, int interval, String endStr, String result, Model model) {
-        String value = StringUtils.findVlaue(name, afterName, interval, endStr, result);
+        String value = StrUtils.findVlaue(name, afterName, interval, endStr, result);
         model.addAttribute(name, value);
         logger.info("已添加属性到Model, {}: {}", name, value);
     }
