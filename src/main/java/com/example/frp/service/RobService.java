@@ -6,4 +6,6 @@ package com.example.frp.service;
  * @create: 2019-01-02 17:55
  */
 public interface RobService {
+    Boolean doRob(String payload);
+
 }

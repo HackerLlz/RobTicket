@@ -3,7 +3,6 @@ package com.example.frp.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frp.common.tool.HttpUtils;
-import com.example.frp.controller.TicketController;
 import com.example.frp.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +26,14 @@ public class TicketServiceImpl implements TicketService {
         String result = HttpUtils.doGet(url, payload, false);
         // 12306会定期更改查询url
         changeQueryUrl(result);
+        return result;
+    }
+
+    @Override
+    public String submitOrderRequest(String payload) {
+        logger.info("提交订单请求， 入参:{}", payload);
+        String url = BASE_URL + "leftTicket/submitOrderRequest";
+        String result = HttpUtils.doPostForm(url, payload, true);
         return result;
     }
 

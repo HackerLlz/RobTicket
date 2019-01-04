@@ -103,8 +103,11 @@ public class HttpUtils {
     public static HttpServletRequest getRequest() {
         // 上传的文件参数获取不到
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = servletRequestAttributes.getRequest();
-        return request;
+        if (!ObjectUtils.isEmpty(servletRequestAttributes)) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            return request;
+        }
+        return null;
     }
 
     /**
@@ -113,8 +116,11 @@ public class HttpUtils {
      */
     public static HttpServletResponse getReponse() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletResponse response = servletRequestAttributes.getResponse();
-        return response;
+        if (!ObjectUtils.isEmpty(servletRequestAttributes)) {
+            HttpServletResponse response = servletRequestAttributes.getResponse();
+            return response;
+        }
+        return null;
     }
 
     private static String send(HttpRequestBase httpRequestBase, CloseableHttpClient httpClient, boolean withCookie) {
@@ -318,15 +324,25 @@ public class HttpUtils {
     }
 
     private static String buildCookieJson() {
-        String cookie = getRequest().getHeader("cookie");
-        return  "{\"Cookie\":\"" + cookie + "\"}";
+        HttpServletRequest request = getRequest();
+        String cookie = null;
+        if (!ObjectUtils.isEmpty(request)) {
+            cookie = request.getHeader("cookie");
+        } else {
+            cookie = ThreadLocalUtils.get();
+        }
+        cookie = "{\"Cookie\":\"" + cookie + "\"}";
+        return cookie;
     }
 
     private static void addSetCookie(CookieStore cookieStore) {
-        for (Cookie c : cookieStore.getCookies()) {
-            String setCookie = c.getName() + "=" + c.getValue() + "; Path=/; MaxAge=1800";    // path是必须的
-            getReponse().addHeader("Set-Cookie", setCookie);
-            logger.info("添加Set-Cookie：{}", setCookie);
+        HttpServletResponse response = getReponse();
+        if (!ObjectUtils.isEmpty(response)) {
+            for (Cookie c : cookieStore.getCookies()) {
+                String setCookie = c.getName() + "=" + c.getValue() + "; Path=/; MaxAge=1800";    // path是必须的
+                response.addHeader("Set-Cookie", setCookie);
+                logger.info("添加Set-Cookie：{}", setCookie);
+            }
         }
     }
 

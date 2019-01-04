@@ -58,10 +58,8 @@ public class TicketController {
     @ResponseBody
     public String submitOrderRequest(@RequestBody String payload) {
         logger.info("开始提交订单请求， 入参:{}", payload);
-        String url = BASE_URL + "leftTicket/submitOrderRequest";
-        String result = HttpUtils.doPostForm(url, payload, true);
-        result = changeMessages(result);
-        return result;
+        String result = ticketService.submitOrderRequest(payload);
+        return changeMessages(result);
     }
 
     @RequestMapping(value = "stationInfo", method = RequestMethod.POST)

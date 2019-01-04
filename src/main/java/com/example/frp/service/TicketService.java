@@ -7,4 +7,6 @@ package com.example.frp.service;
  */
 public interface TicketService {
     String listTicket(String payload);
+
+    String submitOrderRequest(String payload);
 }

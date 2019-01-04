@@ -3,8 +3,10 @@ package com.example.frp.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frp.common.tool.HttpUtils;
 import com.example.frp.common.tool.StrUtils;
+import com.example.frp.service.PassengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,9 @@ public class PassengerController {
     private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
     private static final String WEB_URL = "https://kyfw.12306.cn";
     private static final String PATH = "passenger/";
+
+    @Autowired
+    PassengerService passengerService;
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view2() {
@@ -57,8 +62,7 @@ public class PassengerController {
     @ResponseBody
     public String checkOrderInfo(@RequestBody String payload) {
         logger.info("开始验证订单信息， 入参:{}", payload);
-        String url = BASE_URL + "confirmPassenger/checkOrderInfo";
-        String result = HttpUtils.doPostForm(url, payload, true);
+        String result = passengerService.checkOrderInfo(payload);
         return result;
     }
 
@@ -78,7 +82,7 @@ public class PassengerController {
         JSONObject jsonObject = JSONObject.parseObject(payload);
         String data = jsonObject.getString("data");
         String url = WEB_URL + jsonObject.getString("url");
-        String result = HttpUtils.doPostForm(url, data, true);
+        String result = passengerService.doOrder(url, data);
         return result;
     }
 
