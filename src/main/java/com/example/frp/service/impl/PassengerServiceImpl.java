@@ -33,4 +33,12 @@ public class PassengerServiceImpl implements PassengerService {
         String result = HttpUtils.doPostForm(url, data, true);
         return result;
     }
+
+    @Override
+    public String getQueueCount(String payload) {
+        logger.info("获得队列计数， 入参:{}", payload);
+        String url = BASE_URL + "confirmPassenger/getQueueCount";
+        String result = HttpUtils.doPostForm(url, payload, true);
+        return result;
+    }
 }

@@ -309,7 +309,6 @@ var intervalProcess;
             if (y()) {
                 // 抢票
                 doRobClick();
-                unLoadGrayBackground();
                 return;
 
 
@@ -929,11 +928,15 @@ var intervalProcess;
                     train_date: new Date(orderRequestDTO.train_date.time).toString(),
                     train_no: orderRequestDTO.train_no,
                     stationTrainCode: orderRequestDTO.station_train_code,
+
                     seatType: limit_tickets[0].seat_type,
+
                     fromStationTelecode: orderRequestDTO.from_station_telecode,
                     toStationTelecode: orderRequestDTO.to_station_telecode,
                     leftTicket: ticketInfoForPassengerForm.queryLeftTicketRequestDTO.ypInfoDetail,
+
                     purpose_codes: V,
+
                     train_location: ticketInfoForPassengerForm.train_location,
                     isCheckOrderInfo: W,
                     REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken

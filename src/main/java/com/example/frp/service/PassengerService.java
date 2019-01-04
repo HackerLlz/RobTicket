@@ -1,5 +1,7 @@
 package com.example.frp.service;
 
+import org.springframework.web.bind.annotation.RequestBody;
+
 /**
  * @author: DuriaMuk
  * @description:
@@ -9,4 +11,6 @@ public interface PassengerService {
     String checkOrderInfo(String payload);
 
     String doOrder(String url,String data);
+
+    String getQueueCount(String payload);
 }

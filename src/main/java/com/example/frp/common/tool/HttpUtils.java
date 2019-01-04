@@ -164,8 +164,8 @@ public class HttpUtils {
         if (result.startsWith("{")) {
             logger.info("完成请求，result：{}", result);
         } else {
-//            logger.info("完成请求，result：html页面");
-            logger.info("完成请求，result：{}", result);
+            logger.info("完成请求，result：html页面");
+//            logger.info("完成请求，result：{}", result);
         }
         return result;
     }

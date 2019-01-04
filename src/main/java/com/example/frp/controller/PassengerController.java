@@ -70,8 +70,7 @@ public class PassengerController {
     @ResponseBody
     public String getQueueCount(@RequestBody String payload) {
         logger.info("开始获得队列计数， 入参:{}", payload);
-        String url = BASE_URL + "confirmPassenger/getQueueCount";
-        String result = HttpUtils.doPostForm(url, payload, true);
+        String result = passengerService.getQueueCount(payload);
         return result;
     }
 
