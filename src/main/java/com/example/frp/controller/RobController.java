@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/rob")
 public class RobController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
-    private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
 
     @Autowired
     RobService robService;
@@ -39,10 +38,9 @@ public class RobController {
 
     @RequestMapping(value = "doRob", method = RequestMethod.POST)
     @ResponseBody
-    public String doRob(@RequestBody String payload) throws Exception {
+    public String doRob(@RequestBody String payload){
         logger.info("开始抢票，入参：{}", payload);
         RobScheduledThreadPool.schedule(new RobTask(payload, 1));
-//        robService.doRob(payload);
         return AjaxMessage.SUCCESS;
     }
 

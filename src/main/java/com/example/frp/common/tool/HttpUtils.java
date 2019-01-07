@@ -338,12 +338,36 @@ public class HttpUtils {
     private static void addSetCookie(CookieStore cookieStore) {
         HttpServletResponse response = getReponse();
         if (!ObjectUtils.isEmpty(response)) {
-            for (Cookie c : cookieStore.getCookies()) {
-                String setCookie = c.getName() + "=" + c.getValue() + "; Path=/; MaxAge=1800";    // path是必须的
-                response.addHeader("Set-Cookie", setCookie);
-                logger.info("添加Set-Cookie：{}", setCookie);
-            }
+            setCookieInResponse(cookieStore, response);
+        } else {
+            setCookieInThreadLocal(cookieStore);
         }
+    }
+
+    private static void setCookieInResponse(CookieStore cookieStore, HttpServletResponse response) {
+        for (Cookie c : cookieStore.getCookies()) {
+            String setCookie = c.getName() + "=" + c.getValue() + "; Path=/; MaxAge=1800";    // path是必须的
+            response.addHeader("Set-Cookie", setCookie);
+            logger.info("添加Set-Cookie：{}", setCookie);
+        }
+    }
+
+    private static void setCookieInThreadLocal(CookieStore cookieStore) {
+        String cookie = ThreadLocalUtils.get();
+        for (Cookie c : cookieStore.getCookies()) {
+            if (cookie.contains(c.getName())) {
+                String oldValue = StrUtils.findVlaue(" " + c.getName(), "=", 0, ";", cookie);
+                if (oldValue == null) {
+                    oldValue = StrUtils.findVlaue(c.getName(), "=", 0, ";", cookie);
+                }
+                cookie = cookie.replaceFirst(oldValue, c.getValue());
+            } else {
+                String setCookie = "; " + c.getName() + "=" + c.getValue();
+                cookie += setCookie;
+            }
+            logger.info("添加Set-Cookie：{}={}", c.getName(), c.getValue());
+        }
+        ThreadLocalUtils.set(cookie);
     }
 
     private static HttpClientContext getContextWithCookieStore() {

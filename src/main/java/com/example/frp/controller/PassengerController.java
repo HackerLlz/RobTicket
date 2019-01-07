@@ -1,6 +1,7 @@
 package com.example.frp.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.frp.common.constant.UrlConstant;
 import com.example.frp.common.tool.HttpUtils;
 import com.example.frp.common.tool.StrUtils;
 import com.example.frp.service.PassengerService;
@@ -23,8 +24,6 @@ import java.net.URLDecoder;
 @RequestMapping("/passenger")
 public class PassengerController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
-    private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
-    private static final String WEB_URL = "https://kyfw.12306.cn";
     private static final String PATH = "passenger/";
 
     @Autowired
@@ -40,7 +39,7 @@ public class PassengerController {
         logger.info("开始跳转到乘客界面， 入参:{}", payload);
         String url = StrUtils.findVlaue("url", "=", 0, null, payload);
         try {
-            url = BASE_URL + URLDecoder.decode(url, "UTF-8");
+            url = UrlConstant.OTN_URL + URLDecoder.decode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -53,7 +52,7 @@ public class PassengerController {
     @ResponseBody
     public String passengerInfo() {
         logger.info("开始获得乘客信息， 入参:{}");
-        String url = BASE_URL + "confirmPassenger/getPassengerDTOs";
+        String url = UrlConstant.OTN_URL + "confirmPassenger/getPassengerDTOs";
         String result = HttpUtils.doPostForm(url, null, true);
         return result;
     }
@@ -80,7 +79,7 @@ public class PassengerController {
         logger.info("开始确认下单， 入参:{}", payload);
         JSONObject jsonObject = JSONObject.parseObject(payload);
         String data = jsonObject.getString("data");
-        String url = WEB_URL + jsonObject.getString("url");
+        String url = UrlConstant.OTN_URL + jsonObject.getString("url");
         String result = passengerService.doOrder(url, data);
         return result;
     }
@@ -89,7 +88,7 @@ public class PassengerController {
     @ResponseBody
     public String queryOrderWaitTime(@RequestBody String payload) {
         logger.info("开始查询订单等待时间， 入参:{}", payload);
-        String url = BASE_URL + "confirmPassenger/queryOrderWaitTime";
+        String url = UrlConstant.OTN_URL + "confirmPassenger/queryOrderWaitTime";
         String result = HttpUtils.doPostForm(url, payload, true);
         return result;
     }

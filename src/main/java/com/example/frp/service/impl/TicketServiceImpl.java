@@ -2,6 +2,7 @@ package com.example.frp.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.frp.common.constant.UrlConstant;
 import com.example.frp.common.tool.HttpUtils;
 import com.example.frp.service.TicketService;
 import org.slf4j.Logger;
@@ -16,13 +17,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketServiceImpl implements TicketService {
     private static final Logger logger = LoggerFactory.getLogger(TicketServiceImpl.class);
-    private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
     private static String QUERY_URL = "leftTicket/queryZ";
+
+    @Override
+    public String checkUser() {
+        logger.info("验证用户， 入参:{}");
+        String url = UrlConstant.OTN_URL + "login/checkUser";
+        String result = HttpUtils.doPostForm(url, null, true);
+        return result;
+    }
 
     @Override
     public String listTicket(String payload) {
         logger.info("查询车票， 入参:{}", payload);
-        String url = BASE_URL + QUERY_URL;
+        String url = UrlConstant.OTN_URL + QUERY_URL;
         String result = HttpUtils.doGet(url, payload, false);
         // 12306会定期更改查询url
         changeQueryUrl(result);
@@ -32,7 +40,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public String submitOrderRequest(String payload) {
         logger.info("提交订单请求， 入参:{}", payload);
-        String url = BASE_URL + "leftTicket/submitOrderRequest";
+        String url = UrlConstant.OTN_URL + "leftTicket/submitOrderRequest";
         String result = HttpUtils.doPostForm(url, payload, true);
         return result;
     }

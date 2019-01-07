@@ -8,13 +8,19 @@ package com.example.frp.common.tool;
 public class StrUtils {
     public static String findVlaue(String name, String afterName, int interval, String endStr, String str) {
         String queryName = name + afterName;
-        int start = str.indexOf(queryName) + queryName.length() + interval;
+        int queryIndex = str.indexOf(queryName);
+        if (queryIndex < 0) {
+            return null;
+        }
+        int start = queryIndex + queryName.length() + interval;
         if (endStr != null) {
             int end = str.indexOf(endStr, start);
-            return str.substring(start, end);
-        } else {
-            return str.substring(start);
+            if  (end  > 0) {
+                // start和end若为负数会变为0
+                return str.substring(start, end);
+            }
         }
+        return str.substring(start);
     }
 
     public static String reverseFindVlaue(String name, String beforeName, int interval, String beginStr, String str) {
@@ -27,8 +33,7 @@ public class StrUtils {
             String subStr = str.substring(0, end);
             int start = subStr.lastIndexOf(beginStr) + 1;
             return str.substring(start, end);
-        } else {
-            return str.substring(0, end);
         }
+        return str.substring(0, end);
     }
 }

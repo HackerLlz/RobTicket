@@ -2,14 +2,13 @@ package com.example.frp.common.schedule;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.frp.common.tool.ApplicationContextUtils;
-import com.example.frp.common.tool.HttpUtils;
-import com.example.frp.common.tool.StrUtils;
-import com.example.frp.common.tool.ThreadLocalUtils;
+import com.example.frp.common.tool.*;
 import com.example.frp.service.RobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -53,22 +52,12 @@ public class RobTask implements Runnable{
     }
 
     @Override
-    public void run() {
+    public void run(){
         checkSeatType();
         changSeatType();
         ThreadLocalUtils.set(cookie);
-        logger.info("抢票车次：{}", trainNumber);
-        Boolean isRob = false;
-        try{
-            isRob = robService.doRob(payload);
-        }catch (Exception e) {
-            e.printStackTrace();
-            cancelTask();
-            RobScheduledThreadPool.schedule(this);
-        }
-        if (isRob) {
-            cancelTask();
-        }
+        doRob();
+        cookie = ThreadLocalUtils.get();
     }
 
     public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
@@ -82,8 +71,8 @@ public class RobTask implements Runnable{
     private void checkSeatType() {
         if (firstFlag) {
             JSONObject jsonObject = JSON.parseObject(payload);
-            seatType = jsonObject.get("passengerTicketStr").toString().substring(0, 3);
-            JSONObject robRequestData = JSON.parseObject(JSON.toJSONString(jsonObject.get("robRequestData")));
+            seatType = jsonObject.getString("passengerTicketStr").substring(0, 3);
+            JSONObject robRequestData = jsonObject.getJSONObject("robRequestData");
             trainNumber = robRequestData.getString("trainNumber");
             if ("all".equals(seatType)) {
                 firstFlag = false;
@@ -108,8 +97,30 @@ public class RobTask implements Runnable{
             if (seatTypeNum > 2) {
                 seatTypeNum = 0;
             }
-            logger.info("改变席别，编号：{}", seatType);
+            logger.info("已改变席别，编号：{}", seatType);
         }
+    }
+
+    private void doRob() {
+        logger.info("抢票车次：{}", trainNumber);
+        Boolean isRob = false;
+        try{
+            isRob = robService.doRob(payload);
+        }catch (Exception e) {
+            // 如空指针等错误会被Future截取，在这里捕获错误，并重置任务
+            e.printStackTrace();
+            resetTask();
+        }
+        if (isRob) {
+            cancelTask();
+            sendMail();
+        }
+    }
+
+    private  void resetTask() {
+        cookie = ThreadLocalUtils.get();
+        cancelTask();
+        RobScheduledThreadPool.schedule(this);
     }
 
     private void cancelTask() {
@@ -117,10 +128,22 @@ public class RobTask implements Runnable{
         int cancelTimes = 0;
         while (!isCancel) {
             if (scheduledFuture != null) {
-                isCancel = scheduledFuture.cancel(true);
-                logger.info("取消抢票任务失败 X {}", ++cancelTimes);
+                isCancel = scheduledFuture.cancel(false);
+                logger.info("取消抢票任务失败 X {}", cancelTimes ++);
             }
         }
         logger.info("取消抢票任务成功");
+    }
+
+    private void sendMail(){
+        try {
+            MailSendUtils.sendHtmlMessage("1174827250@qq.com", "抢票成功", "恭喜您！抢票成功");
+        } catch (MessagingException e) {
+            logger.info("邮件发送失败：{}", e.getMessage());
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            logger.info("邮件发送失败：{}", e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

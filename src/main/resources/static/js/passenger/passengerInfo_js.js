@@ -511,21 +511,21 @@ var intervalProcess;
                 Y.roomType = W
             }
             if (V == ticket_submit_order.tour_flag.dc) {
-                X = ctx + "confirmPassenger/confirmSingleForQueue";
+                X = "confirmPassenger/confirmSingleForQueue";
                 Y.dwAll = "N";
                 if ($("#chooseAllDW")[0] && $("#chooseAllDW").is(":checked")) {
                     Y.dwAll = "Y"
                 }
             } else {
                 if (V == ticket_submit_order.tour_flag.wc) {
-                    X = ctx + "confirmPassenger/confirmGoForQueue"
+                    X = "confirmPassenger/confirmGoForQueue"
                 } else {
                     if (V == ticket_submit_order.tour_flag.fc) {
-                        X = ctx + "confirmPassenger/confirmBackForQueue";
+                        X = "confirmPassenger/confirmBackForQueue";
                         Y.fczk = $("#fczk").is(":checked") ? "Y" : "N"
                     } else {
                         if (V == ticket_submit_order.tour_flag.gc) {
-                            X = ctx + "confirmPassenger/confirmResignForQueue"
+                            X = "confirmPassenger/confirmResignForQueue"
                         } else {
                             l("订票失败!", true, "原因： 旅程形式<span style='color:red'>" + V + "</sapn>为非法的旅程方式", true, "lose");
                             return

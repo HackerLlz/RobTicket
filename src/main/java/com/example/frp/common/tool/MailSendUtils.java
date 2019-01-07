@@ -37,6 +37,7 @@ public class MailSendUtils {
 
     public static void sendHtmlMessage(String to, String subject, String content)
                     throws MessagingException, UnsupportedEncodingException {
+        logger.info("开始发送邮件");
         String host = properties.getProperty("host");
         String from = properties.getProperty("from");
         String pwd = properties.getProperty("pwd");

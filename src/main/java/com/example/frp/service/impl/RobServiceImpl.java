@@ -2,10 +2,11 @@ package com.example.frp.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.frp.common.constant.UrlConstant;
 import com.example.frp.common.tool.HttpUtils;
-import com.example.frp.common.tool.MailSendUtils;
 import com.example.frp.common.tool.StrUtils;
 import com.example.frp.entity.DTO.RobRequestDTO;
+import com.example.frp.service.LoginService;
 import com.example.frp.service.PassengerService;
 import com.example.frp.service.RobService;
 import com.example.frp.service.TicketService;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
@@ -28,7 +28,6 @@ import java.util.*;
 @Service("robService")
 public class RobServiceImpl implements RobService {
     private static final Logger logger = LoggerFactory.getLogger(RobServiceImpl.class);
-    private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
 
     @Autowired
     private TicketService ticketService;
@@ -36,37 +35,40 @@ public class RobServiceImpl implements RobService {
     @Autowired
     PassengerService passengerService;
 
-    public Boolean doRob(String payload) throws Exception{
-        logger.info("尝试抢票，入参：{}", payload);
-        JSONObject jsonObject = JSON.parseObject(payload);
-        RobRequestDTO robRequestDTO = JSON.parseObject(JSON.toJSONString(jsonObject.get("robRequestData")), RobRequestDTO.class);
+    @Autowired
+    LoginService loginService;
 
-        String queryResult = ticketService.listTicket(buildQueryData(robRequestDTO));
-        String secretStr = findSecretStr(robRequestDTO.getTrainNumber(), queryResult);
-        if (!StringUtils.isEmpty(secretStr)) {
-            robRequestDTO.setSecretStr(secretStr);
-            boolean isSubmit = submitOrderRequest(buildOrderRequestData(robRequestDTO));
-            if (isSubmit) {
-                Map<String, String> orderParamsMap = getOrderParamsMap();
-                if (orderParamsMap == null) {
-                    logger.info("抢票失败：订单参数获取失败");
-                    return false;
-                }
-                boolean isCheck = checkOrder(buildCheckOrderData(jsonObject, orderParamsMap));
-                if (isCheck) {
-                    boolean robNoSeat = (Boolean)jsonObject.get("robNoSeat");
-                    if (!robNoSeat) {
-                        boolean isSeatAvailable =  checkSeatAvailable(buildQueueCountData(jsonObject, orderParamsMap));
-                        if (!isSeatAvailable) {
-                            logger.info("抢票失败：余票不足（不包括无座）");
-                            return false;
+    public Boolean doRob(String payload){
+        logger.info("尝试抢票，入参：{}", payload);
+        boolean isLogin = keepLogin();
+        if (isLogin) {
+            JSONObject jsonObject = JSON.parseObject(payload);
+            RobRequestDTO robRequestDTO = JSON.parseObject(jsonObject.getString("robRequestData"), RobRequestDTO.class);
+
+            String queryResult = ticketService.listTicket(buildQueryData(robRequestDTO));
+            String secretStr = findSecretStr(robRequestDTO.getTrainNumber(), queryResult);
+            if (!StringUtils.isEmpty(secretStr)) {
+                robRequestDTO.setSecretStr(secretStr);
+                boolean isSubmit = submitOrderRequest(buildOrderRequestData(robRequestDTO));
+                if (isSubmit) {
+                    Map<String, String> orderParamsMap = getOrderParamsMap();
+                    if (orderParamsMap != null) {
+                        boolean isCheck = checkOrder(buildCheckOrderData(jsonObject, orderParamsMap));
+                        if (isCheck) {
+                            boolean robNoSeat = jsonObject.getBoolean("robNoSeat");
+                            if (!robNoSeat) {
+                                boolean isSeatAvailable =  checkSeatAvailable(buildQueueCountData(jsonObject, orderParamsMap));
+                                if (!isSeatAvailable) {
+                                    logger.info("抢票失败");
+                                    return false;
+                                }
+                            }
+//                            boolean isOrder = doOrder(buildDoOrderData(jsonObject, orderParamsMap));
+//                            if (isOrder) {
+//                                logger.info("抢票成功");
+//                                return true;
+//                            }
                         }
-                    }
-                    boolean isOrder = doOrder(buildDoOrderData(jsonObject, orderParamsMap));
-                    if (isOrder) {
-                        logger.info("抢票成功，发送邮件");
-                        sendMail();
-                        return true;
                     }
                 }
             }
@@ -76,6 +78,24 @@ public class RobServiceImpl implements RobService {
     }
 
     /*---------------------------------------------------START: 抢票流程------------------------------------------------------*/
+    private Boolean keepLogin() {
+        String payload = "{\"appid\": \"otn\"}";
+        String result = loginService.uamtk(payload);
+        if (result.startsWith("{")) {
+            JSONObject jsonObject = JSON.parseObject(result);
+            if (jsonObject.getInteger("result_code") == 0) {
+                String tk = jsonObject.getString("newapptk");
+                payload = "{\"tk\":\"" + tk + "\"}";
+                result = loginService.uamtkClient(payload);
+                if (result.startsWith("{")) {
+                    return true;
+                }
+            }
+        }
+        logger.info("保持登陆失败");
+        return false;
+    }
+
     private String findSecretStr(String trainNumber, String result) {
         String secretStr = null;
         secretStr = StrUtils.reverseFindVlaue(trainNumber, "|预订|", 0, "\"", result);
@@ -89,22 +109,27 @@ public class RobServiceImpl implements RobService {
 
     private boolean submitOrderRequest(String data){
         String result = ticketService.submitOrderRequest(data);
-        if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).get("messages").toString())) {
+        if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).getString("messages"))) {
             return true;
         }
+        logger.info("提交订单请求失败");
         return false;
     }
 
     private Map<String, String> getOrderParamsMap() {
         logger.info("获取订单参数");
-        String url = BASE_URL + "confirmPassenger/initDc";
+        String url = UrlConstant.OTN_URL + "confirmPassenger/initDc";
         String result = HttpUtils.doPostForm(url, null, true);
-        return buildOrderParamsMap(result);
+        Map<String, String> map = buildOrderParamsMap(result);
+        if (map == null) {
+            logger.info("订单参数获取失败");
+        }
+        return map;
     }
 
     private boolean checkOrder(String checkOrderData) {
         String result = passengerService.checkOrderInfo(checkOrderData);
-        if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).get("messages").toString())) {
+        if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).getString("messages"))) {
             return true;
         }
         return false;
@@ -112,30 +137,29 @@ public class RobServiceImpl implements RobService {
 
     private boolean checkSeatAvailable(String queueCountData) {
         String result = passengerService.getQueueCount(queueCountData);
-        if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).get("messages").toString())) {
-            String ticket = (String)JSON.parseObject(JSON.toJSONString(JSON.parseObject(result).get("data"))).get("ticket");
+        JSONObject resultJson = JSON.parseObject(result);
+        if (result.startsWith("{") && "[]".equals(resultJson.getString("messages"))) {
+            String ticket = resultJson.getJSONObject("data").getString("ticket");
             if (!"0".equals(ticket.split(",")[0])) {
                 return true;
             }
         }
+        logger.info("余票不足（不包括无座）");
         return false;
     }
 
     private boolean doOrder(String data) {
         String url = "confirmPassenger/confirmSingleForQueue";
         String result = passengerService.doOrder(url, data);
-        if (result.startsWith("{") && "{\"submitStatus\":true}".equals(JSON.parseObject(result).get("data").toString())) {
+        if (result.startsWith("{") && "{\"submitStatus\":true}".equals(JSON.parseObject(result).getString("data"))) {
             return true;
         }
+        logger.info("确认下单失败");
         return false;
-    }
-
-    private void sendMail() throws Exception{
-        MailSendUtils.sendHtmlMessage("1174827250@qq.com", "抢票成功", "恭喜您！抢票成功");
     }
     /*---------------------------------------------------END: 抢票流程--------------------------------------------------------*/
 
-    /*---------------------------------------------------START: 建立数据------------------------------------------------------*/
+    /*---------------------------------------------------START: 组装数据------------------------------------------------------*/
     private String buildQueryData(RobRequestDTO robRequestDTO) {
         JSONObject linkJson = new JSONObject(new LinkedHashMap<>());
         linkJson.put("leftTicketDTO.train_date", robRequestDTO.getTrainDate());
@@ -172,7 +196,7 @@ public class RobServiceImpl implements RobService {
     }
 
     private String buildCheckOrderData(JSONObject payloadJson, Map<String, String> orderParamsMap) {
-        JSONObject checkOrderJson = JSON.parseObject(JSON.toJSONString(payloadJson.get("checkOrderData")));
+        JSONObject checkOrderJson = payloadJson.getJSONObject("checkOrderData");
         JSONObject ticketFormJson = JSON.parseObject(orderParamsMap.get("ticketInfoForPassengerForm"));
         JSONObject jsonObject = new JSONObject();
         putToJsonObject(jsonObject, checkOrderJson, "cancel_flag");
@@ -194,9 +218,9 @@ public class RobServiceImpl implements RobService {
     private String buildQueueCountData(JSONObject payloadJson, Map<String, String> orderParamsMap) {
         JSONObject ticketFormJson = JSON.parseObject(orderParamsMap.get("ticketInfoForPassengerForm"));
         JSONObject orderRequestJson = JSON.parseObject(orderParamsMap.get("orderRequestDTO"));
-        JSONObject queueCountJson = JSON.parseObject(JSON.toJSONString(payloadJson.get("queueCountData")));
+        JSONObject queueCountJson = payloadJson.getJSONObject("queueCountData");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("seatType", ((String) payloadJson.get("passengerTicketStr")).substring(0, 1));
+        jsonObject.put("seatType", payloadJson.getString("passengerTicketStr").substring(0, 1));
 //        putToJsonObject(jsonObject, queueCountJson, "seatType");
 //        putToJsonObject(jsonObject, queueCountJson, "_json_att");
 //        putToJsonObject(jsonObject, queueCountJson, "isCheckOrderInfo");
@@ -206,7 +230,7 @@ public class RobServiceImpl implements RobService {
         jsonObject.put("stationTrainCode", orderRequestJson.get("station_train_code"));
         jsonObject.put("fromStationTelecode", orderRequestJson.get("from_station_telecode"));
         jsonObject.put("toStationTelecode", orderRequestJson.get("to_station_telecode"));
-        Date date = new Date((Long) JSON.parseObject(JSON.toJSONString(orderRequestJson.get("train_date"))).get("time"));
+        Date date = new Date(orderRequestJson.getJSONObject("train_date").getLong("time"));
         jsonObject.put("train_date", date.toString());
 
         putToJsonObject(jsonObject, ticketFormJson, "purpose_codes");
@@ -235,7 +259,7 @@ public class RobServiceImpl implements RobService {
     }
 
     private void putToJsonObject(JSONObject jsonObject, JSONObject json, String name) {
-        String value = (String)json.get(name);
+        String value = json.getString(name);
         jsonObject.put(name, value);
     }
 
@@ -243,7 +267,7 @@ public class RobServiceImpl implements RobService {
         String value = StrUtils.findVlaue(name, afterName, interval, endStr, result);
         logger.info("已获得订单参数{}:{}", name, value);
         map.put(name, value);
-        return (value.startsWith("{") || value.startsWith("["))? true: false;
+        return value != null?true: false;
     }
-    /*---------------------------------------------------END: 建立数据--------------------------------------------------------*/
+    /*---------------------------------------------------END: 组装数据--------------------------------------------------------*/
 }

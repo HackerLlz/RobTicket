@@ -1,5 +1,6 @@
 package com.example.frp.controller;
 
+import com.example.frp.common.constant.UrlConstant;
 import com.example.frp.common.tool.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
-    private static final String BASE_URL = "https://kyfw.12306.cn/otn/";
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view() {
@@ -26,7 +26,7 @@ public class UserController {
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public String logout() {
         logger.info("开始注销用户，入参：{}");
-        String url = BASE_URL + "login/loginOut";
+        String url = UrlConstant.OTN_URL + "login/loginOut";
         HttpUtils.doPostForm(url, null, true);
         return "redirect:/login/view";
     }
