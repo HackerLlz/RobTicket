@@ -20,30 +20,16 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class RobTask implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(RobTask.class);
-    private static final List<String> seatTypeGD = Arrays.asList("O", "M", "9");
-    private static final List<String> seatTypeListOther = Arrays.asList("1", "3", "4");
 
     private String payload;
 
     private String cookie;
-
-    private String trainNumber;
 
     private RobService robService = (RobService)ApplicationContextUtils.getBean("robService");
 
     private ScheduledFuture<?> scheduledFuture;
 
     private Long period;
-
-    private String seatType;
-
-    private Integer seatTypeNum = 0;
-
-    private Boolean firstFlag = true;
-
-    private Boolean isAllSeatType = false;
-
-    private List<String> seatTypeList;
 
     public RobTask(String payload, long period) {
         this.payload = payload;
@@ -53,8 +39,6 @@ public class RobTask implements Runnable{
 
     @Override
     public void run(){
-        checkSeatType();
-        changSeatType();
         ThreadLocalUtils.set(cookie);
         doRob();
         cookie = ThreadLocalUtils.get();
@@ -68,41 +52,7 @@ public class RobTask implements Runnable{
         return period;
     }
 
-    private void checkSeatType() {
-        if (firstFlag) {
-            JSONObject jsonObject = JSON.parseObject(payload);
-            seatType = jsonObject.getString("passengerTicketStr").substring(0, 3);
-            JSONObject robRequestData = jsonObject.getJSONObject("robRequestData");
-            trainNumber = robRequestData.getString("trainNumber");
-            if ("all".equals(seatType)) {
-                firstFlag = false;
-                isAllSeatType = true;
-                chooseSeatTypeList();
-            }
-        }
-    }
-
-    private void chooseSeatTypeList() {
-        if (trainNumber.contains("G") || trainNumber.contains("D")) {
-            seatTypeList = seatTypeGD;
-        } else {
-            seatTypeList = seatTypeListOther;
-        }
-    }
-
-    private void changSeatType() {
-        if (isAllSeatType) {
-            seatType = seatTypeList.get(seatTypeNum ++);
-            payload = payload.replaceFirst(StrUtils.findVlaue("passengerTicketStr", "\":\"", 0, ",", payload), seatType);
-            if (seatTypeNum > 2) {
-                seatTypeNum = 0;
-            }
-            logger.info("已改变席别，编号：{}", seatType);
-        }
-    }
-
     private void doRob() {
-        logger.info("抢票车次：{}", trainNumber);
         Boolean isRob = false;
         try{
             isRob = robService.doRob(payload);

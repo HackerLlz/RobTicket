@@ -1034,7 +1034,7 @@
     <!--</div>-->
         <!--<div class="lay-bd">-->
             <!--<p class="t-tit" id="ticket_tit_id">-->
-                <!--&lt;!&ndash;<strong class="mr5"><span th:text="${{leftTicketDTO.trainDate}}"/> （周一）</strong>&ndash;&gt;-->
+                <!--&lt;!&ndash;<strong class="mr5"><span th:text="${{leftTicketDTO.TrainDate}}"/> （周一）</strong>&ndash;&gt;-->
                 <!--&lt;!&ndash;<strong class="ml5">G44</strong>&ndash;&gt;-->
                 <!--&lt;!&ndash;次&ndash;&gt;-->
                 <!--&lt;!&ndash;<strong class="ml5" th:text="${leftTicketDTO.fromStation}"></strong>&ndash;&gt;-->
@@ -1446,15 +1446,22 @@ function doRob() {
     var checkOrderData = {
         cancel_flag: "2",
         bed_level_order_num: "000000000000000000000000000000",
-        // passengerTicketStr: passengerTicketStr(),
-        // oldPassengerStr: oldPassengerStr(),
-        // tour_flag: ticketInfoForPassengerForm.tour_flag,
+        // 席别全部根据这个来
+        passengerTicketStr: passengerTicketStr(),
+        oldPassengerStr: oldPassengerStr(),
         randCode: $("#randCode").val(),
         whatsSelect: $.whatsSelect(true) ? "1" : "0",
         _json_att: "",
         REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken
+
+        // tour_flag: ticketInfoForPassengerForm.tour_flag
     };
     var queueCountData = {
+        seatType: limit_tickets[0].seat_type
+        // _json_att: "",
+        // REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken
+        // isCheckOrderInfo: "Y",
+
         // train_date: new Date(orderRequestDTO.train_date.time).toString(),
         // train_no: orderRequestDTO.train_no,
         // stationTrainCode: orderRequestDTO.station_train_code,
@@ -1463,36 +1470,36 @@ function doRob() {
 
         // leftTicket: ticketInfoForPassengerForm.leftTicket,
         // purpose_codes: ticketInfoForPassengerForm.purpose_codes,
-        // train_location: ticketInfoForPassengerForm.train_location,
-
-        // seatType: limit_tickets[0].seat_type,
-        _json_att: "",
-        REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken
-        // isCheckOrderInfo: "Y",
+        // train_location: ticketInfoForPassengerForm.train_location
     };
-    var doRobData = {
-        // 选择全部坐席时统一用这个来更换座位类型
+    var doOrderData = {
         passengerTicketStr: passengerTicketStr(),
         oldPassengerStr: oldPassengerStr(),
         randCode: $("#randCode").val(),
+        seatDetailType: seatDetailType(),
+        whatsSelect: $.whatsSelect(true) ? "1" : "0",
+        roomType: "00",
+        dwAll: "N",
+        // choose_seats: choose_seats()
+        choose_seats: "1F"
 
         // purpose_codes: ticketInfoForPassengerForm.purpose_codes,
         // key_check_isChange: ticketInfoForPassengerForm.key_check_isChange,
         // leftTicketStr: ticketInfoForPassengerForm.leftTicketStr,
         // train_location: ticketInfoForPassengerForm.train_location,
+    };
+    var RobParamsData = {
+        "robNoSeat": ($("#robNoSeat").get(0).checked)? true: false
 
-        // choose_seats: choose_seats(),
-        choose_seats: "1F",
-        seatDetailType: seatDetailType(),
-        whatsSelect: $.whatsSelect(true) ? "1" : "0",
 
-        roomType: "00",
-        dwAll: "N",
 
+    };
+    var doRobData = {
         "robRequestData": robRequestData,
         "checkOrderData": checkOrderData,
         "queueCountData": queueCountData,
-        "robNoSeat": ($("#robNoSeat").get(0).checked)? true: false
+        "doOrderData": doOrderData,
+        "robParamsData": RobParamsData
     };
     $.ajax({
         type: "POST",
