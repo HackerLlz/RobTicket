@@ -1,7 +1,6 @@
 package com.example.frp.entity.DTO.robProcess;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.example.frp.entity.DTO.orderSubmitParams.TrainDate;
 import lombok.Data;
 
 /**
@@ -15,7 +14,7 @@ public class OrderSubmitDTO {
     private String secretStr;
 
     @JSONField(name = "train_date")
-    private TrainDate trainDate;
+    private String trainDate;
 
     @JSONField(name = "back_train_date")
     private String backTrainDate;

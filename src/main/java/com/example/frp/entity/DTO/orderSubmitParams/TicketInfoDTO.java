@@ -15,9 +15,6 @@ public class TicketInfoDTO {
     @JSONField(name = "tour_flag")
     private String tourFlag;
 
-    @JSONField(name = "leftTicket")
-    private String leftTicket;
-
     @JSONField(name = "leftTicketStr")
     private String leftTicketStr;
 

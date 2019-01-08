@@ -324,24 +324,29 @@
     </div>
     <!--公告 结束-->
     <!--车票搜索框 开始-->
-    <div class="sear-box quick-sear-box"><form id="queryLeftForm" method="get" enctype="application/x-www-form-urlencoded"><div class="dfc" id="dfc"><ul><li><input name="singleRoundType" type="radio" id="dc" class="radio" checked="checked" value="dc">
-        <label for="dc" id="dc_label" class="cursor">单程</label>
-    </li>
-        <li><input name="singleRoundType" type="radio" id="wf" class="radio" value="wc">
-            <label for="wf" id="wf_label" class="cursor">往返</label>
-        </li>
-    </ul>
-    </div>
-        <div class="s-info" id="place_area"><ul><li><span class="label"><label id="fromStationText_label">出发地</label>
-</span>
-            <div class="inp-w"><input id="fromStation" type="hidden" value="HZH" name="leftTicketDTO.from_station">
-                <input type="text" id="fromStationText" class="inp-txt inp_selected" value="" name="leftTicketDTO.from_station_name">
-                <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
+    <div class="sear-box quick-sear-box">
+        <form id="queryLeftForm" method="get" enctype="application/x-www-form-urlencoded">
+            <div class="dfc" id="dfc">
+            <ul>
+                <li><input name="singleRoundType" type="radio" id="dc" class="radio" checked="checked" value="dc">
+                    <label for="dc" id="dc_label" class="cursor">单程</label>
+                </li>
+                <li><input name="singleRoundType" type="radio" id="wf" class="radio" value="wc">
+                    <label for="wf" id="wf_label" class="cursor">往返</label>
+                </li>
+            </ul>
             </div>
-        </li>
+        <div class="s-info" id="place_area">
+            <ul>
+                <li>
+                    <span class="label"><label id="fromStationText_label">出发地</label></span>
+                    <div class="inp-w"><input id="fromStation" type="hidden" value="HZH" name="leftTicketDTO.from_station">
+                        <input type="text" id="fromStationText" class="inp-txt inp_selected" value="" name="leftTicketDTO.from_station_name">
+                        <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
+                    </div>
+                </li>
             <li class="i-change i-change2" id="change_station" style="background-position: -67px -96px; cursor: pointer;"></li>
-            <li><span class="label"><label id="toStationText_label"> 目的地</label>
-</span>
+            <li><span class="label"><label id="toStationText_label"> 目的地</label></span>
                 <div class="inp-w"><input id="toStation" type="hidden" value="" name="leftTicketDTO.to_station">
                     <input type="text" id="toStationText" class="inp-txt inp_selected" value="" name="leftTicketDTO.to_station_name">
                     <span class="i-city" id="toStation_icon_image" style="cursor: pointer;"></span>
@@ -376,10 +381,14 @@
                 <label id="sf2_label" for="sf2" class="cursor">学生</label>
             </li>
         </ul>
-            <div class="btn-area"><a href="javascript:" id="query_ticket" class="btn92s" shape="rect">查询</a>
-
+            <div class="btn-area">
+                <a href="javascript:" id="query_ticket" class="btn92s" shape="rect">查询</a>
             </div>
         </div>
+            <!--抢票神器入口-->
+            <div class="btn-area" style="position: fixed; top: 130px; right: -60px;">
+                <a href="javascript:" id="robArtifact" class="btn92s" shape="rect">抢票神器</a>
+            </div>
     </form>
     </div>
     <!--车票搜索框 开始-->
@@ -1272,6 +1281,13 @@
 <script type="text/javascript" th:src="@{/js/common/myJscript.js}" xml:space="preserve"></script>
 
 <script xml:space="preserve">
+    // 抢票神器入口
+    $("#robArtifact").bind("click", function(){
+        // submitOrderRequest();
+        window.location.href = "/rob/view";
+    });
+
+
     /*<![CDATA[*/
     //为了国际化，需要定义后台获取的字符串
     $.views.helpers({

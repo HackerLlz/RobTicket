@@ -3,7 +3,7 @@ package com.example.frp.controller;
 import com.example.frp.common.constant.AjaxMessage;
 import com.example.frp.common.schedule.RobScheduledThreadPool;
 import com.example.frp.common.schedule.RobTask;
-import com.example.frp.entity.DTO.RobRequestDTO;
+import com.example.frp.entity.DTO.robProcess.RobParamsDTO;
 import com.example.frp.service.RobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +28,16 @@ public class RobController {
     @Autowired
     RobService robService;
 
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public String view() {
+        logger.info("开始跳转到抢票界面");
+        return "rob/view";
+    }
+
     @RequestMapping(value = "view", method = RequestMethod.POST)
-    public String view(RobRequestDTO robRequestDTO, Model model) {
-        logger.info("开始跳转到抢票界面，入参：{}", robRequestDTO.toString());
-        model.addAttribute("isGD", isGD(robRequestDTO));
-        model.addAttribute("robRequestData", robRequestDTO);
+    public String view(RobParamsDTO robParamsDTO, Model model) {
+        logger.info("开始跳转到抢票界面，入参：{}", robParamsDTO.toString());
+        model.addAttribute("robParamsDTO", robParamsDTO);
         return "rob/view";
     }
 
@@ -42,10 +47,5 @@ public class RobController {
         logger.info("开始抢票，入参：{}", payload);
         RobScheduledThreadPool.schedule(new RobTask(payload, 1));
         return AjaxMessage.SUCCESS;
-    }
-
-    private Boolean isGD(RobRequestDTO robRequestDTO) {
-        String trainNumber = robRequestDTO.getTrainNumber();
-        return (trainNumber.contains("G") || trainNumber.contains("D"))? true: false;
     }
 }

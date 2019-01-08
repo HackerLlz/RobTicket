@@ -42,4 +42,7 @@ public class QueueCountDTO {
     @JSONField(name = "train_location")
     private String trainLocation;
     /*---------------------------------------------------END: TicketInfoDTO--------------------------------------------------------*/
+
+    @JSONField(name = "REPEAT_SUBMIT_TOKEN")
+    private String globalRepeatSubmitToken;
 }

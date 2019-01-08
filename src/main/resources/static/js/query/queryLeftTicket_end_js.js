@@ -1787,6 +1787,7 @@ var trainNumber;
 				// cw.push("</a>");
 				// cw.push("</td>")
 
+                console.log(cr[cs])
                 cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" style="color: red;" class="btn72" onclick="checkG1234(\'');
                 cw.push(cr[cs].secretStr);
                 cw.push("','");
@@ -5994,16 +5995,16 @@ var trainNumber;
 			// 抢票
             var robRequestUrl = '/rob/view';
             var robRequestData = {
-                "secretStr": cE,
+                // "secretStr": cE,
                 "trainDate": $("#train_date").val(),
-                "backTrainDate": $("#back_train_date").val(),
+                // "backTrainDate": $("#back_train_date").val(),
                 "tourFlag": cr,
                 "purposeCodes": cl(),
-                "fromStation": $("#fromStationText").val(),
-                "toStation": $("#toStationText").val(),
+                "fromStationName": $("#fromStationText").val(),
+                "toStationName": $("#toStationText").val(),
 
-                "fromStationCode":  $("#fromStation").val(),
-                "toStationCode":  $("#toStation").val(),
+                "fromStation":  $("#fromStation").val(),
+                "toStation":  $("#toStation").val(),
                 "trainNumber": trainNumber
             };
             otsRedirect("post", robRequestUrl, robRequestData);
@@ -8148,6 +8149,7 @@ var trainNumber;
 function checkG1234(g, f, c, h, b, flag) {
     canWebBuyFlag = flag;
     trainNumber = c;
+
 	var a = "99999GGGGG";
 	var e = "##CCT##PPT##CPT##PXT##SBT##PBD##JOD##HPD##SHD##QTP##TSP##TJP##";
 	var d = "##CBP##DIP##JGK##ZEK##UUH##NKH##ESH##OHH##AOH##";

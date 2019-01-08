@@ -1,7 +1,5 @@
 package com.example.frp.common.schedule;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.frp.common.tool.*;
 import com.example.frp.service.RobService;
 import org.slf4j.Logger;
@@ -9,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -62,12 +58,13 @@ public class RobTask implements Runnable{
             resetTask();
         }
         if (isRob) {
+            // 完成任务到取消任务之间不能有别的操作，避免出错无法取消
             cancelTask();
             sendMail();
         }
     }
 
-    private  void resetTask() {
+    private void resetTask() {
         cookie = ThreadLocalUtils.get();
         cancelTask();
         RobScheduledThreadPool.schedule(this);

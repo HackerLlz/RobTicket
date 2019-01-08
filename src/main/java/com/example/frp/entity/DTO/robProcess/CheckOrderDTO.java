@@ -34,4 +34,7 @@ public class CheckOrderDTO {
     @JSONField(name = "tour_flag")
     private String tourFlag;
     /*---------------------------------------------------END: OrderSubmitDTO--------------------------------------------------------*/
+
+    @JSONField(name = "REPEAT_SUBMIT_TOKEN")
+    private String globalRepeatSubmitToken;
 }
