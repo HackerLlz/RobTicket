@@ -1,9 +1,23 @@
+
 server:
   port: 9999
 
 spring:
+  # 热部署
   devtools:
     restart:
-      enabled: true  # 开启热部署
+      enabled: true
+  # 模板引擎缓存
   thymeleaf:
-    cache: false  # 关闭模板引擎缓存
+    cache: false
+  # DB configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/rob_artifact?autoCommit=false&useUnicode=true&characterEncoding=utf-8&useAffectedRows=true&allowMultiQueries=true
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+    pool-prepared-statements: true
+
+# MyBatis configuration
+mybatis:
+  mapper-locations: classpath:META-INF/mybatis/*.xml
