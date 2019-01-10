@@ -3,10 +3,8 @@ package com.duriamuk.robartifact.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
-import com.duriamuk.robartifact.controller.TicketController;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.mapper.UserMapper;
-import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUserNameFrom12306() {
+        logger.info("获取用户名");
         for (int i = 0; i < RETRY_TIMES; i ++) {
             String result = getUserInfoFrom12306();
             if (result.startsWith("{")) {

@@ -1,5 +1,7 @@
 package com.duriamuk.robartifact.common.schedule;
 
+import com.duriamuk.robartifact.common.messageQueue.MessageTask;
+import com.duriamuk.robartifact.common.messageQueue.TaskDispatcher;
 import com.duriamuk.robartifact.common.tool.ApplicationContextUtils;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
@@ -18,9 +20,7 @@ import java.util.concurrent.ScheduledFuture;
 public class RobTask implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(RobTask.class);
 
-    private RobService robService = (RobService) ApplicationContextUtils.getBean("robService");
-
-    private MailSendService mailSendService = (MailSendService) ApplicationContextUtils.getBean("mailSendService");
+    private RobService robService;
 
     private String payload;
 
@@ -34,6 +34,7 @@ public class RobTask implements Runnable{
         this.payload = payload;
         this.period = period;
         cookie = HttpUtils.getRequest().getHeader("cookie");
+        robService = (RobService) ApplicationContextUtils.getBean("robService");
     }
 
     @Override
@@ -63,7 +64,7 @@ public class RobTask implements Runnable{
         if (isRob) {
             // 完成任务到取消任务之间不能有别的操作，避免出错无法取消
             cancelTask();
-            mailSendService.sendMail();
+            TaskDispatcher.message(new MessageTask(MailSendService.class, "", cookie));
         }
     }
 

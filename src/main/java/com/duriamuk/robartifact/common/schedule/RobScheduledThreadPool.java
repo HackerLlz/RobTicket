@@ -17,7 +17,7 @@ public class RobScheduledThreadPool {
     private static final Logger logger = LoggerFactory.getLogger(RobScheduledThreadPool.class);
 
     private static ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) Executors
-            .newScheduledThreadPool(3);
+            .newScheduledThreadPool(2);
 
     public static ScheduledFuture<?> schedule(RobTask robTask) {
         // 周期时间不受任务执行时间影响
