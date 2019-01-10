@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duriamuk.robartifact.mapper.LoginMapper">
+
+    <resultMap id="loginPOMap" type="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
+        <result column="username" property="username"/>
+        <result column="send_mail" property="sendMail" />
+    </resultMap>
+
+    <sql id="baseColumn">
+        id, username, send_mail
+    </sql>
+
+    <insert id="insertUsername" parameterType="string">
+        INSERT IGNORE INTO
+            user_info(username)
+        VALUES
+            (#{username})
+    </insert>
+
+</mapper>

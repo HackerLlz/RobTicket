@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户界面</title>
+    <script th:src="@{/js/common/jquery-3.3.1.min.js}" type="text/javascript"></script>
+</head>
+<body>
+用户名： <input type="text" id="username" th:value="${userInfoPO?.username}" readonly>
+<form action="POST" method="/user/update">
+    邮箱： <input type="text" id="sendMail" name="sendMail" th:value="${userInfoPO?.sendMail}">
+    <input type="button" id="updateSubmit" value="提交修改">
+</form>
+
+<script th:inline="javascript">
+    var userInfoPO = [[${userInfoPO}]];
+
+    $("#updateSubmit").bind("click",function () {
+        var updateUrl = '/user/update';
+        var updateData = {
+            "sendMail": $("#sendMail").val()
+        };
+        $.ajax({
+            type: "POST",
+            url: updateUrl,
+            async: false,
+            data: JSON.stringify(updateData),
+            contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
+            // dataType: "json",    // 加了data就不用再转json对象了
+            // xhrFields: {
+            //     withCredentials: true
+            // },
+            success: function (data) {
+                if (data == "success") {
+                    window.location.href = "/ticket/view";
+                } else {
+                    alert("提交错误");
+                }
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

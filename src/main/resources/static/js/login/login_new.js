@@ -29,7 +29,7 @@ var popup_passport_captcha_check = popup_passport_baseUrl + 'captcha/captcha-che
 var checkCode_url = '/login/checkCode';
 // 登陆，返回一个uamtk
 var popup_passport_login =  popup_passport_baseUrl + 'web/login';
-var login_url = '/login/in';
+var login_url = '/login/doLogin';
 // 用uamtk取静态信息, 用于已登录时直接登陆
 var popup_passport_apptk_static = popup_passport_baseUrl + 'web/auth/uamtk-static'
 var uamtkStatic_url = '/login/uamtkStatic';
@@ -192,7 +192,7 @@ var popup_t = null, popup_s = '-1';
 var popup_isPopupLogin = true;
 
 var forie = 'forie.html'
-    
+
 jQuery.extend({
 	pop_secretStr : "",
 	pop_start_time : "",
@@ -235,21 +235,23 @@ jQuery.extend({
             // },
             data: JSON.stringify(login_data),
             contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-            dataType: "json",    // 加了data就不用再转json对象了
+            // dataType: "json",    // 加了data就不用再转json对象了
             type: "POST",
             timeout: 10000,
             success: function(data, textStatus, XMLHttpRequest) {
-                // 浏览器不让拿cookie
-                console.log("header:" , XMLHttpRequest.getResponseHeader("cookie"));
-                console.log("header:" , XMLHttpRequest.getAllResponseHeaders());
-                if(data.result_code == 0) {
-                    $.popup_hideCommonLogin();
-                    // 跳转到查询界面
-                    popup_loginCallBack();
-                    // 拿着uamtk去取静态的信息（姓名等）
-                    // $.popup_uamIsLogin();
+                // if(data.result_code == 0) {
+                //     $.popup_hideCommonLogin();
+                //     popup_loginCallBack();
+                // }else {
+                //     $.popup_show_login_error(data.result_message)
+                //     $.popup_createPassCode()
+                //     $('#J-passCodeCoin').html('');
+                // }
+                if(data == "success") {
+                    // 跳转到查票界面
+                    window.location.href = login_success_url;
                 }else {
-                    $.popup_show_login_error(data.result_message)
+                    $.popup_show_login_error(data == "success"? "登陆成功": "登陆失败")
                     $.popup_createPassCode()
                     $('#J-passCodeCoin').html('');
                 }

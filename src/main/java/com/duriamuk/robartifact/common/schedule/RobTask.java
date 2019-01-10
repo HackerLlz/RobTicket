@@ -2,14 +2,12 @@ package com.duriamuk.robartifact.common.schedule;
 
 import com.duriamuk.robartifact.common.tool.ApplicationContextUtils;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
-import com.duriamuk.robartifact.common.tool.MailSendUtils;
 import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
+import com.duriamuk.robartifact.service.MailSendService;
 import com.duriamuk.robartifact.service.RobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -20,11 +18,13 @@ import java.util.concurrent.ScheduledFuture;
 public class RobTask implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(RobTask.class);
 
+    private RobService robService = (RobService) ApplicationContextUtils.getBean("robService");
+
+    private MailSendService mailSendService = (MailSendService) ApplicationContextUtils.getBean("mailSendService");
+
     private String payload;
 
     private String cookie;
-
-    private RobService robService = (RobService) ApplicationContextUtils.getBean("robService");
 
     private ScheduledFuture<?> scheduledFuture;
 
@@ -63,7 +63,7 @@ public class RobTask implements Runnable{
         if (isRob) {
             // 完成任务到取消任务之间不能有别的操作，避免出错无法取消
             cancelTask();
-            sendMail();
+            mailSendService.sendMail();
         }
     }
 
@@ -83,17 +83,5 @@ public class RobTask implements Runnable{
             }
         }
         logger.info("取消抢票任务成功");
-    }
-
-    private void sendMail(){
-        try {
-            MailSendUtils.sendHtmlMessage("1174827250@qq.com", "抢票成功", "恭喜您！抢票成功");
-        } catch (MessagingException e) {
-            logger.info("邮件发送失败：{}", e.getMessage());
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            logger.info("邮件发送失败：{}", e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

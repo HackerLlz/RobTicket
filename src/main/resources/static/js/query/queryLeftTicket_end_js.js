@@ -5792,22 +5792,24 @@ var trainNumber;
 	}
 
     var checkUserUrl =  '/ticket/checkUser';
+    var isLoginUrl = '/login/isLogin';
 	submitOrderRequest = function(cs, cr) {
 		$.ajax({
 			// type: "post",
 			// url: ctx + "login/checkUser",
-            type: "get",
-			url: checkUserUrl,
+			type: "get",
+			url: isLoginUrl,
 			// data: {},
-            dataType: "json",    // 加了data就不用再转json对象了
+            // dataType: "json",    // 加了data就不用再转json对象了
 			beforeSend: function(ct) {
 				ct.setRequestHeader("If-Modified-Since", "0");
 				ct.setRequestHeader("Cache-Control", "no-cache")
 			},
 			success: function(ct) {
 				var cw;
-				checkusermdId = ct.attributes;
-				if (ct.data.flag) {
+				// checkusermdId = ct.attributes;
+				// if (ct.data.flag) {
+				if (ct == "success") {
 					if (train_tour_flag == "fc") {
 						cw = $("#back_train_date").val()
 					} else {
@@ -7242,77 +7244,79 @@ var trainNumber;
 					return
 				}
 
-                var loginUrl = '/login/in';
-                var loginData = {
+                var doLoginUrl = '/login/doLogin';
+                var doLoginData = {
                     username: $("#username").val(),
                     password: $("#password").val(),
                     appid: passport_appId
                 };
 				$.ajax({
 					// url: passport_login,
-					url: loginUrl,
+					url: doLoginUrl,
 					// data: {
 					// 	username: $("#username").val(),
 					// 	password: $("#password").val(),
 					// 	appid: passport_appId
 					// },
-					data: JSON.stringify(loginData),
+					data: JSON.stringify(doLoginData),
                     contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-					dataType: "json",
+					// dataType: "json",
 					type: "POST",
 					// xhrFields: {
 					// 	withCredentials: true
 					// },
 					success: function(cu) {
-						if (cu.result_code == 0) {
-                            var uamtkUrl = '/login/uamtk';
-                            var uamtkData = {
-                                appid: passport_appId
-                            };
-							$.ajax({
-								type: "POST",
-								// url: passport_authuam,
-								url: uamtkUrl,
-								async: false,
-								// data: {
-								// 	appid: passport_appId
-								// },
-                                data: JSON.stringify(uamtkData),
-                                contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-                                dataType: "json",
-								// dataType: "jsonp",
-								// jsonp: "callback",
-								success: function(cv) {
-									if (cv.result_code == 0) {
-										var cw = cv.newapptk || cv.apptk;
-                                        var uamtkClientUrl = '/login/uamtkClient';
-                                        var uamtkClientData = {
-                                            tk: cw
-										};
-										$.ajax({
-											type: "POST",
-											async: false,
-											// url: ctx + passport_authclient,
-											// data: {
-											// 	tk: cw
-											// },
-											url: uamtkClientUrl,
-                                            data: JSON.stringify(uamtkClientData),
-                                            contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-											datatype: "json",
-											success: function(cx) {
-												if (cx.result_code == 0) {
-													bw();
-													loginAsyn(cx.username);
-													S(cs, cr)
-												}
-											},
-											error: function() {}
-										})
-									}
-								},
-								error: function() {}
-							})
+						if (cu == "success") {
+                            bw();
+							S(cs, cr)
+                            // var uamtkUrl = '/login/uamtk';
+                            // var uamtkData = {
+                            //     appid: passport_appId
+                            // };
+							// $.ajax({
+							// 	type: "POST",
+							// 	// url: passport_authuam,
+							// 	url: uamtkUrl,
+							// 	async: false,
+							// 	// data: {
+							// 	// 	appid: passport_appId
+							// 	// },
+                            //     data: JSON.stringify(uamtkData),
+                            //     contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                            //     dataType: "json",
+							// 	// dataType: "jsonp",
+							// 	// jsonp: "callback",
+							// 	success: function(cv) {
+							// 		if (cv.result_code == 0) {
+							// 			var cw = cv.newapptk || cv.apptk;
+                            //             var uamtkClientUrl = '/login/uamtkClient';
+                            //             var uamtkClientData = {
+                            //                 tk: cw
+							// 			};
+							// 			$.ajax({
+							// 				type: "POST",
+							// 				async: false,
+							// 				// url: ctx + passport_authclient,
+							// 				// data: {
+							// 				// 	tk: cw
+							// 				// },
+							// 				url: uamtkClientUrl,
+                            //                 data: JSON.stringify(uamtkClientData),
+                            //                 contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+							// 				datatype: "json",
+							// 				success: function(cx) {
+							// 					if (cx.result_code == 0) {
+							// 						bw();
+							// 						loginAsyn(cx.username);
+							// 						S(cs, cr)
+							// 					}
+							// 				},
+							// 				error: function() {}
+							// 			})
+							// 		}
+							// 	},
+							// 	error: function() {}
+							// })
 						} else {
 							if (if_show_pass_code_login == "Y") {
 								showSuc($("#randCode")[0]).hide()
@@ -7322,7 +7326,8 @@ var trainNumber;
 							if (if_show_pass_code_login == "Y") {
 								refreshImgUAM("login", "sjrand")
 							}
-							cd(cu.result_message)
+							// cd(cu.result_message)
+                            cd(cu == "success"? "登陆成功": "登陆失败")
 						}
 					}
 				})
@@ -7413,8 +7418,8 @@ var trainNumber;
 					}
 					cr = true;
 
-                    var loginUrl = '/login/in';
-                    var loginData = {
+                    var doLoginUrl = '/login/doLogin';
+                    var doLoginData = {
                         username: $("#username").val(),
                         password: $("#password").val(),
                         appid: passport_appId
@@ -7426,69 +7431,73 @@ var trainNumber;
 						// 	password: $("#password").val(),
 						// 	appid: passport_appId
 						// },
-                        url: loginUrl,
-						data: JSON.stringify(loginData),
+                        url: doLoginUrl,
+						data: JSON.stringify(doLoginData),
 						contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-						dataType: "json",
+						// dataType: "json",
 						type: "POST",
 						// xhrFields: {
 						// 	withCredentials: true
 						// },
 						success: function(ct) {
-							if (ct.result_code == 0) {
-                                var uamtkUrl = '/login/uamtk';
-                                var uamtkData = {
-                                    appid: passport_appId
-                                };
-								$.ajax({
-									type: "POST",
-									// url: passport_authuam,
-									url: uamtkUrl,
-									async: false,
-									// data: {
-									// 	appid: passport_appId
-									// },
-                                    data: JSON.stringify(uamtkData),
-                                    contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-                                    dataType: "json",
-                                    // dataType: "jsonp",
-									// jsonp: "callback",
-									success: function(cu) {
-										if (cu.result_code == 0) {
-											var cv = cu.newapptk || cu.apptk;
-                                            var uamtkClientUrl = '/login/uamtkClient';
-                                            var uamtkClientData = {
-                                                tk: cw
-                                            };
-											$.ajax({
-												type: "POST",
-												async: false,
-												// url: ctx + passport_authclient,
-												// data: {
-												// 	tk: cv
-												// },
-                                                url: uamtkClientUrl,
-                                                data: JSON.stringify(uamtkClientData),
-                                                contentType:'application/json',
-                                                datatype: "json",
-												success: function(cw) {
-													if (cw.result_code == 0) {
-														bw();
-														loginAsyn(cw.username)
-													}
-												},
-												error: function() {}
-											})
-										}
-									},
-									error: function() {}
-								})
+                            if (ct == "success") {
+                                bw();
+                                S(cs, cr)
+							// if (ct.result_code == 0) {
+                                // var uamtkUrl = '/login/uamtk';
+                                // var uamtkData = {
+                                //     appid: passport_appId
+                                // };
+								// $.ajax({
+								// 	type: "POST",
+								// 	// url: passport_authuam,
+								// 	url: uamtkUrl,
+								// 	async: false,
+								// 	// data: {
+								// 	// 	appid: passport_appId
+								// 	// },
+                                //     data: JSON.stringify(uamtkData),
+                                //     contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                                //     dataType: "json",
+                                //     // dataType: "jsonp",
+								// 	// jsonp: "callback",
+								// 	success: function(cu) {
+								// 		if (cu.result_code == 0) {
+								// 			var cv = cu.newapptk || cu.apptk;
+                                //             var uamtkClientUrl = '/login/uamtkClient';
+                                //             var uamtkClientData = {
+                                //                 tk: cw
+                                //             };
+								// 			$.ajax({
+								// 				type: "POST",
+								// 				async: false,
+								// 				// url: ctx + passport_authclient,
+								// 				// data: {
+								// 				// 	tk: cv
+								// 				// },
+                                //                 url: uamtkClientUrl,
+                                //                 data: JSON.stringify(uamtkClientData),
+                                //                 contentType:'application/json',
+                                //                 datatype: "json",
+								// 				success: function(cw) {
+								// 					if (cw.result_code == 0) {
+								// 						bw();
+								// 						loginAsyn(cw.username)
+								// 					}
+								// 				},
+								// 				error: function() {}
+								// 			})
+								// 		}
+								// 	},
+								// 	error: function() {}
+								// })
 							} else {
 								$("#i-ok").hide();
 								if (if_show_pass_code_login == "Y") {
 									refreshImgUAM("login", "sjrand")
 								}
-								cd(ct.result_message)
+								// cd(ct.result_message)
+                                cd(ct == "success"? "登陆成功": "登陆失败")
 							}
 						},
 						complete: function() {
@@ -9328,6 +9337,7 @@ var popup_loginCallBack = function() {
                             $('.mask').fadeOut();
                             $(".modal-login").hide();
                             if($.pop_secretStr && $.pop_start_time){
+                            	// 跳转到查票界面
                                 $.todo_submitOrderRe($.pop_secretStr, $.pop_start_time);
                             }
                             // 跳转到查票界面
@@ -9386,6 +9396,7 @@ var popup_loginCallBack = function() {
 									$(".mask").fadeOut();
 									$(".modal-login").hide();
 									if ($.pop_secretStr && $.pop_start_time) {
+                                        // 跳转到查票界面
 										$.todo_submitOrderRe($.pop_secretStr, $.pop_start_time)
 									}
 								}
@@ -9451,18 +9462,18 @@ jQuery.extend({
 		}
 		a = a.substring(0, a.length - 1);
 
-		var loginUrl = '/login/in';
-        var loginData = {
+		var doLoginUrl = '/login/doLogin';
+        var doLoginData = {
             'username': $('#J-userName').val(),
             'password': $('#J-password').val(),
             'appid': popup_passport_appId,
             'answer': randCode
         };
 		$.ajax({
-            url: loginUrl,
-            data: JSON.stringify(loginData),
+            url: doLoginUrl,
+            data: JSON.stringify(doLoginData),
             contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
-            dataType: "json",    // 加了data就不用再转json对象了
+            // dataType: "json",    // 加了data就不用再转json对象了
             type: "POST",
 			// crossDomain: true,
 			// url: popup_passport_login,
@@ -9479,11 +9490,13 @@ jQuery.extend({
 			// 	withCredentials: true
 			// },
 			success: function(d) {
-				if (d.result_code == 0) {
+				if (d == "success") {
 					$.popup_hideCommonLogin();
-					popup_loginCallBack()
+					// popup_loginCallBack()
+					// 弹框登陆后的跳转
+                    $.todo_submitOrderRe($.pop_secretStr, $.pop_start_time);
 				} else {
-					$.popup_show_login_error(d.result_message);
+					$.popup_show_login_error(d == "success"? "登陆成功": "登陆失败");
 					$.popup_createPassCode();
 					$("#J-passCodeCoin").html("")
 				}
@@ -9765,8 +9778,9 @@ jQuery.extend({
                         },
 						success: function(cx) {
                             var logoutUrl = "/user/logout?appid=otn";
-                            $("#login_user").html(a.name).attr("href", "https://kyfw.12306.cn/otn/view/index.html")
-                                .attr("target", "_blank").attr("style", "color:#fb7403;");
+                            $("#login_user").html(a.name).attr("href", "/user/view")
+                                // .attr("target", "_blank")
+								.attr("style", "color:#fb7403;");
                             $("#regist_out").html("退出").attr("href", logoutUrl).attr("target", "");
 						},
 						error: function() {}

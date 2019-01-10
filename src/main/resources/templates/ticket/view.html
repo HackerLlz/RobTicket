@@ -1282,9 +1282,57 @@
 
 <script xml:space="preserve">
     // 抢票神器入口
+    var isLoginUrl = '/login/isLogin';
     $("#robArtifact").bind("click", function(){
-        // submitOrderRequest();
-        window.location.href = "/rob/view";
+        $.ajax({
+            // type: "post",
+            // url: ctx + "login/checkUser",
+            type: "get",
+            url: isLoginUrl,
+            // data: {},
+            // dataType: "json",    // 加了data就不用再转json对象了
+            beforeSend: function(ct) {
+                ct.setRequestHeader("If-Modified-Since", "0");
+                ct.setRequestHeader("Cache-Control", "no-cache")
+            },
+            success: function(ct) {
+                var cw;
+                if (ct == "success") {
+                    window.location.href = "/rob/view";
+                } else {
+                    $(".mask").fadeIn();
+                    $(".login-box .login-hd-code").addClass("active").siblings().removeClass("active");
+                    $(".login-box .login-code").show().siblings().hide();
+                    $(".login-box").slide({
+                        titCell: ".login-hd li",
+                        mainCell: ".login-bd",
+                        titOnClassName: "active",
+                        trigger: "click",
+                    });
+                    $(".modal-login").css("top", ($(window).height() - $(".modal-login").height()) / 2 + $(window).scrollTop() + "px").css("left", ($(window).width() - $(".modal-login").width()) / 2 + $(window).scrollLeft() + "px").show();
+                    $.popup_initLogin(true);
+                    $(".modal-login").fadeIn();
+                    $.pop_secretStr = cs;
+                    $.pop_start_time = cr
+
+                    // 刷新验证码
+                    $('.lgcode-refresh').unbind('click').click(function() {
+                        $('.lgcode-refresh').addClass('lgcode-refresh-click')
+
+                        if (popup_is_uam_login == 'Y') {
+                            $.popup_refreshPassCode(false);
+                        } else {
+                            $.popup_refreshPassCode_location(false);
+                        }
+
+                        setTimeout(function () {
+                            $('.lgcode-refresh').removeClass('lgcode-refresh-click')
+                        }, 100)
+                    })
+                    $('.lgcode-refresh').click();
+                }
+            }
+        })
     });
 
 

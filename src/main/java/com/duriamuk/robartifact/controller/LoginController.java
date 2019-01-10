@@ -1,5 +1,6 @@
 package com.duriamuk.robartifact.controller;
 
+import com.duriamuk.robartifact.common.constant.AjaxMessage;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.service.LoginService;
@@ -48,12 +49,12 @@ public class LoginController {
         return result;
     }
 
-    @RequestMapping(value = "in", method = RequestMethod.POST)
+    @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestBody String payload) {
+    public String doLogin(@RequestBody String payload) {
         logger.info("开始登陆，入参 ：{}", payload);
-        String result = loginService.login(payload);
-        return result;
+        boolean isSuccess = loginService.doLogin(payload);
+        return isSuccess? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
     }
 
     @RequestMapping(value = "uamtkStatic", method = RequestMethod.POST)
@@ -79,5 +80,13 @@ public class LoginController {
         logger.info("开始将TK存入Cookie，入参 ：{}", payload);
         String result = loginService.uamtkClient(payload);
         return result;
+    }
+
+    @RequestMapping(value = "isLogin", method = RequestMethod.GET)
+    @ResponseBody
+    public String isLogin() {
+        logger.info("开始验证是否已登陆");
+        boolean isLogin = loginService.isLogin();
+        return isLogin? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
     }
 }

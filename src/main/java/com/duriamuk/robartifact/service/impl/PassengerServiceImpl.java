@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PassengerServiceImpl implements PassengerService {
-    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PassengerServiceImpl.class);
 
     @Override
     public String checkOrderInfo(String payload) {

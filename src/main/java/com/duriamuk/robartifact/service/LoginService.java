@@ -6,9 +6,21 @@ package com.duriamuk.robartifact.service;
  * @create: 2019-01-07 11:04
  */
 public interface LoginService {
+    Boolean doLogin(String payload);
+
     String login(String payload);
+
+    String uamtkStatic(String payload);
 
     String uamtk(String payload);
 
     String uamtkClient(String payload);
+
+    Boolean isLogin();
+
+    String buildUamtkPayload();
+
+    String buildUamtkClientPayload(String result);
+
+    Boolean isSuccess(String result);
 }

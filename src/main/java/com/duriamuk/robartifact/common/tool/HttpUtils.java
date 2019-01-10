@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.sun.deploy.net.URLEncoder;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -21,9 +22,11 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -39,11 +42,14 @@ import java.util.*;
  * @create: 2018-12-14 17:25
  */
 public class HttpUtils {
-    public static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
-    public static final RequestConfig requestConfig = RequestConfig.custom()
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+    private static final RequestConfig requestConfig = RequestConfig.custom()
             .setConnectTimeout(5000)
             .setConnectionRequestTimeout(1000)
             .setSocketTimeout(5000).build();
+
+    public static final String SET_COOKIE = "Set-Cookie";
+    public static final String COOKIE = "Cookie";
 
     /**
      * Get请求
@@ -121,6 +127,53 @@ public class HttpUtils {
             return response;
         }
         return null;
+    }
+
+    /**
+     * 向response中添加setCookie，用于返回客户端
+     * @param name
+     * @param value
+     */
+    public static void addReponseSetCookie(String name, String value) {
+        HttpServletResponse response = getReponse();
+        if (!ObjectUtils.isEmpty(response)) {
+            String setCookie = name + "=" + value + "; Path=/; MaxAge=1800";    // path是必须的
+            response.addHeader(SET_COOKIE, setCookie);
+            logger.info("添加Set-Cookie：{}", setCookie);
+        }
+    }
+
+    /**
+     * 将response的setCookie添加到request的cookie中，模拟浏览器cookie传递
+     */
+    public static void addReponseSetCookieToRequestCookie() {
+        HttpServletRequest request = getRequest();
+        HttpServletResponse response = getReponse();
+        if (!ObjectUtils.isEmpty(request) && !ObjectUtils.isEmpty(response)) {
+            String cookie = request.getHeader(COOKIE);
+            for (String setCookie: response.getHeaders(SET_COOKIE)) {
+                String name = StrUtils.reverseFindVlaue("=", "", 0, null, setCookie);
+                String value = StrUtils.findVlaue("=", "", 0, ";", setCookie);
+                cookie = addSetCookieToCookie(cookie, name, value);
+            }
+            request.setAttribute(COOKIE, cookie);
+            logger.info("已添加Attribute中的cookie：{}", request.getAttribute(COOKIE));
+        }
+    }
+
+    /**
+     * 更改request中的cookie
+     * @param name
+     * @param value
+     */
+    public static void addRequestCookie(String name, String value) {
+        HttpServletRequest request = getRequest();
+        if (!ObjectUtils.isEmpty(request)) {
+            String cookie = request.getHeader(COOKIE);
+            cookie = addSetCookieToCookie(cookie, name, value);
+            request.setAttribute(COOKIE, cookie);
+            logger.info("已添加Attribute中的cookie：{}", request.getAttribute(COOKIE));
+        }
     }
 
     private static String send(HttpRequestBase httpRequestBase, CloseableHttpClient httpClient, boolean withCookie) {
@@ -327,47 +380,63 @@ public class HttpUtils {
         HttpServletRequest request = getRequest();
         String cookie = null;
         if (!ObjectUtils.isEmpty(request)) {
-            cookie = request.getHeader("cookie");
+            // request不能设置Header，只能设置Attribute，
+            // 所以先设置 Attribute，再来更改HttpRequestBase的Header
+            String cookieInAttribute = (String) request.getAttribute(COOKIE);
+            if (!StringUtils.isEmpty(cookieInAttribute)) {
+                cookie = cookieInAttribute;
+                logger.info("从Attribute中获得cookie：{}", cookie);
+            } else {
+                cookie = request.getHeader(COOKIE);
+                logger.info("从Header中获得cookie：{}", cookie);
+            }
         } else {
             cookie = ThreadLocalUtils.get();
+            logger.info("从ThreadLocal中获得cookie：{}", cookie);
         }
-        cookie = "{\"Cookie\":\"" + cookie + "\"}";
+        cookie = "{\"" + COOKIE + "\":\"" + cookie + "\"}";
         return cookie;
     }
 
     private static void addSetCookie(CookieStore cookieStore) {
         HttpServletResponse response = getReponse();
         if (!ObjectUtils.isEmpty(response)) {
-            setCookieInResponse(cookieStore, response);
+            setCookieInResponse(cookieStore);
         } else {
             setCookieInThreadLocal(cookieStore);
         }
     }
 
-    private static void setCookieInResponse(CookieStore cookieStore, HttpServletResponse response) {
+    private static void setCookieInResponse(CookieStore cookieStore) {
         for (Cookie c : cookieStore.getCookies()) {
-            String setCookie = c.getName() + "=" + c.getValue() + "; Path=/; MaxAge=1800";    // path是必须的
-            response.addHeader("Set-Cookie", setCookie);
-            logger.info("添加Set-Cookie：{}", setCookie);
+            addReponseSetCookie(c.getName(), c.getValue());
         }
     }
 
     private static void setCookieInThreadLocal(CookieStore cookieStore) {
         String cookie = ThreadLocalUtils.get();
         for (Cookie c : cookieStore.getCookies()) {
-            if (cookie.contains(c.getName())) {
-                String oldValue = StrUtils.findVlaue(" " + c.getName(), "=", 0, ";", cookie);
-                if (oldValue == null) {
-                    oldValue = StrUtils.findVlaue(c.getName(), "=", 0, ";", cookie);
-                }
-                cookie = cookie.replaceFirst(oldValue, c.getValue());
-            } else {
-                String setCookie = "; " + c.getName() + "=" + c.getValue();
-                cookie += setCookie;
-            }
-            logger.info("添加Set-Cookie：{}={}", c.getName(), c.getValue());
+            cookie = addSetCookieToCookie(cookie, c.getName(), c.getValue());
         }
         ThreadLocalUtils.set(cookie);
+    }
+
+    private static String addSetCookieToCookie(String cookie, String name, String value) {
+        if (cookie == null) {
+            cookie = "";
+        }
+        if (cookie.contains(name)) {
+            String oldValue = StrUtils.findVlaue(" " + name, "=", 0, ";", cookie);
+            if (oldValue == null) {
+                oldValue = StrUtils.findVlaue(name, "=", 0, ";", cookie);
+            }
+            cookie = cookie.replaceFirst(oldValue, value);
+        } else {
+                String setCookie = "; " + name + "=" + value;
+            cookie += setCookie;
+        }
+        logger.info("添加Set-Cookie到Cookie：{}={}", name, value);
+        return cookie;
     }
 
     private static HttpClientContext getContextWithCookieStore() {

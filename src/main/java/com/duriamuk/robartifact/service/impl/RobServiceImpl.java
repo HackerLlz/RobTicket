@@ -83,17 +83,11 @@ public class RobServiceImpl implements RobService {
 
     /*---------------------------------------------------START: 抢票流程------------------------------------------------------*/
     private Boolean keepLogin() {
-        String payload = "{\"appid\": \"otn\"}";
-        String result = loginService.uamtk(payload);
-        if (result.startsWith("{")) {
-            JSONObject jsonObject = JSON.parseObject(result);
-            if (jsonObject.getInteger("result_code") == 0) {
-                String tk = jsonObject.getString("newapptk");
-                payload = "{\"tk\":\"" + tk + "\"}";
-                result = loginService.uamtkClient(payload);
-                if (result.startsWith("{")) {
-                    return true;
-                }
+        String result = loginService.uamtk(loginService.buildUamtkPayload());
+        if (loginService.isSuccess(result)) {
+            result = loginService.uamtkClient(loginService.buildUamtkClientPayload(result));
+            if (loginService.isSuccess(result)) {
+                return true;
             }
         }
         logger.info("保持登陆失败");
