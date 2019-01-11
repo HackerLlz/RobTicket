@@ -2,7 +2,7 @@ package com.duriamuk.robartifact.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.duriamuk.robartifact.controller.TicketController;
+import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
 import com.duriamuk.robartifact.mapper.LoginMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
@@ -22,7 +22,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class LoginServiceImpl implements LoginService {
     private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
-    private static final int RETRY_TIMES = 2;
+    private static final int RETRY_TIMES = 3;
 
     @Autowired
     private LoginMapper loginMapper;
@@ -38,13 +38,17 @@ public class LoginServiceImpl implements LoginService {
             HttpUtils.addReponseSetCookieToRequestCookie();
             result = uamtk(buildUamtkPayload());
             if (isSuccess(result)) {
+                HttpUtils.addReponseSetCookieToRequestCookie();
                 HttpUtils.addRequestCookie("tk", getTk(result));
-                String username = userService.getUserNameFrom12306();
-                if (!StringUtils.isEmpty(username)) {
-                    HttpUtils.addReponseSetCookie("tk", getTk(result));
-                    int insertCount = loginMapper.insertUsername(username);
-                    logger.info("登陆成功，是{}用户", insertCount == 0? "老": "新");
-                    return true;
+                result = uamtkClient(buildUamtkClientPayload(result));
+                if (isSuccess(result)) {
+                    HttpUtils.addReponseSetCookieToRequestCookie();
+                    String username = userService.getUserNameFrom12306();
+                    if (!StringUtils.isEmpty(username)) {
+                        int insertCount = loginMapper.insertUsername(username);
+                        logger.info("登陆成功，是{}用户", insertCount == 0? "老": "新");
+                        return true;
+                    }
                 }
             }
             userService.logout();
@@ -95,9 +99,14 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String uamtkClient(String payload) {
         logger.info("将TK存入Cookie，入参 ：{}", payload);
-        String url = UrlConstant.WEB_URL + "otn/uamauthclient";
-        String result = HttpUtils.doPostForm(url, payload, true);
-        return result;
+        for (int i = 0; i < RETRY_TIMES; i ++) {
+            String url = UrlConstant.WEB_URL + "otn/uamauthclient";
+            String result = HttpUtils.doPostForm(url, payload, true);
+            if (isSuccess(result)) {
+                return result;
+            }
+        }
+        return "";
     }
 
     @Override
@@ -105,30 +114,46 @@ public class LoginServiceImpl implements LoginService {
         logger.info("验证是否已登陆");
         String result = uamtk(buildUamtkPayload());
         if (isSuccess(result)) {
-            // 假设登陆失败时的注销一定会成功
-            HttpUtils.addReponseSetCookie("tk", getTk(result));
-            logger.info("已登陆");
-            return true;
+            HttpUtils.addReponseSetCookieToRequestCookie();
+            HttpUtils.addRequestCookie("tk", getTk(result));
+            result = uamtkClient(buildUamtkClientPayload(result));
+            if (isSuccess(result)) {
+                // 假设登陆失败时的注销一定会成功
+                logger.info("已登陆");
+                return true;
+            }
         }
         logger.info("未登陆");
         return false;
     }
 
     @Override
-    public String buildUamtkPayload() {
+    public Boolean keepLogin() {
+        logger.info("保持登陆");
+        String result = uamtk(buildUamtkPayload());
+        if (isSuccess(result)) {
+            result = uamtkClient(buildUamtkClientPayload(result));
+            if (isSuccess(result)) {
+                logger.info("保持登陆成功");
+                return true;
+            }
+        }
+        logger.info("保持登陆失败");
+        return false;
+    }
+
+    private String buildUamtkPayload() {
         String payload = "{\"appid\": \"otn\"}";
         return payload;
     }
 
-    @Override
-    public String buildUamtkClientPayload(String result) {
+    private String buildUamtkClientPayload(String result) {
         String tk = getTk(result);
         String payload = "{\"tk\": \"" + tk + "\"}";
         return payload;
     }
 
-    @Override
-    public Boolean isSuccess(String result) {
+    private Boolean isSuccess(String result) {
         return (result.startsWith("{") && JSON.parseObject(result).getInteger("result_code") == 0)? true: false;
     }
 

@@ -1,4 +1,4 @@
-package com.duriamuk.robartifact.service;
+package com.duriamuk.robartifact.mapper;
 
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 
@@ -7,11 +7,9 @@ import java.util.List;
 /**
  * @author: DuriaMuk
  * @description:
- * @create: 2019-01-02 17:55
+ * @create: 2019-01-11 14:16
  */
-public interface RobService {
-    Boolean doRob(String payload) throws Exception;
-
+public interface RobMapper {
     void insertRobRecord(RobParamsDTO robParamsDTO);
 
     List<RobParamsDTO> listRobRecordByUserId(Long userId);

@@ -9,6 +9,7 @@ import com.duriamuk.robartifact.common.tool.StrUtils;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.OrderRequestDTO;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.TicketInfoDTO;
 import com.duriamuk.robartifact.entity.DTO.robProcess.*;
+import com.duriamuk.robartifact.mapper.RobMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.PassengerService;
 import com.duriamuk.robartifact.service.TicketService;
@@ -49,9 +50,37 @@ public class RobServiceImpl implements RobService {
     @Autowired
     private LoginService loginService;
 
+    @Autowired
+    private RobMapper robMapper;
+
+    @Override
+    public void insertRobRecord(RobParamsDTO robParamsDTO) {
+        robMapper.insertRobRecord(robParamsDTO);
+    }
+
+    @Override
+    public List<RobParamsDTO> listRobRecordByUserId(Long userId) {
+        return robMapper.listRobRecordByUserId(userId);
+    }
+
+    @Override
+    public RobParamsDTO getRobRecordById(Long id) {
+        return robMapper.getRobRecordById(id);
+    }
+
+    @Override
+    public void deleteRobRecordById(Long id) {
+        robMapper.deleteRobRecordById(id);
+    }
+
+    @Override
+    public void updateRobRecord(RobParamsDTO robParamsDTO) {
+        robMapper.updateRobRecord(robParamsDTO);
+    }
+
     public Boolean doRob(String payload){
         logger.info("尝试抢票，入参：{}", payload);
-        boolean isLogin = keepLogin();
+        boolean isLogin = loginService.keepLogin();
         if (isLogin) {
             JSONObject jsonObject = JSON.parseObject(payload);
             CheckOrderDTO checkOrderDTO = JSON.parseObject(jsonObject.getString("checkOrderData"), CheckOrderDTO.class);
@@ -82,18 +111,6 @@ public class RobServiceImpl implements RobService {
     }
 
     /*---------------------------------------------------START: 抢票流程------------------------------------------------------*/
-    private Boolean keepLogin() {
-        String result = loginService.uamtk(loginService.buildUamtkPayload());
-        if (loginService.isSuccess(result)) {
-            result = loginService.uamtkClient(loginService.buildUamtkClientPayload(result));
-            if (loginService.isSuccess(result)) {
-                return true;
-            }
-        }
-        logger.info("保持登陆失败");
-        return false;
-    }
-
     private Boolean checkAllDateSecretStr(RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
                                           QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
         for (String trainDate: robParamsDTO.getTrainDate().split(",")) {
@@ -179,11 +196,11 @@ public class RobServiceImpl implements RobService {
                     return false;
                 }
             }
-            boolean isOrder = doOrder(buildDoOrderData(doOrderDTO, ticketInfoDTO));
-            if (isOrder) {
-                logger.info("抢票成功");
-                return true;
-            }
+//            boolean isOrder = doOrder(buildDoOrderData(doOrderDTO, ticketInfoDTO));
+//            if (isOrder) {
+//                logger.info("抢票成功");
+//                return true;
+//            }
         }
         return false;
     }

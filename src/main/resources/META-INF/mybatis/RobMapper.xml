@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duriamuk.robartifact.mapper.RobMapper">
+
+    <resultMap id="robParamsDTOMap" type="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
+        <result column="id" property="id"/>
+        <result column="rob_no_seat" property="robNoSeat"/>
+        <result column="from_station" property="fromStation" />
+        <result column="from_station_name" property="fromStationName" />
+        <result column="to_station" property="toStation" />
+        <result column="to_station_name" property="toStationName" />
+        <result column="train_date" property="trainDate" />
+        <result column="left_time_begin" property="leftTimeBegin" />
+        <result column="left_time_end" property="leftTimeEnd" />
+        <result column="train_number" property="trainNumber" />
+        <result column="purpose_codes" property="purposeCodes" />
+        <result column="tour_flag" property="tourFlag" />
+    </resultMap>
+
+    <sql id="baseColumn">
+        id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
+        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag
+    </sql>
+
+    <insert id="insertRobRecord" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
+        <selectKey resultType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+        rob_record(user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
+                left_time_begin, left_time_end, train_number, purpose_codes, tour_flag)
+        VALUES
+        (#{userId}, #{robNoSeat}, #{fromStation}, #{fromStationName}, #{toStation}, #{toStationName}, #{trainDate},
+                #{leftTimeBegin}, #{leftTimeEnd}, #{trainNumber}, #{purposeCodes}, #{tourFlag})
+    </insert>
+
+    <select id="listRobRecordByUserId" parameterType="long" resultMap="robParamsDTOMap">
+        SELECT
+        <include refid="baseColumn"></include>
+        FROM
+        rob_record
+        WHERE
+        user_id = #{userId}
+    </select>
+
+    <select id="getRobRecordById" parameterType="long" resultMap="robParamsDTOMap">
+        SELECT
+        <include refid="baseColumn"></include>
+        FROM
+        rob_record
+        WHERE
+        id = #{userId}
+    </select>
+
+    <delete id="deleteRobRecordById" parameterType="long">
+        DELETE FROM
+        rob_record
+        WHERE
+        id = #{id}
+    </delete>
+
+    <update id="updateRobRecord" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
+        UPDATE
+        rob_record
+        <set>
+        <if test="robNoSeat != null">
+            rob_no_seat = #{robNoSeat},
+        </if>
+        <if test="fromStation != null">
+            from_station = #{fromStation},
+        </if>
+        <if test="fromStationName != null">
+            from_station_name = #{fromStationName},
+        </if>
+        <if test="robNoSeat != null">
+            rob_no_seat = #{robNoSeat},
+        </if>
+        <if test="toStation != null">
+            to_station = #{toStation},
+        </if>
+        <if test="toStationName != null">
+            to_station_name = #{toStationName},
+        </if>
+        <if test="trainDate != null">
+            train_date = #{trainDate},
+        </if>
+        <if test="leftTimeBegin != null">
+            left_time_begin = #{leftTimeBegin},
+        </if>
+        <if test="leftTimeEnd != null">
+            left_time_end = #{leftTimeEnd},
+        </if>
+        <if test="trainNumber != null">
+            train_number = #{trainNumber},
+        </if>
+        <if test="purposeCodes != null">
+            purpose_codes = #{purposeCodes},
+        </if>
+        <if test="tourFlag != null">
+            tour_flag = #{tourFlag},
+        </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

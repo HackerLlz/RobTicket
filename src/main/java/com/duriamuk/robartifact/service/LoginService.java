@@ -18,9 +18,5 @@ public interface LoginService {
 
     Boolean isLogin();
 
-    String buildUamtkPayload();
-
-    String buildUamtkClientPayload(String result);
-
-    Boolean isSuccess(String result);
+    Boolean keepLogin();
 }

@@ -8,5 +8,5 @@ import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
  * @create: 2019-01-10 14:44
  */
 public interface MailSendService {
-    Boolean sendMail();
+    Boolean sendMail(String message);
 }

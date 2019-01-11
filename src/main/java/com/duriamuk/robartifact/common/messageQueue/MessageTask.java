@@ -2,10 +2,14 @@ package com.duriamuk.robartifact.common.messageQueue;
 
 import com.duriamuk.robartifact.common.tool.ApplicationContextUtils;
 import com.duriamuk.robartifact.common.tool.ClassUtils;
+import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 
 /**
@@ -16,23 +20,23 @@ import java.util.concurrent.Future;
 public class MessageTask <T> implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(MessageTask.class);
 
-    private MessageConsumerService messageConsumerService;
+    private T messageConsumerService;
+
+    private String methodName;
 
     private String message;
 
     private Future future;
 
-    private String cookie = "";
+    private String cookie;
 
-    public MessageTask(Class<T> clazz, String message) {
-        messageConsumerService = (MessageConsumerService) ApplicationContextUtils.getBean(ClassUtils.getLowerCaseClassName(clazz));
+    public MessageTask(Class<T> clazz, String methodName, String message) {
+        messageConsumerService = (T) ApplicationContextUtils.getBean(ClassUtils.getLowerCaseClassName(clazz));
+        this.methodName = methodName;
         this.message = message;
-    }
 
-    public MessageTask(Class<T> clazz, String message, String cookie) {
-        messageConsumerService = (MessageConsumerService) ApplicationContextUtils.getBean(ClassUtils.getLowerCaseClassName(clazz));
-        this.message = message;
-        this.cookie = cookie;
+        HttpServletRequest request = HttpUtils.getRequest();
+        this.cookie = !ObjectUtils.isEmpty(request)? request.getHeader(HttpUtils.COOKIE): ThreadLocalUtils.get();
     }
 
     @Override
@@ -40,17 +44,26 @@ public class MessageTask <T> implements Runnable{
         if (messageConsumerService != null) {
             try {
                 ThreadLocalUtils.set(cookie);
-                messageConsumerService.consumeMessage(message);
+                massage();
                 cookie = ThreadLocalUtils.get();
             } catch (Exception e) {
                 e.printStackTrace();
                 cancelTask();
             }
+        } else {
+            logger.error("messageConsumerService不存在");
+            cancelTask();
         }
     }
 
     public void setFuture(Future future){
         this.future = future;
+    }
+
+    private void massage() throws Exception{
+        Class clazz = messageConsumerService.getClass();
+        Method method = clazz.getDeclaredMethod(methodName, String.class);  // new Class[]({String.class, int.class})
+        method.invoke(messageConsumerService, message);
     }
 
     private void cancelTask() {

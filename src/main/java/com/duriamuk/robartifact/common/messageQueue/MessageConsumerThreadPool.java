@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public class MessageConsumerThreadPool {
     private static ExecutorService executor = Executors.newFixedThreadPool(1);
 
-    public static Future<?> submit(MessageTask messageTask) {
+    public static Future<?> message(MessageTask messageTask) {
         Future<?> future = executor.submit(messageTask);
         messageTask.setFuture(future);
         return future;

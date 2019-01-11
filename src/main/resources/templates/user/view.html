@@ -1,46 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>用户界面</title>
-    <script th:src="@{/js/common/jquery-3.3.1.min.js}" type="text/javascript"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <link th:href="@{/css/common/validation.css}" rel="stylesheet">
+    <link th:href="@{/css/common/common_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/passenger/passengerInfo_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/common/captcha_css.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{/css/common/local.css}" type="text/css" rel="stylesheet">
+
+    <link th:href="@{/css/query/queryLeftTicket_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <link th:href="@{/css/query/queryLeftTicket_end_css.css?cssVersion=1.9049}" rel="stylesheet">
+    <!--<link rel="icon" href="/otn/resources/images/ots/favicon.ico" type="image/x-icon">-->
+    <!--<link rel="shortcut icon" href="/otn/resources/images/ots/favicon.ico" type="image/x-icon">-->
+    <style>
+
+    </style>
 </head>
-<body>
-用户名： <input type="text" id="username" th:value="${userInfoPO?.username}" readonly>
-<form action="POST" method="/user/update">
-    邮箱： <input type="text" id="sendMail" name="sendMail" th:value="${userInfoPO?.sendMail}">
-    <input type="button" id="updateSubmit" value="提交修改">
-</form>
+<body id="body_id" class="dhtmlx_winviewport  dhtmlx_winviewport dhtmlx_skin_dhx_terrace">
+    <!--说明文字 start -->
+    <div class="srr-tips">
+        <ul>
+            <li>
+                请按乘车时所使用的有效身份证件准确、完整填写乘车填写乘车人姓名和证件号码。
+            </li>
+            <li>
+                如姓名中包含生僻字，可输入汉语拼音代替。<br clear="none" />
+                例如“李鵢”可输入“李shen”
+            </li>
+        </ul>
+    </div>
+    <!--说明文字 end -->
 
-<script th:inline="javascript">
-    var userInfoPO = [[${userInfoPO}]];
 
-    $("#updateSubmit").bind("click",function () {
-        var updateUrl = '/user/update';
-        var updateData = {
-            "sendMail": $("#sendMail").val()
-        };
-        $.ajax({
-            type: "POST",
-            url: updateUrl,
-            async: false,
-            data: JSON.stringify(updateData),
-            contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
-            // dataType: "json",    // 加了data就不用再转json对象了
-            // xhrFields: {
-            //     withCredentials: true
-            // },
-            success: function (data) {
-                if (data == "success") {
-                    window.location.href = "/ticket/view";
-                } else {
-                    alert("提交错误");
-                }
-            }
-        });
-    });
+<!--页面主体 开始-->
+<div class="content">
+    <!--用户信息 开始-->
+    <div class="layout person">
+        <div class="lay-hd">
+            用户信息<span class="small" id="psInfo">（说明）</span>
+        </div>
+        <div class="lay-bd" style="height: 30px;">
+            <span style="padding: 0 50px 0 150px">用户名：</span> <input type="text" id="username" th:value="${userInfoPO?.username}" readonly />
+            <span style="padding: 0 50px 0 150px">邮箱：</span> <input type="text" id="sendMail" th:value="${userInfoPO?.sendMail}" />
+        </div>
+    </div>
+
+    <div class="lay-btn">
+        <a href="/ticket/view" class="btn92" shape="rect">上一步</a>
+        <a id="updateSubmit" href="javascript:" class="btn92s" shape="rect">提交修改</a>
+    </div>
+    <!--用户信息 结束-->
+
+    <!--抢票监控 开始-->
+    <div class="layout person">
+        <div class="lay-hd">抢票监控</div>
+
+        <!--循环部分 开始-->
+        <div class="lay-bd" style="height: 150px;" th:each="robParamsDTO : ${robParamsList}">
+        <!--<div class="lay-bd" style="height: 150px;">-->
+            <form id="robForm" method="get" enctype="application/x-www-form-urlencoded">
+                <div class="sear-box quick-sear-box">
+                    <div class="s-info" id="place_area">
+                        <ul>
+                            <li>
+                                <span class="label"><label id="fromStationText_label">出发地</label></span>
+                                <div class="inp-w">
+                                    <input type="text" id="fromStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.fromStationName}" name="leftTicketDTO.from_station_name" placeholder="简拼/全拼/汉字" readonly>
+                                    <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
+                                </div>
+                            </li>
+                            <li class="i-change i-change2" id="change_station" style="background-position: -67px -96px; cursor: pointer;"></li>
+                            <li>
+                                <span class="label"><label id="toStationText_label"> 目的地</label></span>
+                                <div class="inp-w">
+                                    <input type="text" id="toStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.toStationName}" name="leftTicketDTO.to_station_name" placeholder="简拼/全拼/汉字" readonly>
+                                    <span class="i-city" id="toStation_icon_image" style="cursor: pointer;"></span>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="label"> 出发日</span>
+                                <div class="inp-w" style="z-index:1200">
+                                    <input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" th:value="${robParamsDTO?.trainDate}" readonly>
+                                    <span id="date_icon_1" class="i-date"></span>
+                                </div>
+                            </li>
+                            <li style="width: 150px">
+                                <span class="label" style="width: 50px"> 出发时间</span>
+                                <div class="inp-w" style="z-index:1200; width: 90px">
+                                    <input type="text" class="inp_selected" name="" id="left_time_begin" th:value="${robParamsDTO?.leftTimeBegin}" placeholder="" style="width: 40px" readonly> -
+                                    <input type="text" class="inp_selected" name="" id="left_time_end" th:value="${robParamsDTO?.leftTimeEnd}" placeholder="" style="width: 40px" readonly>
+                                </div>
+                            </li>
+                            <li >
+                                <span class="label"> 车次</span>
+                                <div class="inp-w" style="z-index:1200">
+                                    <input type="text" class="inp_selected" name="" id="train_number" th:value="${robParamsDTO?.trainNumber}" placeholder="全部" readonly>
+                                </div>
+                            </li>
+                            <li style="width: 60px;">
+                                <input totaltimes="99" typeflag="1" th:if="${robParamsDTO?.robNoSeat}" type="checkbox" class="check" onclick="return false" checked>
+                                <input totaltimes="99" typeflag="1" th:if="${!robParamsDTO?.robNoSeat}" type="checkbox" class="check" onclick="return false">
+                                <label th:for="${robParamsDTO?.id} + ${robParamsDTO?.robNoSeat}" style="cursor: pointer">是否抢无座</label>
+                            </li>
+                        </ul>
+                        <div class="lay-btn" style="margin: 70px 0 0 50px;">
+                            <a href="javascript:" th:onclick="${'deleteTask(' + robParamsDTO?.id + ')'}" class="btn92" shape="rect">删除</a>
+                            <a href="javascript:" th:onclick="${robParamsDTO?.status == 0? 'restartTask(' + robParamsDTO?.id + ')': 'stopTask(' + robParamsDTO?.id + ')'}"
+                               class="btn92s" shape="rect"><span th:text="${robParamsDTO?.status == 0? '重新开始': '停止'}"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--循环部分 结束-->
+
+    </div>
+    <!--抢票监控 结束-->
+</div>
+<!--页面主体  结束-->
+
+
+<script type="text/javascript" th:src="@{/js/common/jquery-1.9.1.js}"></script>
+
+<!-- 页面js模块 -->
+<script xml:space="preserve" th:inline="javascript">
+ var robParamsList = [[${robParamsList}]];
+ console.log("robParamsDTO: ", robParamsList);
+ var userInfoPO = [[${userInfoPO}]];
+ console.log("userInfoPO: ", userInfoPO);
+
+ $("#updateSubmit").bind("click",function () {
+     var updateUrl = '/user/update';
+     var updateData = {
+         "sendMail": $("#sendMail").val()
+     };
+     $.ajax({
+         type: "POST",
+         url: updateUrl,
+         async: false,
+         data: JSON.stringify(updateData),
+         contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
+         // dataType: "json",    // 加了data就不用再转json对象了
+         // xhrFields: {
+         //     withCredentials: true
+         // },
+         success: function (data) {
+             if (data == "success") {
+                 window.location.href = "/ticket/view";
+             } else {
+                 alert("提交错误");
+             }
+         }
+     });
+ });
+
+ function deleteTask(id) {
+     window.location.href = '/rob/deleteRobTask?id=' + id;
+ }
+
+function restartTask(id) {
+    if (robParamsList) {
+        window.location.href = '/rob/restartRobTask?id=' + id;
+    }
+}
+
+ function stopTask(id) {
+     if (robParamsList) {
+         window.location.href = '/rob/stopRobTask?id=' + id;
+     }
+ }
+
 </script>
-
 
 </body>
 </html>

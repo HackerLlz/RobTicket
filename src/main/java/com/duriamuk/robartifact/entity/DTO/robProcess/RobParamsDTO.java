@@ -2,6 +2,8 @@ package com.duriamuk.robartifact.entity.DTO.robProcess;
 
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: DuriaMuk
  * @description:
@@ -15,6 +17,10 @@ import lombok.Data;
  */
 @Data
 public class RobParamsDTO {
+    private Long id;
+
+    private Long userId;
+
     private Boolean robNoSeat;
 
     private String fromStation;
@@ -36,4 +42,6 @@ public class RobParamsDTO {
     private String purposeCodes;
 
     private String tourFlag;
+
+    private Integer status;
 }

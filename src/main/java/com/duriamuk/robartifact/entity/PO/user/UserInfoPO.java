@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoPO {
+    private Long id;
+
     private String username;
 
     private String sendMail;

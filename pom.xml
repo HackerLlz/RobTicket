@@ -99,7 +99,7 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- mybatis -->
+        <!-- mybatis --> <!-- slf4j集成logback日志 -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -119,6 +119,17 @@
             </exclusions>
             <version>1.1.1</version>
         </dependency>
+
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

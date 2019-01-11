@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-    private static final int RETRY_TIMES = 2;
+    private static final int RETRY_TIMES = 3;
 
     @Autowired
     private UserMapper userMapper;

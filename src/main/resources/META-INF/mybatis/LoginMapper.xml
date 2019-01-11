@@ -8,7 +8,7 @@
     </resultMap>
 
     <sql id="baseColumn">
-        id, username, send_mail
+        username, send_mail
     </sql>
 
     <insert id="insertUsername" parameterType="string">

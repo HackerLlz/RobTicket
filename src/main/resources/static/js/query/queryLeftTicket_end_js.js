@@ -1766,6 +1766,7 @@ var trainNumber;
 			b8(cw, cr[cs].queryLeftNewDTO.yz_num, "YZ_", cr[cs].queryLeftNewDTO.train_no, cr[cs].queryLeftNewDTO.yp_ex, "11", cr[cs].queryLeftNewDTO.controlled_train_flag);
 			b8(cw, cr[cs].queryLeftNewDTO.wz_num, "WZ_", cr[cs].queryLeftNewDTO.train_no, cr[cs].queryLeftNewDTO.yp_ex, "W1", cr[cs].queryLeftNewDTO.controlled_train_flag);
 			b8(cw, cr[cs].queryLeftNewDTO.qt_num, "QT_", cr[cs].queryLeftNewDTO.train_no, cr[cs].queryLeftNewDTO.yp_ex, "", cr[cs].queryLeftNewDTO.controlled_train_flag);
+
 			if ("Y" == cr[cs].queryLeftNewDTO.canWebBuy) {
 				// cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" class="btn72" onclick="checkG1234(\'');
 				// cw.push(cr[cs].secretStr);
@@ -1787,13 +1788,14 @@ var trainNumber;
 				// cw.push("</a>");
 				// cw.push("</td>")
 
-                console.log(cr[cs])
+                // console.log(cr[cs])
                 cw.push(' <td align="center" width="80" class="no-br"><a href="javascript:" style="color: red;" class="btn72" onclick="checkG1234(\'');
                 cw.push(cr[cs].secretStr);
                 cw.push("','");
                 cw.push(cr[cs].queryLeftNewDTO.start_time);
                 cw.push("','");
-                cw.push(cr[cs].queryLeftNewDTO.train_no);
+                // cw.push(cr[cs].queryLeftNewDTO.train_no);
+                cw.push(cr[cs].queryLeftNewDTO.station_train_code);
                 cw.push("','");
                 cw.push(cr[cs].queryLeftNewDTO.from_station_telecode);
                 cw.push("','");
@@ -3792,6 +3794,8 @@ var trainNumber;
 		if (ischeckAutoSubmitCode) {
 			$("#randCode2").on("keyup", function(cr) {
 				if ($("#randCode2").val().length == 4 && bB != $("#randCode2").val()) {
+					return
+
 					$.ajax({
 						url: ctx + "passcodeNew/checkRandCodeAnsyn",
 						type: "post",
@@ -9688,6 +9692,7 @@ jQuery.extend({
 		})
 	},
 	popup_getConf: function() {
+	    return;
 		// var confUrl = '/ticket/conf';
 		$.ajax({
 			url: popup_url.loginConf,
@@ -10071,6 +10076,9 @@ jQuery.extend({
 		})
 	},
 	popup_checkPassCode_location: function() {
+		return
+
+
 		var a = false;
 		var b = "";
 		var d = $("#J-passCodeCoin div");

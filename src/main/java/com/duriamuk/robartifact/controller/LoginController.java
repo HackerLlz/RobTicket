@@ -61,8 +61,7 @@ public class LoginController {
     @ResponseBody
     public String uamtkStatic(@RequestBody String payload) {
         logger.info("开始验证uamtk，入参 ：{}", payload);
-        String url = UrlConstant.PASS_URL + "web/auth/uamtk-static";
-        String result = HttpUtils.doPostForm(url, payload, true);
+        String result = loginService.uamtkStatic(payload);
         return result;
     }
 

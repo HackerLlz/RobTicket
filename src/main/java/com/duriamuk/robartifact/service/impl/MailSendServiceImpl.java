@@ -1,6 +1,5 @@
 package com.duriamuk.robartifact.service.impl;
 
-import com.duriamuk.robartifact.common.messageQueue.MessageConsumerService;
 import com.duriamuk.robartifact.common.tool.MailSendUtils;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.service.MailSendService;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @create: 2019-01-10 14:44
  */
 @Service("mailSendService")
-public class MailSendServiceImpl implements MailSendService, MessageConsumerService {
+public class MailSendServiceImpl implements MailSendService{
     private static final Logger logger = LoggerFactory.getLogger(MailSendServiceImpl.class);
     private static final int RETRY_TIMES = 2;
 
@@ -24,13 +23,7 @@ public class MailSendServiceImpl implements MailSendService, MessageConsumerServ
     private UserService userService;
 
     @Override
-    public String consumeMessage(String message) {
-        sendMail();
-        return "";
-    }
-
-    @Override
-    public Boolean sendMail() {
+    public Boolean sendMail(String message) {
         logger.info("开始发送邮件");
         UserInfoPO userInfoPO = userService.getUserInfo();
         String username = userInfoPO.getUsername();

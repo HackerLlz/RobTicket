@@ -51,9 +51,8 @@ public class PassengerController {
     @RequestMapping(value = "passengerInfo", method = RequestMethod.GET)
     @ResponseBody
     public String passengerInfo() {
-        logger.info("开始获得乘客信息， 入参:{}");
-        String url = UrlConstant.OTN_URL + "confirmPassenger/getPassengerDTOs";
-        String result = HttpUtils.doPostForm(url, null, true);
+        logger.info("开始获得乘客信息");
+        String result = passengerService.passengerInfo();
         return result;
     }
 

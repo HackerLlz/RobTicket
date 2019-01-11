@@ -1,14 +1,17 @@
 package com.duriamuk.robartifact.common.schedule;
 
+import com.duriamuk.robartifact.common.constant.TableName;
+import com.duriamuk.robartifact.common.messageQueue.MessageConsumerThreadPool;
 import com.duriamuk.robartifact.common.messageQueue.MessageTask;
-import com.duriamuk.robartifact.common.messageQueue.TaskDispatcher;
 import com.duriamuk.robartifact.common.tool.ApplicationContextUtils;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
+import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
 import com.duriamuk.robartifact.service.MailSendService;
 import com.duriamuk.robartifact.service.RobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -30,18 +33,25 @@ public class RobTask implements Runnable{
 
     private Long period;
 
-    public RobTask(String payload, long period) {
+    private Long id;
+
+    public RobTask(String payload, long period, long id) {
         this.payload = payload;
         this.period = period;
-        cookie = HttpUtils.getRequest().getHeader("cookie");
+        this.id = id;
+        cookie = HttpUtils.getRequest().getHeader(HttpUtils.COOKIE);
         robService = (RobService) ApplicationContextUtils.getBean("robService");
     }
 
     @Override
     public void run(){
-        ThreadLocalUtils.set(cookie);
-        doRob();
-        cookie = ThreadLocalUtils.get();
+        if (isContinue()) {
+            ThreadLocalUtils.set(cookie);
+            doRob();
+            cookie = ThreadLocalUtils.get();
+        } else {
+            cancelTask();
+        }
     }
 
     public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
@@ -50,6 +60,14 @@ public class RobTask implements Runnable{
 
     public Long getPeriod() {
         return period;
+    }
+
+    private Boolean isContinue(){
+        Object value = RedisUtils.get(TableName.ROB_RECORD + id);
+        if (!ObjectUtils.isEmpty(value)) {
+            return true;
+        }
+        return false;
     }
 
     private void doRob() {
@@ -64,7 +82,12 @@ public class RobTask implements Runnable{
         if (isRob) {
             // 完成任务到取消任务之间不能有别的操作，避免出错无法取消
             cancelTask();
-            TaskDispatcher.message(new MessageTask(MailSendService.class, "", cookie));
+            try {
+                RedisUtils.setWithExpire(TableName.ROB_RECORD + id, null, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            MessageConsumerThreadPool.message(new MessageTask(MailSendService.class, "sendMail", ""));
         }
     }
 

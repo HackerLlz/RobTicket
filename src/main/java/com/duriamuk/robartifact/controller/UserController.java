@@ -3,10 +3,14 @@ package com.duriamuk.robartifact.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
+import com.duriamuk.robartifact.common.constant.TableName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
+import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.validate.FormatValidater;
+import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
+import com.duriamuk.robartifact.service.RobService;
 import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @author: DuriaMuk
@@ -33,10 +39,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RobService robService;
+
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view(Model model) {
         logger.info("开始跳转到用户信息界面");
-        model.addAttribute("userInfoPO", userService.getUserInfo());
+        UserInfoPO userInfoPO = userService.getUserInfo();
+        if (ObjectUtils.isEmpty(userInfoPO)) {
+            return "ticket/view";
+        }
+        List<RobParamsDTO> robParamsList = robService.listRobRecordByUserId(userInfoPO.getId());
+        setRobStatus(robParamsList);
+        model.addAttribute("userInfoPO", userInfoPO);
+        model.addAttribute("robParamsList", robParamsList);
         return PATH + "view";
     }
 
@@ -61,5 +77,12 @@ public class UserController {
             }
         }
         return isUpdate? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
+    }
+
+    private void setRobStatus(List<RobParamsDTO> robParamsList) {
+        for (RobParamsDTO robParamsDTO: robParamsList) {
+            Object value = RedisUtils.get(TableName.ROB_RECORD + robParamsDTO.getId());
+            robParamsDTO.setStatus(!ObjectUtils.isEmpty(value)? 1: 0);
+        }
     }
 }

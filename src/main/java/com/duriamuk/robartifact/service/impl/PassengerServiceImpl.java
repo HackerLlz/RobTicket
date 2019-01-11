@@ -16,6 +16,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class PassengerServiceImpl implements PassengerService {
     private static final Logger logger = LoggerFactory.getLogger(PassengerServiceImpl.class);
+    private static final int RETRY_TIMES = 2;
+
+    @Override
+    public String passengerInfo() {
+        logger.info("获得乘客信息");
+        for (int i = 0; i < RETRY_TIMES; i ++) {
+            String url = UrlConstant.OTN_URL + "confirmPassenger/getPassengerDTOs";
+            String result = HttpUtils.doPostForm(url, null, true);
+            if (result.startsWith("{")) {
+                return result;
+            }
+        }
+        return "";
+    }
 
     @Override
     public String checkOrderInfo(String payload) {

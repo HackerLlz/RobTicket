@@ -1,14 +1,12 @@
 package com.duriamuk.robartifact.common.filter;
 
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
-import com.duriamuk.robartifact.service.UserService;
+import com.duriamuk.robartifact.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.PathMatcher;
 import org.thymeleaf.util.ArrayUtils;
 
@@ -37,7 +35,7 @@ public class LoginFilter implements Filter {
     private final PathMatcher pathMatcher = new AntPathMatcher();
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
     // 自定义白名单
     public final static List<String> IS_NOT_LOGIN_VALIDATE_PATH = new ArrayList<String>();
@@ -61,6 +59,7 @@ public class LoginFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String uri = request.getRequestURI();
+        logger.info("uri入参：{}", uri);
         if (isStaticRescue(uri) || isNotLoginValidate(uri)) {
             logger.info("白名单：{}", uri);
             chain.doFilter(request, response);
@@ -68,13 +67,13 @@ public class LoginFilter implements Filter {
         }
         request.setAttribute("requestId", Long.toString(System.currentTimeMillis()));
 
-        UserInfoPO userInfoPO = userService.getUserInfo();
-        if (!ObjectUtils.isEmpty(userInfoPO)) {
-            logger.info("已登录：{}", userInfoPO.getUsername());
+        boolean isLogin = loginService.isLogin();
+        if (isLogin) {
+            // 已登录
             chain.doFilter(request, response);
             return;
         } else {
-            logger.info("未登录");
+            // 未登录
             if (isAjaxRequest(request)) {
                 //如果是ajax 请求
 //            response.setContentType("application/json;charset=utf-8");
@@ -108,6 +107,8 @@ public class LoginFilter implements Filter {
                 || uri.startsWith("/ticket")
                 || uri.endsWith("/logout")
                 || uri.endsWith("/view")
+
+                || uri.startsWith("/js")
         ) {
             return true;
         }

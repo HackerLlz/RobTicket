@@ -736,6 +736,7 @@ jQuery.extend({
     },
     // 表单验证
     popup_validate: function () {
+	    return
 
         $('#J-login').click(function() {
 

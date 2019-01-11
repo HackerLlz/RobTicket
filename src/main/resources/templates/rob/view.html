@@ -1059,7 +1059,8 @@
     <!--改签原票信息 开始-->
     <!--改签原票信息 结束-->
     <!--多级票价信息 开始-->
-    <div style="display: none;"><input style="display: none;" type="checkbox" id="fczk">
+    <div style="display: none;"><
+        input style="display: none;" type="checkbox" id="fczk">
     </div>
     <!--乘客信息 开始-->
     <div class="layout person"><div class="lay-hd">
@@ -1118,7 +1119,8 @@
     <div class="layout person">
         <div class="lay-hd">抢票选项</div>
         <div class="lay-bd" style="height: 100px;">
-            <input totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check">
+            <input th:if="${robParamsDTO?.robNoSeat}" totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check" checked>
+            <input th:if="${!robParamsDTO?.robNoSeat}" totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check">
             <label for="robNoSeat" style="cursor: pointer">是否抢无座</label>
 
             <form id="robForm" method="get" enctype="application/x-www-form-urlencoded">
@@ -1399,7 +1401,7 @@
             </ul>
             </form>
                 <div class="lay-btn captchaButton passengerInfo-inside" data-touclick-name="" style="height: auto; padding: 0px; overflow: hidden; zoom: 1;">
-                    <span style="float:left;padding-top:12px;font-size:14px;color:#333;font-family:Tahoma," 宋体""="">验证码：</span>
+                    <span style="float:left;padding-top:12px;font-size:14px;color:#333;font-family:Tahoma," ""="">验证码：</span>
                     <div class="touclick" name="touclick-randCode" style="z-index: 100; float: left; display: block;">
                         <div class="touclick-wrapper">
                             <div class="touclick-bgimg touclick-reload touclick-reload-normal"></div>
@@ -1445,14 +1447,6 @@
         </div>
     </div>
 </div>
-<!--说明文字 start -->
-<div class="srr-tips"><ul><li>请按乘车时所使用的有效身份证件准确、完整填写乘车填写乘车人姓名和证件号码。</li>
-    <li>如姓名中包含生僻字，可输入汉语拼音代替。<br clear="none" />
-        例如“李鵢”可输入“李shen”
-    </li>
-</ul>
-</div>
-<!--说明文字 end -->
 <!--积分支付 提示信息 start -->
 <div class="srr-tips"><ul><li>请按乘车时所使用的有效身份证件准确、完整填写乘车人姓名和证件号码。</li>
     <li>如姓名中包含生僻字，可输入汉语拼音代替。<br clear="none" />
@@ -1598,7 +1592,7 @@ function doRob() {
         "leftTimeBegin": $("#left_time_begin").val(),
         "leftTimeEnd": $("#left_time_end").val(),
         "trainNumber": $("#train_number").val(),
-        "purposeCodes": robParamsDTO["purposeCodes"]? robParamsDTO["purposeCodes"]: "ADULT",
+        "purposeCodes": robParamsDTO? robParamsDTO["purposeCodes"]: "ADULT",
         "tourFlag": "dc"
     };
     var doRobData = {
@@ -1619,15 +1613,15 @@ function doRob() {
         // },
         success: function (data) {
             if (data == "success") {
-                // dhtmlx.alert({
-                //     title: "提示",
-                //     ok: "确定",
-                //     text: "已成功开始抢票，抢到票后会以邮件形式通知！\n可以直接关闭网页，但请不要在电脑端退出或重新输入账号密码登陆账号！",
-                //     type: "alert-error",
-                //     callback: function(data) {
-                //         window.location.href = "/ticket/view";
-                //     }
-                // })
+                dhtmlx.alert({
+                    title: "提示",
+                    ok: "确定",
+                    text: "已成功开始抢票，抢到票后会以邮件形式通知！\n可以直接关闭网页，但请不要在电脑端退出或重新输入账号密码登陆账号！",
+                    type: "alert-error",
+                    callback: function(data) {
+                        window.location.href = "/ticket/view";
+                    }
+                })
             } else {
                 dhtmlx.alert({
                     title: "提示",
@@ -1680,7 +1674,7 @@ function doRobClick() {
     if (validateForm()) {
         doRob();
     }
-    unLoadGrayBackground();
+    // unLoadGrayBackground();
 };
 
 

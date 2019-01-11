@@ -15,16 +15,14 @@
         UPDATE
         user_info
         SET
-        <if test="sendMail != null and sendMail != ''">
-            send_mail = #{sendMail}
-        </if>
+        send_mail = #{sendMail}
         WHERE
         username = #{username}
     </update>
 
     <select id="getUserInfoByUsername" parameterType="string" resultMap="loginPOMap">
         SELECT
-        username, send_mail
+        <include refid="baseColumn"></include>
         FROM
         user_info
         WHERE

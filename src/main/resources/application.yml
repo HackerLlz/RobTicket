@@ -17,6 +17,12 @@ spring:
     password: root
     driverClassName: com.mysql.jdbc.Driver
     pool-prepared-statements: true
+  # REDIS configuration
+  redis:
+    host: localhost
+    password:
+    port: 6379
+    timeout: 3600
 
 # MyBatis configuration
 mybatis:
