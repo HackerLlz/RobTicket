@@ -102,7 +102,7 @@
                             </li>
                             <li style="width: 60px;">
                                 <input totaltimes="99" typeflag="1" th:if="${robParamsDTO?.robNoSeat}" type="checkbox" class="check" onclick="return false" checked>
-                                <input totaltimes="99" typeflag="1" th:if="${!robParamsDTO?.robNoSeat}" type="checkbox" class="check" onclick="return false">
+                                <input totaltimes="99" typeflag="1" th:if="!${robParamsDTO?.robNoSeat}" type="checkbox" class="check" onclick="return false">
                                 <label th:for="${robParamsDTO?.id} + ${robParamsDTO?.robNoSeat}" style="cursor: pointer">是否抢无座</label>
                             </li>
                         </ul>

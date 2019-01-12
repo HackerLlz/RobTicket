@@ -27,7 +27,7 @@ public class PassengerController {
     private static final String PATH = "passenger/";
 
     @Autowired
-    PassengerService passengerService;
+    private PassengerService passengerService;
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view2() {

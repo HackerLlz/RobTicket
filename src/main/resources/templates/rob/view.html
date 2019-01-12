@@ -1120,7 +1120,7 @@
         <div class="lay-hd">抢票选项</div>
         <div class="lay-bd" style="height: 100px;">
             <input th:if="${robParamsDTO?.robNoSeat}" totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check" checked>
-            <input th:if="${!robParamsDTO?.robNoSeat}" totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check">
+            <input th:if="!${robParamsDTO?.robNoSeat}" totaltimes="99" typeflag="1" id="robNoSeat" type="checkbox" class="check">
             <label for="robNoSeat" style="cursor: pointer">是否抢无座</label>
 
             <form id="robForm" method="get" enctype="application/x-www-form-urlencoded">
@@ -1130,8 +1130,8 @@
                     <li>
                         <span class="label"><label id="fromStationText_label">出发地</label></span>
                         <div class="inp-w">
-                            <input id="fromStation" type="hidden" th:value="${robParamsDTO?.fromStation}" name="leftTicketDTO.from_station">
-                            <input type="text" id="fromStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.fromStationName}" name="leftTicketDTO.from_station_name" placeholder="简拼/全拼/汉字">
+                            <input id="fromStation" type="hidden" th:value="${robParamsDTO?.fromStation?.fromStation}" name="leftTicketDTO.from_station">
+                            <input type="text" id="fromStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.fromStationName?.fromStationName}" name="leftTicketDTO.from_station_name" placeholder="简拼/全拼/汉字">
                             <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
                         </div>
                     </li>
@@ -1139,30 +1139,29 @@
                     <li>
                         <span class="label"><label id="toStationText_label"> 目的地</label></span>
                         <div class="inp-w">
-                            <input id="toStation" type="hidden" th:value="${robParamsDTO?.toStation}" name="leftTicketDTO.to_station">
-                            <input type="text" id="toStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.toStationName}" name="leftTicketDTO.to_station_name" placeholder="简拼/全拼/汉字">
+                            <input id="toStation" type="hidden" th:value="${robParamsDTO?.toStation?.toStation}" name="leftTicketDTO.to_station">
+                            <input type="text" id="toStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.toStationName?.toStationName}" name="leftTicketDTO.to_station_name" placeholder="简拼/全拼/汉字">
                             <span class="i-city" id="toStation_icon_image" style="cursor: pointer;"></span>
                         </div>
                     </li>
                     <li>
                         <span class="label"> 出发日</span>
                         <div class="inp-w" style="z-index:1200">
-                            <!--<input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" value="" readonly="readonly">-->
-                            <input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" th:value="${robParamsDTO?.trainDate}">
+                            <input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" th:value="${robParamsDTO?.trainDate?.trainDate}">
                             <span id="date_icon_1" class="i-date"></span>
                         </div>
                     </li>
                     <li style="width: 150px">
                         <span class="label" style="width: 50px"> 出发时间</span>
                         <div class="inp-w" style="z-index:1200; width: 90px">
-                            <input type="text" class="inp_selected" name="" id="left_time_begin" value="00:00" placeholder="" style="width: 40px"> -
-                            <input type="text" class="inp_selected" name="" id="left_time_end" value="24:00" placeholder="" style="width: 40px">
+                            <input type="text" class="inp_selected" name="" id="left_time_begin" th:value="${robParamsDTO?.leftTimeBegin}? robParamsDTO.leftTimeBegin: '00:00'" placeholder="" style="width: 40px"> -
+                            <input type="text" class="inp_selected" name="" id="left_time_end" th:value="${robParamsDTO?.leftTimeEnd}? robParamsDTO.leftTimeEnd: '24:00'" placeholder="" style="width: 40px">
                         </div>
                     </li>
                     <li>
                         <span class="label"> 车次</span>
                         <div class="inp-w" style="z-index:1200">
-                            <input type="text" class="inp_selected" name="" id="train_number" th:value="${robParamsDTO?.trainNumber}" placeholder="全部">
+                            <input type="text" class="inp_selected" name="" id="train_number" th:value="${robParamsDTO?.trainNumber?.trainNumber}" placeholder="全部">
                         </div>
                     </li>
                 </ul>

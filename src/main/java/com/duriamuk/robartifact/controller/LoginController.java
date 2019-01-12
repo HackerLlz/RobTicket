@@ -1,8 +1,6 @@
 package com.duriamuk.robartifact.controller;
 
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.common.constant.UrlConstant;
-import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +22,7 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
     @Autowired
-    LoginService loginService;
+    private LoginService loginService;
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view() {
@@ -35,8 +33,7 @@ public class LoginController {
     @ResponseBody
     public String getCode() {
         logger.info("开始获得验证码");
-        String url = UrlConstant.PASS_URL + "captcha/captcha-image64?login_site=E&module=login&rand=sjrand";
-        String result = HttpUtils.doGet(url, null, true);
+        String result = loginService.getCode();
         return result;
     }
 
@@ -44,8 +41,7 @@ public class LoginController {
     @ResponseBody
     public String checkCode(String answer) {
         logger.info("开始验证验证码, 入参 ：{}", answer);
-        String url = UrlConstant.PASS_URL + "captcha/captcha-check?answer=" + answer + "&rand=sjrand&login_site=E";
-        String result = HttpUtils.doGet(url, null, true);
+        String result = loginService.checkCode(answer);
         return result;
     }
 

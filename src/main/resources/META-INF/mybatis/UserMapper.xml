@@ -3,6 +3,7 @@
 <mapper namespace="com.duriamuk.robartifact.mapper.UserMapper">
 
     <resultMap id="loginPOMap" type="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
+        <result column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="send_mail" property="sendMail" />
     </resultMap>

@@ -6,6 +6,10 @@ package com.duriamuk.robartifact.service;
  * @create: 2019-01-07 11:04
  */
 public interface LoginService {
+    String getCode();
+
+    String checkCode(String answer);
+
     Boolean doLogin(String payload);
 
     String login(String payload);

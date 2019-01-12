@@ -103,10 +103,9 @@ public class LoginFilter implements Filter {
         // uri特征过滤
         if (uri.equals("/")
                 || uri.startsWith("/login")
-                || uri.startsWith("/passenger")
                 || uri.startsWith("/ticket")
+                || uri.startsWith("/code")
                 || uri.endsWith("/logout")
-                || uri.endsWith("/view")
 
                 || uri.startsWith("/js")
         ) {
