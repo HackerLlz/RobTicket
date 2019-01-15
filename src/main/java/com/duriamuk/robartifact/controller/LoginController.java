@@ -1,6 +1,8 @@
 package com.duriamuk.robartifact.controller;
 
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
+import com.duriamuk.robartifact.common.constant.UrlConstant;
+import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,5 +85,22 @@ public class LoginController {
         logger.info("开始验证是否已登陆");
         boolean isLogin = loginService.isLogin();
         return isLogin? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
+    }
+
+    @RequestMapping(value = "createQr", method = RequestMethod.POST)
+    @ResponseBody
+    public String createQr(@RequestBody String payload) {
+        logger.info("开始获得二维码，入参 ：{}", payload);
+        String url = UrlConstant.PASS_URL + "web/create-qr64";
+        String result = HttpUtils.doPostForm(url, payload, true);
+        return result;
+    }
+
+    @RequestMapping(value = "loginByQr", method = RequestMethod.POST)
+    @ResponseBody
+    public String loginByQr(@RequestBody String payload) {
+        logger.info("开始验证二维码登陆情况，入参 ：{}", payload);
+        String result = loginService.loginByQr(payload);
+        return result;
     }
 }

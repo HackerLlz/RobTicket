@@ -12,6 +12,8 @@ public interface LoginService {
 
     Boolean doLogin(String payload);
 
+    String loginByQr(String payload);
+
     String login(String payload);
 
     String uamtkStatic(String payload);
@@ -23,4 +25,6 @@ public interface LoginService {
     Boolean isLogin();
 
     Boolean keepLogin();
+
+    String checkQr(String payload);
 }

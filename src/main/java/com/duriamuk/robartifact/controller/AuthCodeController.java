@@ -31,7 +31,7 @@ public class AuthCodeController {
     @ResponseBody
     public String climb() {
         logger.info("开始爬取验证码图片");
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < 2; i ++) {
             MessageConsumerThreadPool.message(new MessageTask(AuthCodeService.class, "climbAuthCode", ""));
         }
         return AjaxMessage.SUCCESS + " at: " + Calendar.getInstance().getTime();

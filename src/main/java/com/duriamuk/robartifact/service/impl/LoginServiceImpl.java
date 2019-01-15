@@ -9,6 +9,7 @@ import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.service.UserService;
+import jdk.nashorn.internal.scripts.JS;
 import org.apache.http.cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,38 +51,32 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean doLogin(String payload) {
-        logger.info("登陆，入参 ：{}", payload);
+        logger.info("用户名密码登陆，入参 ：{}", payload);
         String result = login(payload);
         if (isSuccess(result)) {
-            HttpUtils.addReponseSetCookieToRequestCookie();
-            result = uamtk(buildUamtkPayload());
-            if (isSuccess(result)) {
-                String oldTk = CookieUtils.getCookie("tk");
-                HttpUtils.addReponseSetCookieToRequestCookie();
-                HttpUtils.addRequestCookie("tk", getTk(result));
-                result = uamtkClient(buildUamtkClientPayload(result));
-                if (isSuccess(result)) {
-                    // 不知道有没有新session
-                    HttpUtils.addReponseSetCookieToRequestCookie();
-                    String username = userService.getUserNameFrom12306();
-                    if (!StringUtils.isEmpty(username)) {
-                        int insertCount = loginMapper.insertUsername(username);
-                        logger.info("登陆成功，是{}用户", insertCount == 0? "老": "新");
-                        return true;
-                    }
-                }
-                if (!StringUtils.isEmpty(oldTk)) {
-                    // 抢票时会一直更新tk, 这里就可能注销失败，但没抢票时的登陆还是能保证注销成功，除非接口出问题
-                    HttpUtils.addRequestCookie("tk", oldTk);
-                }
+            boolean isLogin = loginByUamtkSetCookie();
+            if (isLogin) {
+                return true;
             }
-            userService.logout();
-            // 保证第一次登陆失败后，uamtk不会被客户端保存
-            CookieUtils.removeCookie("uamtk");
-            CookieUtils.removeCookie("tk");
         }
         logger.info("登陆失败");
         return false;
+    }
+
+    @Override
+    public String loginByQr(String payload) {
+        logger.info("二维码扫码登陆，入参：{}", payload);
+        String result = checkQr(payload);
+        if (result.startsWith("{")) {
+            JSONObject jsonObject = JSON.parseObject(result);
+            if (jsonObject.getInteger("result_code") == 2) {
+                boolean isLogin = loginByUamtkSetCookie();
+                if (!isLogin) {
+                    return buildLoginFailResult(jsonObject);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -171,6 +166,44 @@ public class LoginServiceImpl implements LoginService {
         return false;
     }
 
+    @Override
+    public String checkQr(String payload) {
+        logger.info("验证二维码，入参 ：{}", payload);
+        String url = UrlConstant.PASS_URL + "web/checkqr";
+        String result = HttpUtils.doPostForm(url, payload, true);
+        return result;
+    }
+
+    private Boolean loginByUamtkSetCookie() {
+        HttpUtils.addReponseSetCookieToRequestCookie();
+        String result = uamtk(buildUamtkPayload());
+        if (isSuccess(result)) {
+            String oldTk = CookieUtils.getCookie("tk");
+            HttpUtils.addReponseSetCookieToRequestCookie();
+            HttpUtils.addRequestCookie("tk", getTk(result));
+            result = uamtkClient(buildUamtkClientPayload(result));
+            if (isSuccess(result)) {
+                // 不知道有没有新session
+                HttpUtils.addReponseSetCookieToRequestCookie();
+                String username = userService.getUserNameFrom12306();
+                if (!StringUtils.isEmpty(username)) {
+                    int insertCount = loginMapper.insertUsername(username);
+                    logger.info("登陆成功，是{}用户", insertCount == 0? "老": "新");
+                    return true;
+                }
+            }
+            if (!StringUtils.isEmpty(oldTk)) {
+                // 抢票时会一直更新tk, 这里就可能注销失败，但没抢票时的登陆还是能保证注销成功，除非接口出问题
+                HttpUtils.addRequestCookie("tk", oldTk);
+            }
+        }
+        userService.logout();
+        // 保证第一次登陆失败后，uamtk不会被客户端保存
+        CookieUtils.removeCookie("uamtk");
+        CookieUtils.removeCookie("tk");
+        return false;
+    }
+
     private String buildUamtkPayload() {
         String payload = "{\"appid\": \"otn\"}";
         return payload;
@@ -192,5 +225,9 @@ public class LoginServiceImpl implements LoginService {
         String newapptk = jsonObject.getString("newapptk");
         String tk = apptk != null? apptk: newapptk;
         return tk;
+    }
+
+    private String buildLoginFailResult(JSONObject resultJson) {
+        return "{\"result_message\": \"系统异常\",\"result_code\": \"5\"}";
     }
 }

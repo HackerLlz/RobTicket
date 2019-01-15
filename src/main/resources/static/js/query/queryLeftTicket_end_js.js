@@ -5863,6 +5863,9 @@ var trainNumber;
 					$.pop_secretStr = cs;
 					$.pop_start_time = cr
 
+					// 获取验证码
+                    $.popup_createQr();
+
                     // 刷新验证码
                     $('.lgcode-refresh').unbind('click').click(function() {
                         $('.lgcode-refresh').addClass('lgcode-refresh-click')
@@ -9498,7 +9501,7 @@ jQuery.extend({
 				if (d == "success") {
 					$.popup_hideCommonLogin();
 					// popup_loginCallBack()
-					// 弹框登陆后的跳转
+					// 弹框登陆后的跳转loginByQrUrl
                     $.todo_submitOrderRe($.pop_secretStr, $.pop_start_time);
 				} else {
 					$.popup_show_login_error(d == "success"? "登陆成功": "登陆失败");
@@ -9813,15 +9816,18 @@ jQuery.extend({
 		// $.popup_validate()
 	},
 	popup_createQr: function() {
-		return;
-
-		$.ajax({
-			url: popup_url.qr64,
-			data: {
-				appid: popup_qr_appId
-			},
-			type: "POST",
-			timeout: 10000,
+		var createQrUrl = "/login/createQr";
+        var createQrData = {
+            appid: popup_qr_appId
+        };
+        $.ajax({
+            // url: popup_url.qr64,
+            url: createQrUrl,
+            type: 'POST',
+            data: JSON.stringify(createQrData),
+            contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+            dataType: "json",    // 加了data就不用再转json对象了
+            timeout: 10000,
 			success: function(a) {
 				if (a && a.result_code === "0" && a.image) {
 					$("#J-qrImg").attr("src", "data:image/jpg;base64," + a.image);
@@ -9843,15 +9849,24 @@ jQuery.extend({
 			error: function(a) {}
 		})
 	},
-	popup_checkQr: function(a) {
-		$.ajax({
-			url: popup_url.checkqr,
-			data: {
-				uuid: a,
-				appid: popup_qr_appId
-			},
-			type: "POST",
-			timeout: 10000,
+	popup_checkQr: function(uuid) {
+		var loginByQrUrl = "/login/loginByQr";
+        var loginByQrData = {
+            uuid: uuid,
+            appid: popup_qr_appId
+        };
+        $.ajax({
+            // url: popup_url.checkqr,
+            url: loginByQrUrl,
+            // data: {
+            //     uuid: uuid,
+            //     appid: popup_qr_appId
+            // },
+            data: JSON.stringify(loginByQrData),
+            contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+            dataType: "json",    // 加了data就不用再转json对象了
+            type: 'POST',
+            timeout: 10000,
 			success: function(b) {
 				if (b) {
 					popup_s = b.result_code;
@@ -9897,7 +9912,10 @@ jQuery.extend({
 				case 2:
 					a.hide();
 					e.removeClass("hide");
-					popup_loginCallBack();
+					// loginByQrUrl 成功跳转
+					// popup_loginCallBack();
+                    // window.location.href = login_success_url;
+                    $.todo_submitOrderRe($.pop_secretStr, $.pop_start_time);
 					break;
 				case 3:
 					a.show();

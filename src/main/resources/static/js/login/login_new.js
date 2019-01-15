@@ -38,6 +38,9 @@ var popup_passport_uamtk = popup_passport_baseUrl + 'web/auth/uamtk';
 var base_uamauthclient_url = popup_baseUrl + popup_publicName + '/uamauthclient';
 var uamtkUrl = '/login/uamtk';
 var uamtkClientUrl = '/login/uamtkClient';
+// 扫码登陆
+var createQrUrl = '/login/createQr';
+var loginByQrUrl = '/login/loginByQr';
 
 var popup_is_uam_login = 'Y'; // 是否统一认证登录
 var popup_is_login_passCode = 'Y' // 是否启用验证码校验登录（仅本地登录）
@@ -206,7 +209,7 @@ jQuery.extend({
     popup_hide_login_error: function() {
         $('#J-login-error').hide().find('span').html('');
     },
-    // 统一认证登录, popup_checkPassCode 验证完验证码之后
+    // 统一认证登录, popup_checkPassCode 验证完验证码或二维码之后
     popup_loginForUam: function() {
         var randCode = '';
         var obj = $('#J-passCodeCoin div');
@@ -604,12 +607,16 @@ jQuery.extend({
     },
     // 扫码登录-获取二维码接口
     popup_createQr: function () {
+	    var createQrData = {
+            appid: popup_qr_appId
+        };
         $.ajax({
-            url: popup_url.qr64,
-            data: { 
-                appid: popup_qr_appId 
-            },
+            // url: popup_url.qr64,
+            url: createQrUrl,
             type: 'POST',
+            data: JSON.stringify(createQrData),
+            contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+            dataType: "json",    // 加了data就不用再转json对象了
             timeout: 10000,
             success: function(data) {
                 if(data && data.result_code === '0' && data.image) {
@@ -628,7 +635,7 @@ jQuery.extend({
                             clearInterval(popup_t)
                         } else {
                             // 轮询调用二维码检查接口，直至返回状态为2：登录成功，（已识别且已授权）、3：已失效
-                            // $.popup_checkQr(data.uuid)
+                            $.popup_checkQr(data.uuid)
                         }
                     }, 1000)
 
@@ -643,12 +650,20 @@ jQuery.extend({
     },
     // 扫码登录-轮询调用二维码检查接口
     popup_checkQr: function (uuid) {
+	    var loginByQrData = {
+            uuid: uuid,
+            appid: popup_qr_appId
+        };
         $.ajax({
-            url: popup_url.checkqr,
-            data: { 
-                uuid: uuid,
-                appid: popup_qr_appId 
-            },
+            // url: popup_url.checkqr,
+            url: loginByQrUrl,
+            // data: {
+            //     uuid: uuid,
+            //     appid: popup_qr_appId
+            // },
+            data: JSON.stringify(loginByQrData),
+            contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+            dataType: "json",    // 加了data就不用再转json对象了
             type: 'POST',
             timeout: 10000,
             success: function(data) {
@@ -711,8 +726,9 @@ jQuery.extend({
                 case 2:
                     codeTips.hide()
                     codeTipsSuccess.removeClass('hide')
-                    // 成功回调
-                    popup_loginCallBack()
+                    // loginByQrUrl 成功回调
+                    // popup_loginCallBack()
+                    window.location.href = login_success_url;
                     break;
                 case 3:
                     codeTips.show()
