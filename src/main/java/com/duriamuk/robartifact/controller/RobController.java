@@ -7,6 +7,8 @@ import com.duriamuk.robartifact.common.constant.TableName;
 import com.duriamuk.robartifact.common.schedule.RobScheduledThreadPool;
 import com.duriamuk.robartifact.common.schedule.RobTask;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
+import com.duriamuk.robartifact.common.validate.EntityValidator;
+import com.duriamuk.robartifact.common.validate.ValidateResult;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.service.RobService;
@@ -59,16 +61,23 @@ public class RobController {
         logger.info("开始抢票，入参：{}", payload);
         JSONObject jsonObject = JSON.parseObject(payload);
         RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
+        ValidateResult validateResult = EntityValidator.validate(robParamsDTO);
+        if (validateResult.hasError()) {
+            return validateResult.getErrorMessages();
+        }
         UserInfoPO userInfoPO = userService.getUserInfo();
         if (ObjectUtils.isEmpty(userInfoPO)) {
             return AjaxMessage.FAIL;
         }
         robParamsDTO.setUserId(userInfoPO.getId());
-        robService.insertRobRecord(robParamsDTO);
-        long id = robParamsDTO.getId();
-        RedisUtils.setWithExpire(TableName.ROB_RECORD + id, true, 30, TimeUnit.DAYS);
-        RobScheduledThreadPool.schedule(new RobTask(payload, 1, id));
-        return AjaxMessage.SUCCESS;
+        boolean isInsert = robService.insertRobRecord(robParamsDTO);
+        if (isInsert) {
+            long id = robParamsDTO.getId();
+            RedisUtils.setWithExpire(TableName.ROB_RECORD + id, true, 30, TimeUnit.DAYS);
+            RobScheduledThreadPool.schedule(new RobTask(payload, 1, id));
+            return AjaxMessage.SUCCESS;
+        }
+        return "进行中的抢票任务过多";
     }
 
     @RequestMapping(value = "stopRobTask", method = RequestMethod.GET)

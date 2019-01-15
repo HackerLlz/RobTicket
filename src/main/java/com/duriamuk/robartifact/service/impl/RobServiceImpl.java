@@ -3,8 +3,10 @@ package com.duriamuk.robartifact.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.duriamuk.robartifact.common.constant.TableName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
+import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.OrderRequestDTO;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.TicketInfoDTO;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.util.ListUtils;
 
@@ -40,6 +43,7 @@ public class RobServiceImpl implements RobService {
     private static final int SHORT_TRAIN_NUM_INDEX = 3;
     private static final int LONG_TRAIN_NUM_INDEX = 2;
     private static final int SECRET_INDEX = 0;
+    private static final int MAX_ROB_TASK = 2;
 
     @Autowired
     private TicketService ticketService;
@@ -54,8 +58,25 @@ public class RobServiceImpl implements RobService {
     private RobMapper robMapper;
 
     @Override
-    public void insertRobRecord(RobParamsDTO robParamsDTO) {
-        robMapper.insertRobRecord(robParamsDTO);
+    public Boolean insertRobRecord(RobParamsDTO robParamsDTO) {
+        List<RobParamsDTO> robParamsDTOList = listRobRecordByUserId(robParamsDTO.getUserId());
+        int goingRobTaskCount = countGoingRobTask(robParamsDTOList);
+        if (goingRobTaskCount <= MAX_ROB_TASK) {
+            robMapper.insertRobRecord(robParamsDTO);
+            return true;
+        }
+        return false;
+    }
+
+    private int countGoingRobTask(List<RobParamsDTO> robParamsDTOList) {
+        int connt = 0;
+        for (RobParamsDTO rob: robParamsDTOList) {
+            Object redisObj = RedisUtils.get(TableName.ROB_RECORD + rob.getId());
+            if (!ObjectUtils.isEmpty(redisObj)) {
+                connt ++;
+            }
+        }
+        return connt;
     }
 
     @Override

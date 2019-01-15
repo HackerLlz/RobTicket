@@ -6,6 +6,15 @@ package com.duriamuk.robartifact.common.tool;
  * @create: 2018-12-28 11:31
  */
 public class StrUtils {
+    /**
+     * 查找字符串中第一个某个特征属性后面的值
+     * @param name
+     * @param afterName
+     * @param interval
+     * @param endStr
+     * @param str
+     * @return
+     */
     public static String findVlaue(String name, String afterName, int interval, String endStr, String str) {
         String queryName = name + afterName;
         int queryIndex = str.indexOf(queryName);
@@ -23,6 +32,15 @@ public class StrUtils {
         return str.substring(start);
     }
 
+    /**
+     * 查找字符串中第一个某个特征属性前面的值
+     * @param name
+     * @param beforeName
+     * @param interval
+     * @param beginStr
+     * @param str
+     * @return
+     */
     public static String reverseFindVlaue(String name, String beforeName, int interval, String beginStr, String str) {
         String queryName = beforeName + name;
         int end = str.indexOf(queryName) - interval;

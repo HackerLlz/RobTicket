@@ -1130,8 +1130,8 @@
                     <li>
                         <span class="label"><label id="fromStationText_label">出发地</label></span>
                         <div class="inp-w">
-                            <input id="fromStation" type="hidden" th:value="${robParamsDTO?.fromStation?.fromStation}" name="leftTicketDTO.from_station">
-                            <input type="text" id="fromStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.fromStationName?.fromStationName}" name="leftTicketDTO.from_station_name" placeholder="简拼/全拼/汉字">
+                            <input id="fromStation" type="hidden" th:value="${robParamsDTO?.fromStation}" name="leftTicketDTO.from_station">
+                            <input type="text" id="fromStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.fromStationName}" name="leftTicketDTO.from_station_name" placeholder="简拼/全拼/汉字">
                             <span class="i-city" id="fromStation_icon_image" style="cursor: pointer;"></span>
                         </div>
                     </li>
@@ -1139,29 +1139,29 @@
                     <li>
                         <span class="label"><label id="toStationText_label"> 目的地</label></span>
                         <div class="inp-w">
-                            <input id="toStation" type="hidden" th:value="${robParamsDTO?.toStation?.toStation}" name="leftTicketDTO.to_station">
-                            <input type="text" id="toStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.toStationName?.toStationName}" name="leftTicketDTO.to_station_name" placeholder="简拼/全拼/汉字">
+                            <input id="toStation" type="hidden" th:value="${robParamsDTO?.toStation}" name="leftTicketDTO.to_station">
+                            <input type="text" id="toStationText" class="inp-txt inp_selected" th:value="${robParamsDTO?.toStationName}" name="leftTicketDTO.to_station_name" placeholder="简拼/全拼/汉字">
                             <span class="i-city" id="toStation_icon_image" style="cursor: pointer;"></span>
                         </div>
                     </li>
                     <li>
                         <span class="label"> 出发日</span>
                         <div class="inp-w" style="z-index:1200">
-                            <input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" th:value="${robParamsDTO?.trainDate?.trainDate}">
+                            <input type="text" class="inp_selected" name="leftTicketDTO.train_date" id="train_date" th:value="${robParamsDTO?.trainDate}">
                             <span id="date_icon_1" class="i-date"></span>
                         </div>
                     </li>
                     <li style="width: 150px">
                         <span class="label" style="width: 50px"> 出发时间</span>
                         <div class="inp-w" style="z-index:1200; width: 90px">
-                            <input type="text" class="inp_selected" name="" id="left_time_begin" th:value="${robParamsDTO?.leftTimeBegin}? robParamsDTO.leftTimeBegin: '00:00'" placeholder="" style="width: 40px"> -
-                            <input type="text" class="inp_selected" name="" id="left_time_end" th:value="${robParamsDTO?.leftTimeEnd}? robParamsDTO.leftTimeEnd: '24:00'" placeholder="" style="width: 40px">
+                            <input type="text" class="inp_selected" name="left_time_begin" id="left_time_begin" th:value="${robParamsDTO?.leftTimeBegin}? ${robParamsDTO.leftTimeBegin}: '00:00'" placeholder="" style="width: 40px"> -
+                            <input type="text" class="inp_selected" name="left_time_end" id="left_time_end" th:value="${robParamsDTO?.leftTimeEnd}? ${robParamsDTO.leftTimeEnd}: '24:00'" placeholder="" style="width: 40px">
                         </div>
                     </li>
                     <li>
                         <span class="label"> 车次</span>
                         <div class="inp-w" style="z-index:1200">
-                            <input type="text" class="inp_selected" name="" id="train_number" th:value="${robParamsDTO?.trainNumber?.trainNumber}" placeholder="全部">
+                            <input type="text" class="inp_selected" name="train_number" id="train_number" th:value="${robParamsDTO?.trainNumber}" placeholder="全部">
                         </div>
                     </li>
                 </ul>
@@ -1400,7 +1400,7 @@
             </ul>
             </form>
                 <div class="lay-btn captchaButton passengerInfo-inside" data-touclick-name="" style="height: auto; padding: 0px; overflow: hidden; zoom: 1;">
-                    <span style="float:left;padding-top:12px;font-size:14px;color:#333;font-family:Tahoma," ""="">验证码：</span>
+                    <span style="float:left;padding-top:12px;font-size:14px;color:#333;">验证码：</span>
                     <div class="touclick" name="touclick-randCode" style="z-index: 100; float: left; display: block;">
                         <div class="touclick-wrapper">
                             <div class="touclick-bgimg touclick-reload touclick-reload-normal"></div>
@@ -1625,15 +1625,16 @@ function doRob() {
                 dhtmlx.alert({
                     title: "提示",
                     ok: "确定",
-                    text: "抢票失败请重试！",
+                    text: data == "fail"? "抢票失败请重试！": data,
                     type: "alert-error",
                     callback: function(data) {
-
+                        unLoadGrayBackground();
                     }
                 })
             }
         },
         error: function () {
+            unLoadGrayBackground();
         }
     });
 }
@@ -1648,6 +1649,12 @@ function validateForm() {
             },
             "leftTicketDTO.train_date": {
                 required: true
+            },
+            "left_time_begin": {
+                required: true
+            },
+            "left_time_end": {
+                required: true
             }
         },
         ignore: "",
@@ -1659,21 +1666,22 @@ function validateForm() {
         unhighlight: function() {}
     });
 
-    validateForm.checkForm();
-    validateForm.hideErrors();
+    // var validateResult = validateForm.checkForm();
+    // validateForm.hideErrors();
     var cu = validateForm.errorList;
     for (var ct = 0; ct < cu.length; ct++) {
         var cs = cu[ct];
         $(cs.element).next().addClass("error")
     }
-    return validateForm.checkForm()
+    return validateForm.checkForm();
 }
 // 开始抢票
 function doRobClick() {
     if (validateForm()) {
         doRob();
+        return;
     }
-    // unLoadGrayBackground();
+    unLoadGrayBackground();
 };
 
 

@@ -1,6 +1,6 @@
 package com.duriamuk.robartifact.service;
 
-import com.duriamuk.robartifact.entity.PO.AuthCode.AuthCodePO;
+import com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO;
 
 /**
  * @author: DuriaMuk

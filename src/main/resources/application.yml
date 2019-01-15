@@ -24,7 +24,7 @@ spring:
     port: 6379
     timeout: 3600
 
+
 # MyBatis configuration
 mybatis:
   mapper-locations: classpath:META-INF/mybatis/*.xml
-

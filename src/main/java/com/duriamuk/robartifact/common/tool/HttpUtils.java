@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.sun.deploy.net.URLEncoder;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -15,11 +15,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.http.impl.client.*;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: DuriaMuk
@@ -45,13 +46,45 @@ import java.util.*;
  */
 public class HttpUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
-    private static final RequestConfig requestConfig = RequestConfig.custom()
-            .setConnectTimeout(5000)
-            .setConnectionRequestTimeout(1000)
-            .setSocketTimeout(5000).build();
-
-    public static final String SET_COOKIE = "Set-Cookie";
     public static final String COOKIE = "Cookie";
+    public static final String SET_COOKIE = "Set-Cookie";
+    public static final int CONNECT_TIMEOUT = 2000;
+    public static final int CONNECTION_REQUEST_TIMEOUT = 1000;
+    public static final int SOCKET_TIMEOUT = 4000;
+    public static final int MAX_TOTAL = 200;
+    public static final int DEFAULT_MAX_PER_ROUTE = 20;
+    public static final int MAX_IDLE_TIME = 60; // 秒
+    public static final int TIME_TO_LIVE = 200; // 秒
+    public static final boolean IS_MANAGER_SHARED = false;
+
+    // 超时信息配置
+    private static final RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectTimeout(CONNECT_TIMEOUT)
+            .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
+            .setSocketTimeout(SOCKET_TIMEOUT).build();
+    // 连接池管理对象
+    private static final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+
+    private static final CloseableHttpClient httpClient = HttpClients.custom()
+            .setDefaultRequestConfig(requestConfig) // 设置超时信息
+            .setRetryHandler(new DefaultHttpRequestRetryHandler(0, false)) // 设置重试次数，默认3次 此处禁用
+            .setConnectionManager(connManager) // 设置连接池管理对象
+            .setConnectionManagerShared(IS_MANAGER_SHARED) // 连接池是否共享模式
+            .evictIdleConnections(MAX_IDLE_TIME, TimeUnit.SECONDS) // 定期回收空闲连接
+            .evictExpiredConnections() // 定期回收过期连接
+            .setConnectionTimeToLive(TIME_TO_LIVE, TimeUnit.SECONDS) // 连接存活时间，如果不设置，则根据长连接信息决定，没信息则会 -1代表永久
+            .setConnectionReuseStrategy(DefaultConnectionReuseStrategy.INSTANCE) // 连接重用策略 是否能keepAlive
+            .setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE) // 长连接配置，即获取长连接生产多长时间
+            .build();
+
+    static {
+        // 设置最大连接数
+        connManager.setMaxTotal(MAX_TOTAL);
+        // 设置每个连接的路由数
+        connManager.setDefaultMaxPerRoute(DEFAULT_MAX_PER_ROUTE);
+        //设置到某个路由的最大连接数，会覆盖defaultMaxPerRoute
+        connManager.setMaxPerRoute(new HttpRoute(new HttpHost("kyfw.12306.cn", 80)), MAX_TOTAL);
+    }
 
     /**
      * Get请求
@@ -65,7 +98,8 @@ public class HttpUtils {
         // 设置证书
 //        System.setProperty("javax.net.ssl.trustStore","C:\\Program Files\\Java\\jdk1.8.0_181\\bin\\12306d.keystore");
 //        ystem.setProperty("javax.net.ssl.trustStorePassword","12306java");
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+//        CloseableHttpClient httpClient = getHttpClient();
+        CloseableHttpClient httpClient = getHttpClient();
         // 发送时httpclient会自动编码
         HttpGet httpGet = new HttpGet(buildGetUrl(url, paramsJson));
         String result = send(httpGet, httpClient, withCookie);
@@ -81,7 +115,7 @@ public class HttpUtils {
      */
     public static String doPostForm(String url, String data, boolean withCookie){
         logger.info("开始Post请求，入参：url：{}；data：{}；withCookie：{}", url, data, withCookie);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = getHttpClient();
         HttpPost httpPost = new HttpPost(url);
         addPostForm(httpPost, data);
         String result = send(httpPost, httpClient, withCookie);
@@ -97,7 +131,7 @@ public class HttpUtils {
      */
     public static String doPostStr(String url, String data, boolean withCookie){
         logger.info("开始Post请求，入参：url：{}；data：{}；withCookie：{}", url, data, withCookie);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = getHttpClient();
         HttpPost httpPost = new HttpPost(url);
         addPostStr(httpPost, data);
         String result = send(httpPost, httpClient, withCookie);
@@ -168,9 +202,12 @@ public class HttpUtils {
         }
     }
 
+    private static CloseableHttpClient getHttpClient() {
+        // 返回的单例HttpClient线程安全
+        return httpClient;
+    }
+
     private static String send(HttpRequestBase httpRequestBase, CloseableHttpClient httpClient, boolean withCookie) {
-        // 设置请求超时时间
-        httpRequestBase.setConfig(requestConfig);
         if (withCookie) {
             // 添加cookie头
             addHeaders(httpRequestBase, buildCookieJson());
@@ -181,48 +218,34 @@ public class HttpUtils {
 
     private static String sendRequest(HttpRequestBase httpRequestBase, CloseableHttpClient httpClient) {
         InputStream is = null;
+        CloseableHttpResponse httpResponse = null;
         String result = "";
         try {
-            CloseableHttpResponse httpResponse = httpClient.execute(httpRequestBase);
+            httpResponse = httpClient.execute(httpRequestBase);
             // 获取返回结果
             HttpEntity httpEntity = httpResponse.getEntity();
             if(httpEntity != null) {
                 is = httpEntity.getContent();
                 result = IOUtils.inputStreamToString(is);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if(is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(httpRequestBase != null) {
-                httpRequestBase.releaseConnection();
-            }
+            closeResources(is, httpResponse);
         }
-        if (result.startsWith("{")) {
-            logger.info("完成请求，result：{}", result);
-        } else {
-            logger.info("完成请求，result：html页面");
-//            logger.info("完成请求，result：{}", result);
-        }
+        logger.info("完成请求，result：{}", result.startsWith("{")? result: "html页面");
         return result;
     }
 
     private static String sendRequestWithCookie(HttpRequestBase httpRequestBase, CloseableHttpClient httpClient) {
         InputStream is = null;
+        CloseableHttpResponse httpResponse = null;
         String result = "";
         // 获取HttpClient上下文
         HttpClientContext context = getContextWithCookieStore();
         try {
             // 发送请求，将返回的cookie存在上下文中的cookieStore中
-            CloseableHttpResponse httpResponse = httpClient.execute(httpRequestBase, context);
+            httpResponse = httpClient.execute(httpRequestBase, context);
             // 重新添加Set-Cookie, 使set-cookie路径为/
             addSetCookie(context.getCookieStore());
 //            Header[] setCookies = httpResponse.getHeaders("Set-Cookie");     // 该方法不好改变cookie的Path，使得前端无法再带回来
@@ -232,27 +255,12 @@ public class HttpUtils {
                 is = httpEntity.getContent();
                 result = IOUtils.inputStreamToString(is);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if(is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(httpRequestBase != null) {
-                httpRequestBase.releaseConnection();
-            }
+            closeResources(is, httpResponse);
         }
-        if (result.startsWith("{")) {
-            logger.info("完成请求带cookie，result：{}", result);
-        } else {
-            logger.info("完成请求带cookie，result：html页面");
-        }
+        logger.info("完成请求，result：{}", result.startsWith("{")? result: "html页面");
         return result;
     }
 
@@ -420,5 +428,19 @@ public class HttpUtils {
         CookieStore cookieStore =  new BasicCookieStore();
         context.setCookieStore(cookieStore);
         return context;
+    }
+
+    private static void closeResources(InputStream is, CloseableHttpResponse httpResponse) {
+        try {
+            // 不关闭httpRequestBase，连接池重用
+            if(is != null) {
+                is.close();
+            }
+            if(httpResponse != null) {
+                httpResponse.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

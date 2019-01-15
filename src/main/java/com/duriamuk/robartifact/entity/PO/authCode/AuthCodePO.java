@@ -1,6 +1,5 @@
-package com.duriamuk.robartifact.entity.PO.AuthCode;
+package com.duriamuk.robartifact.entity.PO.authCode;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

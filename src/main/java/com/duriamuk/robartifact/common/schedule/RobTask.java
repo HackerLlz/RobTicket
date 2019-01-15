@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class RobTask implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(RobTask.class);
+    private static final int MAX_ERROR_COUNT = 10;
 
     private RobService robService;
 
@@ -34,6 +35,8 @@ public class RobTask implements Runnable{
     private Long period;
 
     private Long id;
+
+    private int errorCount;
 
     public RobTask(String payload, long period, long id) {
         this.payload = payload;
@@ -94,7 +97,11 @@ public class RobTask implements Runnable{
     private void resetTask() {
         cookie = ThreadLocalUtils.get();
         cancelTask();
-        RobScheduledThreadPool.schedule(this);
+        if (errorCount ++ < MAX_ERROR_COUNT) {
+            RobScheduledThreadPool.schedule(this);
+        } else {
+            RedisUtils.setWithExpire(TableName.ROB_RECORD + id, null, 0);
+        }
     }
 
     private void cancelTask() {

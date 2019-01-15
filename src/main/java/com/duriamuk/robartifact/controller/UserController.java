@@ -7,7 +7,10 @@ import com.duriamuk.robartifact.common.constant.TableName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
+import com.duriamuk.robartifact.common.validate.EntityValidator;
 import com.duriamuk.robartifact.common.validate.FormatValidater;
+import com.duriamuk.robartifact.common.validate.ValidateResult;
+import com.duriamuk.robartifact.common.validate.group.Update;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.service.RobService;
@@ -69,13 +72,11 @@ public class UserController {
     public String update(@RequestBody String payload) {
         logger.info("开始更新用户，入参：{}", payload);
         UserInfoPO userInfoPO = JSON.parseObject(payload, UserInfoPO.class);
-        boolean isUpdate = false;
-        if (!ObjectUtils.isEmpty(userInfoPO)) {
-            boolean isValidate = FormatValidater.emailValidate(userInfoPO.getSendMail());
-            if (isValidate) {
-                isUpdate = userService.updateUserInfo(userInfoPO);
-            }
+        ValidateResult validateResult = EntityValidator.validate(userInfoPO, Update.class);
+        if (validateResult.hasError()) {
+            return validateResult.getErrorMessages();
         }
+        boolean isUpdate = userService.updateUserInfo(userInfoPO);
         return isUpdate? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
     }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duriamuk.robartifact.mapper.AuthCodeMapper">
 
-    <resultMap id="authCodePOMap" type="com.duriamuk.robartifact.entity.PO.AuthCode.AuthCodePO">
+    <resultMap id="authCodePOMap" type="com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO">
         <result column="id" property="id"/>
         <result column="md5" property="md5"/>
         <result column="check_position" property="checkPosition" />
@@ -22,7 +22,7 @@
         md5 = #{md5}
     </select>
 
-    <update id="updateAuthCode" parameterType="com.duriamuk.robartifact.entity.PO.AuthCode.AuthCodePO">
+    <update id="updateAuthCode" parameterType="com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO">
         UPDATE
         auth_code
         <set>
@@ -37,8 +37,8 @@
         id = #{id}
     </update>
 
-    <insert id="insertAuthCode" parameterType="com.duriamuk.robartifact.entity.PO.AuthCode.AuthCodePO">
-        <selectKey resultType="com.duriamuk.robartifact.entity.PO.AuthCode.AuthCodePO" order="AFTER" keyProperty="id">
+    <insert id="insertAuthCode" parameterType="com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO">
+        <selectKey resultType="com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() as id
         </selectKey>
         INSERT INTO

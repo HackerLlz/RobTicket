@@ -2,7 +2,7 @@ package com.duriamuk.robartifact.entity.DTO.robProcess;
 
 import lombok.Data;
 
-import java.math.BigInteger;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author: DuriaMuk
@@ -23,24 +23,33 @@ public class RobParamsDTO {
 
     private Boolean robNoSeat;
 
+    @NotBlank(message = "缺少出发站编码")
     private String fromStation;
 
+    @NotBlank(message = "缺少到达站编码")
     private String fromStationName;
 
+    @NotBlank(message = "缺少出发站名称")
     private String toStation;
 
+    @NotBlank(message = "缺少到达站名称")
     private String toStationName;
 
+    @NotBlank(message = "缺少列车日期")
     private String trainDate;
 
+    @NotBlank(message = "缺少出发时间")
     private String leftTimeBegin;
 
+    @NotBlank(message = "缺少到达时间")
     private String leftTimeEnd;
 
     private String trainNumber;
 
+    @NotBlank(message = "缺少车票类型")
     private String purposeCodes;
 
+    @NotBlank(message = "缺少旅程类型")
     private String tourFlag;
 
     private Integer status;

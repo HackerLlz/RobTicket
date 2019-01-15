@@ -12,7 +12,7 @@ import java.util.List;
 public interface RobService {
     Boolean doRob(String payload) throws Exception;
 
-    void insertRobRecord(RobParamsDTO robParamsDTO);
+    Boolean insertRobRecord(RobParamsDTO robParamsDTO);
 
     List<RobParamsDTO> listRobRecordByUserId(Long userId);
 

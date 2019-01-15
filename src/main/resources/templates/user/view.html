@@ -149,9 +149,12 @@
          // },
          success: function (data) {
              if (data == "success") {
-                 window.location.href = "/ticket/view";
-             } else {
+                 alert("提交成功");
+                 // window.location.href = "/ticket/view";
+             } else if (data == "fail") {
                  alert("提交错误");
+             } else {
+                 alert(data);
              }
          }
      });

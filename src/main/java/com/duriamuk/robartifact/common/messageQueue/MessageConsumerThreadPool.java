@@ -8,7 +8,7 @@ import java.util.concurrent.*;
  * @create: 2019-01-10 20:49
  */
 public class MessageConsumerThreadPool {
-    private static ExecutorService executor = Executors.newFixedThreadPool(1);
+    private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public static Future<?> message(MessageTask messageTask) {
         Future<?> future = executor.submit(messageTask);
