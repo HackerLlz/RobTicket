@@ -3,14 +3,11 @@ package com.duriamuk.robartifact.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.tool.CookieUtils;
-import com.duriamuk.robartifact.common.tool.ThreadLocalUtils;
 import com.duriamuk.robartifact.mapper.LoginMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.service.UserService;
-import jdk.nashorn.internal.scripts.JS;
-import org.apache.http.cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String login(String payload) {
         logger.info("12306登陆，入参 ：{}", payload);
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String url = UrlConstant.PASS_URL + "web/login";
             String result = HttpUtils.doPostForm(url, payload, true);
             if (isSuccess(result)) {
@@ -95,7 +92,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String uamtkStatic(String payload) {
         logger.info("验证uamtk，入参 ：{}", payload);
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String url = UrlConstant.PASS_URL + "web/auth/uamtk-static";
             String result = HttpUtils.doPostForm(url, payload, true);
             if (isSuccess(result)) {
@@ -108,7 +105,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String uamtk(String payload) {
         logger.info("验证并重置uamtk，入参 ：{}", payload);
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String url = UrlConstant.PASS_URL + "web/auth/uamtk";
             String result = HttpUtils.doPostForm(url, payload, true);
             if (isSuccess(result)) {
@@ -121,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String uamtkClient(String payload) {
         logger.info("将TK存入Cookie，入参 ：{}", payload);
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String url = UrlConstant.WEB_URL + "otn/uamauthclient";
             String result = HttpUtils.doPostForm(url, payload, true);
             if (isSuccess(result)) {
@@ -136,12 +133,12 @@ public class LoginServiceImpl implements LoginService {
         logger.info("验证是否已登陆");
         String result = uamtk(buildUamtkPayload());
         if (isSuccess(result)) {
-            HttpUtils.addReponseSetCookieToRequestCookie();
-            HttpUtils.addRequestCookie("tk", getTk(result));
+            HttpUtils.addResponseSetCookieToRequestCookie();
+            HttpUtils.updateRequestCookie("tk", getTk(result));
             result = uamtkClient(buildUamtkClientPayload(result));
             if (isSuccess(result)) {
                 // 不知道有没有新session
-                HttpUtils.addReponseSetCookieToRequestCookie();
+                HttpUtils.addResponseSetCookieToRequestCookie();
                 logger.info("已登陆");
                 return true;
             }
@@ -175,26 +172,26 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private Boolean loginByUamtkSetCookie() {
-        HttpUtils.addReponseSetCookieToRequestCookie();
+        HttpUtils.addResponseSetCookieToRequestCookie();
         String result = uamtk(buildUamtkPayload());
         if (isSuccess(result)) {
             String oldTk = CookieUtils.getCookie("tk");
-            HttpUtils.addReponseSetCookieToRequestCookie();
-            HttpUtils.addRequestCookie("tk", getTk(result));
+            HttpUtils.addResponseSetCookieToRequestCookie();
+            HttpUtils.updateRequestCookie("tk", getTk(result));
             result = uamtkClient(buildUamtkClientPayload(result));
             if (isSuccess(result)) {
                 // 不知道有没有新session
-                HttpUtils.addReponseSetCookieToRequestCookie();
+                HttpUtils.addResponseSetCookieToRequestCookie();
                 String username = userService.getUserNameFrom12306();
                 if (!StringUtils.isEmpty(username)) {
                     int insertCount = loginMapper.insertUsername(username);
-                    logger.info("登陆成功，是{}用户", insertCount == 0? "老": "新");
+                    logger.info("登陆成功，是{}用户", insertCount == 0 ? "老" : "新");
                     return true;
                 }
             }
             if (!StringUtils.isEmpty(oldTk)) {
                 // 抢票时会一直更新tk, 这里就可能注销失败，但没抢票时的登陆还是能保证注销成功，除非接口出问题
-                HttpUtils.addRequestCookie("tk", oldTk);
+                HttpUtils.updateRequestCookie("tk", oldTk);
             }
         }
         userService.logout();
@@ -216,14 +213,14 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private Boolean isSuccess(String result) {
-        return (result.startsWith("{") && JSON.parseObject(result).getInteger("result_code") == 0)? true: false;
+        return (result.startsWith("{") && JSON.parseObject(result).getInteger("result_code") == 0) ? true : false;
     }
 
     private String getTk(String result) {
         JSONObject jsonObject = JSON.parseObject(result);
         String apptk = jsonObject.getString("apptk");
         String newapptk = jsonObject.getString("newapptk");
-        String tk = apptk != null? apptk: newapptk;
+        String tk = apptk != null ? apptk : newapptk;
         return tk;
     }
 

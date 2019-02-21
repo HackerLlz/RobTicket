@@ -12,7 +12,7 @@ public interface PassengerService {
 
     String checkOrderInfo(String payload);
 
-    String doOrder(String url,String data);
+    String doOrder(String url, String data);
 
     String getQueueCount(String payload);
 

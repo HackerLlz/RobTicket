@@ -9,7 +9,7 @@
             z-index: 3;
             background-position: 0 -96px;
             background: url(../images/login/captcha.png);
-        background-repeat: no-repeat;
+            background-repeat: no-repeat;
             width: 27px;
             height: 27px;
             font-size: 0;
@@ -39,22 +39,35 @@
     <!-- 轮播图 -->
     <div class="loginSlide">
         <div class="bd">
-            <div class="tempWrap" style="overflow: hidden; position: relative; width: auto;"><ul style="width: 4047px; position: relative; overflow: hidden; padding: 0px; margin: 0px; left: -1349px;"><li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;" class="clone"><a href="https://exservice.12306.cn/excater/index.html"></a></li>
+            <div class="tempWrap" style="overflow: hidden; position: relative; width: auto;">
+                <ul style="width: 4047px; position: relative; overflow: hidden; padding: 0px; margin: 0px; left: -1349px;">
+                    <li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;"
+                        class="clone"><a href="https://exservice.12306.cn/excater/index.html"></a></li>
 
-                <li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;"><a href="https://exservice.12306.cn/excater/index.html"></a></li><li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;" class="clone"><a href="https://exservice.12306.cn/excater/index.html"></a></li></ul></div>
+                    <li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;">
+                        <a href="https://exservice.12306.cn/excater/index.html"></a></li>
+                    <li style="background: url(&quot;https://www.12306.cn/index/images/pic/banner-login.jpg&quot;) center center no-repeat; float: left; width: 1349px;"
+                        class="clone"><a href="https://exservice.12306.cn/excater/index.html"></a></li>
+                </ul>
+            </div>
         </div>
-        <div class="hd"><ul><li class="on">1</li></ul></div>
+        <div class="hd">
+            <ul>
+                <li class="on">1</li>
+            </ul>
+        </div>
     </div>
     <!--  仅显示账户登录添加样式login-box-account，验证码隐藏添加样式 login-box-account-nocode -->
     <div class="login-box" style="margin-top: -267px;">
-        <ul class="login-hd "style="margin-top: 100px;" >
+        <ul class="login-hd " style="margin-top: 100px;">
             <li class="login-hd-code"><a href="javascript:;">扫码登录</a></li>
             <li class="login-hd-account active"><a href="javascript:;">账号登录</a></li>
         </ul>
         <div class="login-bd">
             <!-- 扫码登录 -->
             <div class="login-code" style="display: none;">
-                <div id="J-login-code-loading" class="login-code-loading" style="display: none;"><img src="images/query/loading.gif"></div>
+                <div id="J-login-code-loading" class="login-code-loading" style="display: none;"><img
+                        src="images/query/loading.gif"></div>
                 <div id="J-login-code-con" class="login-code-con" style="">
                     <div class="login-code-main">
                         <div class="code-pic" style="left: 80px;">
@@ -65,10 +78,12 @@
                                 <a href="javascript:;" class="btn btn-primary">刷新</a>
                             </div>
                         </div>
-                        <div class="code-tips" style="display: none;"><img src="images/query/code-tips.png" alt=""></div>
+                        <div class="code-tips" style="display: none;"><img src="images/query/code-tips.png" alt="">
+                        </div>
                     </div>
-                    <div class="login-code-txt">打开<span class="txt-primary">12306手机APP</span>  扫描二维码</div>
-                    <div class="login-code-txt"><a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary" target="_blank">注册12306账号</a></div>
+                    <div class="login-code-txt">打开<span class="txt-primary">12306手机APP</span> 扫描二维码</div>
+                    <div class="login-code-txt"><a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary"
+                                                   target="_blank">注册12306账号</a></div>
                 </div>
                 <div id="J-login-code-success" class="login-code-con login-code-success hide">
                     <img src="images/query/login-success.png" alt="">
@@ -97,18 +112,23 @@
                         <div class="lgcode-error" style="display: none;"></div>
                         <div class="lgcode-success" style="display: none;"></div>
                         <div id="refresh_code" class="lgcode-refresh"></div>
-                        <div id="J-loginImgArea" class="loginImg"><img id="J-loginImg" class="imgCode" alt="" src=""></div>
-                        <div class="lgcode-loading" style="display: none;"><img th:src="@{/images/query/loading.gif}" alt="" style="display: none;">
+                        <div id="J-loginImgArea" class="loginImg"><img id="J-loginImg" class="imgCode" alt="" src="">
+                        </div>
+                        <div class="lgcode-loading" style="display: none;"><img th:src="@{/images/query/loading.gif}"
+                                                                                alt="" style="display: none;">
                         </div>
                         <div id="J-passCodeCoin"></div>
                     </div>
                 </div>
-                <div class="login-error" id="J-login-error" style="display: none;"><i class="icon icon-plaint-fill"></i><span>用户名或密码输入错误</span></div>
+                <div class="login-error" id="J-login-error" style="display: none;"><i class="icon icon-plaint-fill"></i><span>用户名或密码输入错误</span>
+                </div>
                 <div class="login-btn">
                     <a id="J-login" href="javascript:;" class="btn btn-primary form-block">立即登录</a>
                 </div>
                 <div class="login-txt">
-                    <a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary" target="_blank">注册12306账号</a> | <a href="https://kyfw.12306.cn/otn/forgetPassword/initforgetMyPassword" class="txt-lighter" target="_blank">忘记密码？</a>
+                    <a href="https://kyfw.12306.cn/otn/regist/init" class="txt-primary" target="_blank">注册12306账号</a> |
+                    <a href="https://kyfw.12306.cn/otn/forgetPassword/initforgetMyPassword" class="txt-lighter"
+                       target="_blank">忘记密码？</a>
                 </div>
             </div>
         </div>
@@ -138,7 +158,7 @@
         // 获得二维码
         $.popup_createQr();
         // 刷新验证码
-        $('.lgcode-refresh').unbind('click').click(function() {
+        $('.lgcode-refresh').unbind('click').click(function () {
             $('.lgcode-refresh').addClass('lgcode-refresh-click')
 
             if (popup_is_uam_login == 'Y') {
@@ -154,14 +174,14 @@
         $('.lgcode-refresh').click();
 
         // 登录按钮
-        $('#J-login').click(function() {
+        $('#J-login').click(function () {
             var userName = $('#J-userName').val()
             var password = $('#J-password').val()
-            var mobile=/^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])\d{8}$/;
+            var mobile = /^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])\d{8}$/;
             var tel = /^[A-Za-z]{1}([A-Za-z0-9]|[_]) {0,29}$/;
             var tel_other = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
 
-            if(!userName) {
+            if (!userName) {
                 $.popup_show_login_error('请输入用户名！')
                 return false;
             }
@@ -195,29 +215,29 @@
         $.popup_initLogin(false);
         $.getBanners();
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var loginBox = $('.login-panel .login-box');
             loginBox.css('margin-top', -loginBox.outerHeight() / 2)
             if (!$('.login-box').hasClass('login-box-account')) {
                 $(".login-box").slide({
-                    titCell : ".login-hd li",
-                    mainCell : ".login-bd",
-                    titOnClassName : "active",
-                    trigger : "click"
+                    titCell: ".login-hd li",
+                    mainCell: ".login-bd",
+                    titOnClassName: "active",
+                    trigger: "click"
                 });
             }
             // 鼠标滑入显示二维码提示
-            $('.login-code-main').hover(function(){
+            $('.login-code-main').hover(function () {
                 $('.login-code-main .code-pic').stop().animate({
-                    'left' : 0
-                },300,function(){
+                    'left': 0
+                }, 300, function () {
                     $('.login-code-main .code-tips').show()
                 })
-            },function(){
+            }, function () {
                 $('.login-code-main .code-tips').hide();
                 $('.login-code-main .code-pic').stop().animate({
-                    'left' : '80px'
-                },300)
+                    'left': '80px'
+                }, 300)
             })
         });
     })(jQuery);

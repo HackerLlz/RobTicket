@@ -1,14 +1,12 @@
 package com.duriamuk.robartifact.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.common.constant.TableName;
+import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.validate.EntityValidator;
-import com.duriamuk.robartifact.common.validate.FormatValidater;
 import com.duriamuk.robartifact.common.validate.ValidateResult;
 import com.duriamuk.robartifact.common.validate.group.Update;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
@@ -77,13 +75,13 @@ public class UserController {
             return validateResult.getErrorMessages();
         }
         boolean isUpdate = userService.updateUserInfo(userInfoPO);
-        return isUpdate? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
+        return isUpdate ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
     }
 
     private void setRobStatus(List<RobParamsDTO> robParamsList) {
-        for (RobParamsDTO robParamsDTO: robParamsList) {
-            Object value = RedisUtils.get(TableName.ROB_RECORD + robParamsDTO.getId());
-            robParamsDTO.setStatus(!ObjectUtils.isEmpty(value)? 1: 0);
+        for (RobParamsDTO robParamsDTO : robParamsList) {
+            Object value = RedisUtils.get(PrefixName.TABLE_ROB_RECORD + robParamsDTO.getId());
+            robParamsDTO.setStatus(!ObjectUtils.isEmpty(value) ? 1 : 0);
         }
     }
 }

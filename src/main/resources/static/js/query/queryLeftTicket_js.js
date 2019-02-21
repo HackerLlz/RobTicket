@@ -1,7 +1,7 @@
 var myJpopup;
 var jPlayer;
 /*<![CDATA[*/
-var ctx='/otn/';
+var ctx = '/otn/';
 var globalRepeatSubmitToken = null;
 var global_lang = 'zh_CN';
 var sessionInit = '\u5218\u826F\u603B';
@@ -17,59 +17,60 @@ var passport_captcha_check = 'https://kyfw.12306.cn/passport/captcha/captcha-che
 var passport_authclient = 'uamauthclient';
 var passport_loginPage = 'resources/login.html';
 var passport_okPage = 'view/index.html';
-var passport_proxy_captcha =  'resources/login.html';
+var passport_proxy_captcha = 'resources/login.html';
 
 /*]]>*/
 
 /*<![CDATA[*/
 //为了国际化，需要定义后台获取的字符串
 $.views.helpers({
-    buttonText : function() {
+    buttonText: function () {
         return '\u9884\u8BA2';
     }
 });
 $.views.helpers({
-    isNum : function(value) {
+    isNum: function (value) {
         //alert(value);
         return parseInt(value);
     }
 });
 $.views.helpers({
-    changeLiShi : function(value) {
-        if (value.substring(0,1) == "0") {
-            if (value.substring(1,2) == "0") {
-                if (value.substring(3,4) == "0") {
-                    value = value.substring(4,5) + "分";
+    changeLiShi: function (value) {
+        if (value.substring(0, 1) == "0") {
+            if (value.substring(1, 2) == "0") {
+                if (value.substring(3, 4) == "0") {
+                    value = value.substring(4, 5) + "分";
                 } else {
-                    value = value.substring(3,5) + "分";
+                    value = value.substring(3, 5) + "分";
                 }
             } else {
-                value = value.substring(1,2) + "小时" + value.substring(3,5) + "分";
+                value = value.substring(1, 2) + "小时" + value.substring(3, 5) + "分";
             }
         } else {
-            if (value.substring(3,5) == "00") {
-                value = value.substring(0,2) + "小时";
+            if (value.substring(3, 5) == "00") {
+                value = value.substring(0, 2) + "小时";
             } else {
-                value = value.substring(0,2) + "小时" + value.substring(3,5) + "分";;
+                value = value.substring(0, 2) + "小时" + value.substring(3, 5) + "分";
+                ;
             }
         }
         return value;
     }
 });
 $.views.helpers({
-    changeArriveDate : function(value1, value2) {
+    changeArriveDate: function (value1, value2) {
         value1 = value1.replace(":", "");
         value2 = value2.replace(":", "");
-        hour_value = Number(value1.substring(0,2)) + Number(value2.substring(0,2));
-        min_value = Number(value1.substring(2,4)) + Number(value2.substring(2,4));
+        hour_value = Number(value1.substring(0, 2)) + Number(value2.substring(0, 2));
+        min_value = Number(value1.substring(2, 4)) + Number(value2.substring(2, 4));
         if (min_value >= 60) {
             hour_value = hour_value + 1;
         }
         if (hour_value >= 24 && hour_value < 48) {
             return "次日";
-        } else if(hour_value >= 48 && hour_value < 72) {
+        } else if (hour_value >= 48 && hour_value < 72) {
             return "两日";
-        } else if(hour_value >= 72) {
+        } else if (hour_value >= 72) {
             return "三日";
         } else {
             return "当日";
@@ -85,9 +86,9 @@ var backTrainDate = '2018-12-13';
 var page_show_flag = null;
 var purposeCodeFromIndex = null;
 var roundReferTime = null;
-var studentComPerArr=['2018-06-01','2018-09-30','2018-12-01','2018-12-31','2019-01-01','2019-03-31'];
-var studentMindate='2018-12-13';
-var studentMaxdate='2019-01-11';
+var studentComPerArr = ['2018-06-01', '2018-09-30', '2018-12-01', '2018-12-31', '2019-01-01', '2019-03-31'];
+var studentMindate = '2018-12-13';
+var studentMaxdate = '2019-01-11';
 var otherMindate = '2018-12-13';
 var otherMaxdate = '2019-01-11';
 // 日期范围传参
@@ -136,52 +137,52 @@ var other_buy_date = '2018-12-13&2019-01-11';
 //var gc_tour_flag = null;
 // 旅程类型传参，用于判断跳转
 var train_tour_flag = 'other';
-var tour_flag='';
-var dateArr =['12-13','12-14','12-15','12-16','12-17','12-18','12-19','12-20','12-21','12-22','12-23','12-24','12-25','12-26','12-27','12-28','12-29','12-30','12-31','01-01','01-02','01-03','01-04','01-05','01-06','01-07','01-08','01-09','01-10','01-11'];
-var fullDateArr =['2018-12-13','2018-12-14','2018-12-15','2018-12-16','2018-12-17','2018-12-18','2018-12-19','2018-12-20','2018-12-21','2018-12-22','2018-12-23','2018-12-24','2018-12-25','2018-12-26','2018-12-27','2018-12-28','2018-12-29','2018-12-30','2018-12-31','2019-01-01','2019-01-02','2019-01-03','2019-01-04','2019-01-05','2019-01-06','2019-01-07','2019-01-08','2019-01-09','2019-01-10','2019-01-11'];
-var otherDateArr = ['2018-12-13','2018-12-14','2018-12-15','2018-12-16','2018-12-17','2018-12-18','2018-12-19','2018-12-20','2018-12-21','2018-12-22','2018-12-23','2018-12-24','2018-12-25','2018-12-26','2018-12-27','2018-12-28','2018-12-29','2018-12-30','2018-12-31','2019-01-01','2019-01-02','2019-01-03','2019-01-04','2019-01-05','2019-01-06','2019-01-07','2019-01-08','2019-01-09','2019-01-10','2019-01-11'];
-var ClickWho =''
-var isstudentDate=false
+var tour_flag = '';
+var dateArr = ['12-13', '12-14', '12-15', '12-16', '12-17', '12-18', '12-19', '12-20', '12-21', '12-22', '12-23', '12-24', '12-25', '12-26', '12-27', '12-28', '12-29', '12-30', '12-31', '01-01', '01-02', '01-03', '01-04', '01-05', '01-06', '01-07', '01-08', '01-09', '01-10', '01-11'];
+var fullDateArr = ['2018-12-13', '2018-12-14', '2018-12-15', '2018-12-16', '2018-12-17', '2018-12-18', '2018-12-19', '2018-12-20', '2018-12-21', '2018-12-22', '2018-12-23', '2018-12-24', '2018-12-25', '2018-12-26', '2018-12-27', '2018-12-28', '2018-12-29', '2018-12-30', '2018-12-31', '2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06', '2019-01-07', '2019-01-08', '2019-01-09', '2019-01-10', '2019-01-11'];
+var otherDateArr = ['2018-12-13', '2018-12-14', '2018-12-15', '2018-12-16', '2018-12-17', '2018-12-18', '2018-12-19', '2018-12-20', '2018-12-21', '2018-12-22', '2018-12-23', '2018-12-24', '2018-12-25', '2018-12-26', '2018-12-27', '2018-12-28', '2018-12-29', '2018-12-30', '2018-12-31', '2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06', '2019-01-07', '2019-01-08', '2019-01-09', '2019-01-10', '2019-01-11'];
+var ClickWho = ''
+var isstudentDate = false
 var isInMaintenanceHours = false;
 var isSuperLogin = false;
 //快捷购票添加
-var passengerAll=null;
-var passengerChecked=[];//已选常用联系人
-var xbChecked=[];//已选席别
-var rqChecked=[];//已选日期
-var ccSelected=[];//已选车次
+var passengerAll = null;
+var passengerChecked = [];//已选常用联系人
+var xbChecked = [];//已选席别
+var rqChecked = [];//已选日期
+var ccSelected = [];//已选车次
 
-var autoSearchTime=5000;
+var autoSearchTime = 5000;
 var noticeContent = null;
 
-var isSaveQueryLog='N';
+var isSaveQueryLog = 'N';
 
-var other_control=30;
-var stu_control=30;
-var isDwTicketResign='N';
-var DW_TRAINS=['D4805','D4807','D4831','D901','D902','D903','D904','D905','D906','D907','D908','D909','D910','D915','D921','D922','D923','D924','D927','D928','D931','D932','D934','D933','D935','D936','D937','D938','D965','D925','D926','D941','D942','D943','D944'];
-var canChangeToStation=null;
+var other_control = 30;
+var stu_control = 30;
+var isDwTicketResign = 'N';
+var DW_TRAINS = ['D4805', 'D4807', 'D4831', 'D901', 'D902', 'D903', 'D904', 'D905', 'D906', 'D907', 'D908', 'D909', 'D910', 'D915', 'D921', 'D922', 'D923', 'D924', 'D927', 'D928', 'D931', 'D932', 'D934', 'D933', 'D935', 'D936', 'D937', 'D938', 'D965', 'D925', 'D926', 'D941', 'D942', 'D943', 'D944'];
+var canChangeToStation = null;
 var if_show_pass_code_login = 'Y';
-var intervalTime=null;
-var queryOrderWaitTimeInterval='3000';
-var canChooseSeats=null;
-var choose_Seats=null;
-var canChooseBeds=null;
-var isCanChooseMid=null;
+var intervalTime = null;
+var queryOrderWaitTimeInterval = '3000';
+var canChooseSeats = null;
+var choose_Seats = null;
+var canChooseBeds = null;
+var isCanChooseMid = null;
 
-var hainan_limit_from_telcode=',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
-var hainan_limit_to_telcode=',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
-var hainan_limit_start_traindate='2018-12-23';
-var hainan_limit_msg='';
+var hainan_limit_from_telcode = ',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
+var hainan_limit_to_telcode = ',BFQ,UFQ,FZQ,HMQ,KLQ,PFQ,UQQ,KGQ,LIQ,MHQ,QZQ,QYQ,JUQ,SEQ,WEQ,YUQ,CTQ,FJQ,PYQ,WNQ,ACQ,TWQ,VUQ,BWQ,KEQ,SRQ,';
+var hainan_limit_start_traindate = '2018-12-23';
+var hainan_limit_msg = '';
 
-var is_uam_login='Y';
+var is_uam_login = 'Y';
 
 /*]]>*/
 
-(function() {
+(function () {
     var b = "输入乘客姓名";
     var a = false;
-    $(document).ready(function() {
+    $(document).ready(function () {
         myJpopup = $("#any").jpopup({
             width: 350,
             height: 140,
@@ -191,11 +192,11 @@ var is_uam_login='Y';
         var d;
         if (!window.attachEvent) {
             var c = audiojs;
-            c.events.ready(function() {
+            c.events.ready(function () {
                 d = c.createAll()
             })
         }
-        jPlayer = function(f) {
+        jPlayer = function (f) {
             $("#tryPlayer").html("停止提示音乐");
             if (f == "play") {
                 if (window.attachEvent) {
@@ -203,7 +204,8 @@ var is_uam_login='Y';
                 } else {
                     try {
                         d[0].play()
-                    } catch (h) {}
+                    } catch (h) {
+                    }
                 }
             } else {
                 $("#tryPlayer").html("试听提示音乐");
@@ -217,12 +219,13 @@ var is_uam_login='Y';
                 } else {
                     try {
                         d[0].pause()
-                    } catch (h) {}
+                    } catch (h) {
+                    }
                 }
             }
         };
         $.init_select_date();
-        $("#tryPlayer").click(function() {
+        $("#tryPlayer").click(function () {
             if ($(this).html() == "试听提示音乐") {
                 jPlayer("play");
                 $(this).html("停止提示音乐")
@@ -231,21 +234,21 @@ var is_uam_login='Y';
                 $(this).html("试听提示音乐")
             }
         });
-        $("#reloadPassenger").click(function() {
+        $("#reloadPassenger").click(function () {
             $.reloadPassenger()
         });
-        $("#searchPassenger").on("keyup", function(f) {
+        $("#searchPassenger").on("keyup", function (f) {
             $.renderPassenger()
-        }).on("focus", function() {
+        }).on("focus", function () {
             if ($(this).val() == b) {
                 $(this).val("")
             }
-        }).on("blur", function() {
+        }).on("blur", function () {
             if ($(this).val() == "") {
                 $(this).val(b)
             }
         });
-        $("#inp-train").on("click", function(g) {
+        $("#inp-train").on("click", function (g) {
             var f = $("#inp-train").val();
             a = true;
             if ($.trim(f) == "请输入") {
@@ -254,13 +257,13 @@ var is_uam_login='Y';
             } else {
                 $("#inp-train").select()
             }
-        }).on("blur", function(f) {
+        }).on("blur", function (f) {
             if ($.trim($("#inp-train").val()) == "") {
                 $(this).css("color", "#999");
                 $("#inp-train").val("  请输入")
             }
         });
-        $("#seat-list li").click(function() {
+        $("#seat-list li").click(function () {
             if ($(this).attr("disabled") == "disabled") {
                 return
             }
@@ -293,7 +296,7 @@ var is_uam_login='Y';
                     })
                 }
             } else {
-                $.each($("#prior_seat span"), function(j, l) {
+                $.each($("#prior_seat span"), function (j, l) {
                     if (h == $(l).attr("name")) {
                         $(l).remove();
                         for (var k = 0; k < xbChecked.length; k++) {
@@ -308,7 +311,7 @@ var is_uam_login='Y';
                 $(this).removeClass("cur")
             }
         });
-        $("#date-list li").click(function() {
+        $("#date-list li").click(function () {
             if ($(this).attr("train_date") == "yes") {
                 return
             }
@@ -340,7 +343,7 @@ var is_uam_login='Y';
                     $(this).removeClass("cur")
                 }
             } else {
-                $.each($("#prior_date span"), function(k, m) {
+                $.each($("#prior_date span"), function (k, m) {
                     if (j == $(m).attr("name")) {
                         $(m).remove();
                         for (var l = 0; l < rqChecked.length; l++) {
@@ -372,14 +375,14 @@ var is_uam_login='Y';
                 $(this).removeClass("cur")
             }
         });
-        $("#train_date").click(function() {
+        $("#train_date").click(function () {
             $("#sel-date").hide()
         });
-        $("#back_train_date").click(function() {
+        $("#back_train_date").click(function () {
             $("#sel-date").hide()
         });
         if (!isInMaintenanceHours) {
-            $("#dc").click(function() {
+            $("#dc").click(function () {
                 $("#autoSubmit").removeAttr("disabled");
                 $("#autoSubmit").siblings("label").css("color", "#333");
                 $("#autoSubmitTxt").removeAttr("title");
@@ -387,7 +390,7 @@ var is_uam_login='Y';
                 $("#partSubmit").siblings("label").css("color", "#333");
                 $("#partSubmitTxt").removeAttr("title")
             });
-            $("#wf").click(function() {
+            $("#wf").click(function () {
                 $("#autoSubmit").prop("checked", false);
                 $("#autoSubmit").attr("disabled", true);
                 $("#autoSubmit").siblings("label").css("color", "#999");
@@ -398,7 +401,7 @@ var is_uam_login='Y';
                 $("#partSubmitTxt").attr("title", "部分提交只能在单程下使用")
             })
         }
-        $("#sf2").click(function() {
+        $("#sf2").click(function () {
             if (passengerChecked && passengerChecked.length > 0) {
                 var l = passengerChecked.length;
                 for (var h = l - 1; h >= 0; h--) {
@@ -422,25 +425,25 @@ var is_uam_login='Y';
                 }
             }
         });
-        $("#autoSubmit").click(function() {
+        $("#autoSubmit").click(function () {
             if (this.checked) {
                 $("#auto_query").prop("checked", true)
             } else {
                 $("#partSubmit").prop("checked", false)
             }
         });
-        $("#partSubmit").click(function() {
+        $("#partSubmit").click(function () {
             if (this.checked) {
                 $("#autoSubmit").prop("checked", true);
                 $("#auto_query").prop("checked", true)
             }
         });
-        $("#auto_query").click(function() {
+        $("#auto_query").click(function () {
             if (!this.checked) {
                 $("#autoSubmit").prop("checked", false)
             }
         });
-        $("#clearAll").click(function() {
+        $("#clearAll").click(function () {
             $("#setion_postion span:gt(0)").remove();
             $("#buyer-list li").removeClass("cur");
             passengerChecked = [];
@@ -460,7 +463,7 @@ var is_uam_login='Y';
             $("#autoSubmit").prop("checked", false);
             $("#partSubmit").prop("checked", false)
         });
-        $("#autoSubmit").mouseenter(function(h) {
+        $("#autoSubmit").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick3").css({
@@ -469,10 +472,10 @@ var is_uam_login='Y';
             });
             $("#showquick3").show()
         });
-        $("#autoSubmit").mouseleave(function() {
+        $("#autoSubmit").mouseleave(function () {
             $("#showquick3").hide()
         });
-        $("#partSubmit").mouseenter(function(h) {
+        $("#partSubmit").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick2").css({
@@ -481,10 +484,10 @@ var is_uam_login='Y';
             });
             $("#showquick2").show()
         });
-        $("#partSubmit").mouseleave(function() {
+        $("#partSubmit").mouseleave(function () {
             $("#showquick2").hide()
         });
-        $("#auto_query").mouseenter(function(h) {
+        $("#auto_query").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick1").css({
@@ -493,10 +496,10 @@ var is_uam_login='Y';
             });
             $("#showquick1").show()
         });
-        $("#auto_query").mouseleave(function() {
+        $("#auto_query").mouseleave(function () {
             $("#showquick1").hide()
         });
-        $("#memb").mouseenter(function(h) {
+        $("#memb").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick4").css({
@@ -505,10 +508,10 @@ var is_uam_login='Y';
             });
             $("#showquick4").show()
         });
-        $("#memb").mouseleave(function() {
+        $("#memb").mouseleave(function () {
             $("#showquick4").hide()
         });
-        $("#train_first").mouseenter(function(h) {
+        $("#train_first").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick5").css({
@@ -517,10 +520,10 @@ var is_uam_login='Y';
             });
             $("#showquick5").show()
         });
-        $("#train_first").mouseleave(function() {
+        $("#train_first").mouseleave(function () {
             $("#showquick5").hide()
         });
-        $("#seat_first").mouseenter(function(h) {
+        $("#seat_first").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick6").css({
@@ -529,10 +532,10 @@ var is_uam_login='Y';
             });
             $("#showquick6").show()
         });
-        $("#seat_first").mouseleave(function() {
+        $("#seat_first").mouseleave(function () {
             $("#showquick6").hide()
         });
-        $("#select_date").mouseenter(function(h) {
+        $("#select_date").mouseenter(function (h) {
             var f = h.pageY + 10;
             var g = h.pageX;
             $("#showquick8").css({
@@ -541,18 +544,18 @@ var is_uam_login='Y';
             });
             $("#showquick8").show()
         });
-        $("#select_date").mouseleave(function() {
+        $("#select_date").mouseleave(function () {
             $("#showquick8").hide()
         })
     });
     jQuery.extend({
-        init_select_date: function() {
+        init_select_date: function () {
             if (otherDateArr.length < 5) {
                 $("#sel-date>div:first").html('<a href="javascript:" onclick="$.closeSelectDate()" >关闭</a>选择日期');
                 return
             }
         },
-        checkedPasseanger: function(j) {
+        checkedPasseanger: function (j) {
             if (passengerAll) {
                 var l = passengerAll.length;
                 for (var g = 0; g < l; g++) {
@@ -587,7 +590,7 @@ var is_uam_login='Y';
                 }
             }
         },
-        removePasseanger: function(h) {
+        removePasseanger: function (h) {
             if (passengerChecked && passengerChecked.length > 0) {
                 var e = passengerChecked.length;
                 for (var d = 0; d < e; d++) {
@@ -604,7 +607,7 @@ var is_uam_login='Y';
                 }
             }
         },
-        addChildPassenger: function(e) {
+        addChildPassenger: function (e) {
             var d = $("#setion_postion span").length;
             if (d < 6) {
                 e = e.split("(")[0] + "(儿童)(" + e.split("(")[2];
@@ -621,10 +624,10 @@ var is_uam_login='Y';
                 return
             }
         },
-        closeSelectBuyer: function() {
+        closeSelectBuyer: function () {
             $("#sel-buyer").hide()
         },
-        showSelectSeat: function() {
+        showSelectSeat: function () {
             var c = [];
             var n = [];
             var l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -697,10 +700,10 @@ var is_uam_login='Y';
             $("#sel-seat").css("left", $("#sear-sel").position().left + 80);
             $("#sel-seat").css("top", $("#sear-sel").position().top + 6 * 28 + 12)
         },
-        closeSelectSeat: function() {
+        closeSelectSeat: function () {
             $("#sel-seat").hide()
         },
-        showSelectDate: function() {
+        showSelectDate: function () {
             $("#date-list li[train_date='yes']").removeClass("cur");
             $("#sel-date").show();
             var e = $("#train_date").val();
@@ -717,10 +720,10 @@ var is_uam_login='Y';
             $("#sel-date").css("left", $("#sear-sel").position().left + 80);
             $("#sel-date").css("top", $("#sear-sel").position().top + 7 * 28 + 12)
         },
-        closeSelectDate: function() {
+        closeSelectDate: function () {
             $("#sel-date").hide()
         },
-        removeSel: function(h, j, c) {
+        removeSel: function (h, j, c) {
             $(h).parent().remove();
             if ("1" == c) {
                 var g = $("#buyer-list li");
@@ -777,7 +780,7 @@ var is_uam_login='Y';
         }
     });
     jQuery.extend({
-        checkTrain: function(f, d) {
+        checkTrain: function (f, d) {
             if (a) {
                 $(d).val("")
             }
@@ -972,17 +975,18 @@ function OrderQueueWaitTime(a, c, b) {
     this.isFinished = false;
     this.waitObj
 }
-OrderQueueWaitTime.prototype.start = function(a) {
+
+OrderQueueWaitTime.prototype.start = function (a) {
     if (!a) {
         a = 1000
     }
     var b = this;
     b.timerJob();
-    window.setInterval(function() {
+    window.setInterval(function () {
         b.timerJob()
     }, parseInt(a))
 };
-OrderQueueWaitTime.prototype.timerJob = function() {
+OrderQueueWaitTime.prototype.timerJob = function () {
     if (this.isFinished) {
         return
     }
@@ -1005,7 +1009,7 @@ OrderQueueWaitTime.prototype.timerJob = function() {
     }
     this.waitMethod(this.tourFlag, this.dispTime > 1 ? --this.dispTime : 1, c)
 };
-OrderQueueWaitTime.prototype.getWaitTime = function() {
+OrderQueueWaitTime.prototype.getWaitTime = function () {
     var a = this;
     $.ajax({
         url: ctx + "confirmPassenger/queryOrderWaitTime?random=" + new Date().getTime(),
@@ -1014,7 +1018,7 @@ OrderQueueWaitTime.prototype.getWaitTime = function() {
             tourFlag: a.tourFlag
         },
         dataType: "json",
-        success: function(c) {
+        success: function (c) {
             var e = c.data;
             if (!e.queryOrderWaitTimeStatus) {
                 window.location.href = ctx + "view/index.html?random=" + new Date().getTime()
@@ -1031,7 +1035,7 @@ OrderQueueWaitTime.prototype.getWaitTime = function() {
                 }
             }
         },
-        error: function(b, d, c) {
+        error: function (b, d, c) {
             return false
         }
     })
@@ -1039,23 +1043,24 @@ OrderQueueWaitTime.prototype.getWaitTime = function() {
 var defaultLoadGrayBackgroundModalbox = "";
 var loadGrayBackground;
 var unLoadGrayBackground;
-(function() {
-    loadGrayBackground = function() {
+(function () {
+    loadGrayBackground = function () {
         var a = dhtmlx.modalbox({
             targSrc: '<div><img src="/images/query/loading.gif" /></div>',
-            callback: function() {}
+            callback: function () {
+            }
         });
         defaultLoadGrayBackgroundModalbox = a
     };
-    unLoadGrayBackground = function() {
+    unLoadGrayBackground = function () {
         if (defaultLoadGrayBackgroundModalbox != "") {
             dhtmlx.modalbox.hide(defaultLoadGrayBackgroundModalbox);
             defaultLoadGrayBackgroundModalbox = ""
         }
     }
 })();
-(function(b, e, c) {
-    var d = function() {
+(function (b, e, c) {
+    var d = function () {
         for (var f = /audio(.min)?.js.*/, g = document.getElementsByTagName("script"), j = 0, i = g.length; j < i; j++) {
             var h = g[j].getAttribute("src");
             if (f.test(h)) {
@@ -1073,11 +1078,11 @@ var unLoadGrayBackground;
             preload: true,
             imageLocation: d + "player-graphics.gif",
             swfLocation: d + "audiojs.swf",
-            useFlash: function() {
+            useFlash: function () {
                 var f = document.createElement("audio");
                 return !(f.canPlayType && f.canPlayType("audio/mpeg;").replace(/no/, ""))
             }(),
-            hasFlash: function() {
+            hasFlash: function () {
                 if (navigator.plugins && navigator.plugins.length && navigator.plugins["Shockwave Flash"]) {
                     return true
                 } else {
@@ -1088,7 +1093,8 @@ var unLoadGrayBackground;
                         try {
                             new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
                             return true
-                        } catch (g) {}
+                        } catch (g) {
+                        }
                     }
                 }
                 return false
@@ -1108,8 +1114,9 @@ var unLoadGrayBackground;
                 errorClass: "error"
             },
             css: '        .audiojs audio { position: absolute; left: -1px; }         .audiojs { width: 460px; height: 36px; background: #404040; overflow: hidden; font-family: monospace; font-size: 12px;           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444), color-stop(0.5, #555), color-stop(0.51, #444), color-stop(1, #444));           background-image: -moz-linear-gradient(center top, #444 0%, #555 50%, #444 51%, #444 100%);           -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);           -o-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3); }         .audiojs .play-pause { width: 25px; height: 40px; padding: 4px 6px; margin: 0px; float: left; overflow: hidden; border-right: 1px solid #000; }         .audiojs p { display: none; width: 25px; height: 40px; margin: 0px; cursor: pointer; }         .audiojs .play { display: block; }         .audiojs .scrubber { position: relative; float: left; width: 280px; background: #5a5a5a; height: 14px; margin: 10px; border-top: 1px solid #3f3f3f; border-left: 0px; border-bottom: 0px; overflow: hidden; }         .audiojs .progress { position: absolute; top: 0px; left: 0px; height: 14px; width: 0px; background: #ccc; z-index: 1;           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ccc), color-stop(0.5, #ddd), color-stop(0.51, #ccc), color-stop(1, #ccc));           background-image: -moz-linear-gradient(center top, #ccc 0%, #ddd 50%, #ccc 51%, #ccc 100%); }         .audiojs .loaded { position: absolute; top: 0px; left: 0px; height: 14px; width: 0px; background: #000;           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #222), color-stop(0.5, #333), color-stop(0.51, #222), color-stop(1, #222));           background-image: -moz-linear-gradient(center top, #222 0%, #333 50%, #222 51%, #222 100%); }         .audiojs .time { float: left; height: 36px; line-height: 36px; margin: 0px 0px 0px 6px; padding: 0px 6px 0px 12px; border-left: 1px solid #000; color: #ddd; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); }         .audiojs .time em { padding: 0px 2px 0px 0px; color: #f9f9f9; font-style: normal; }         .audiojs .time strong { padding: 0px 0px 0px 2px; font-weight: normal; }         .audiojs .error-message { float: left; display: none; margin: 0px 10px; height: 36px; width: 400px; overflow: hidden; line-height: 36px; white-space: nowrap; color: #fff;           text-overflow: ellipsis; -o-text-overflow: ellipsis; -icab-text-overflow: ellipsis; -khtml-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -webkit-text-overflow: ellipsis; }         .audiojs .error-message a { color: #eee; text-decoration: none; padding-bottom: 1px; border-bottom: 1px solid #999; white-space: wrap; }                 .audiojs .play { background: url("$1") -2px -1px no-repeat; }         .audiojs .loading { background: url("$1") -2px -31px no-repeat; }         .audiojs .error { background: url("$1") -2px -61px no-repeat; }         .audiojs .pause { background: url("$1") -2px -91px no-repeat; }                 .playing .play, .playing .loading, .playing .error { display: none; }         .playing .pause { display: block; }                 .loading .play, .loading .pause, .loading .error { display: none; }         .loading .loading { display: block; }                 .error .time, .error .play, .error .pause, .error .scrubber, .error .loading { display: none; }         .error .error { display: block; }         .error .play-pause p { cursor: auto; }         .error .error-message { display: block; }',
-            trackEnded: function() {},
-            flashError: function() {
+            trackEnded: function () {
+            },
+            flashError: function () {
                 var f = this.settings.createPlayer,
                     g = a(f.errorMessageClass, this.wrapper),
                     h = 'Missing <a href="http://get.adobe.com/flashplayer/">flash player</a> plugin.';
@@ -1120,17 +1127,17 @@ var unLoadGrayBackground;
                 c[b].helpers.addClass(this.wrapper, f.errorClass);
                 g.innerHTML = h
             },
-            loadError: function() {
+            loadError: function () {
                 var f = this.settings.createPlayer,
                     g = a(f.errorMessageClass, this.wrapper);
                 c[b].helpers.removeClass(this.wrapper, f.loadingClass);
                 c[b].helpers.addClass(this.wrapper, f.errorClass);
                 g.innerHTML = 'Error loading: "' + this.mp3 + '"'
             },
-            init: function() {
+            init: function () {
                 c[b].helpers.addClass(this.wrapper, this.settings.createPlayer.loadingClass)
             },
-            loadStarted: function() {
+            loadStarted: function () {
                 var f = this.settings.createPlayer,
                     g = a(f.durationClass, this.wrapper),
                     i = Math.floor(this.duration / 60),
@@ -1138,21 +1145,21 @@ var unLoadGrayBackground;
                 c[b].helpers.removeClass(this.wrapper, f.loadingClass);
                 g.innerHTML = (i < 10 ? "0" : "") + i + ":" + (h < 10 ? "0" : "") + h
             },
-            loadProgress: function(f) {
+            loadProgress: function (f) {
                 var g = this.settings.createPlayer,
                     h = a(g.scrubberClass, this.wrapper);
                 a(g.loaderClass, this.wrapper).style.width = h.offsetWidth * f + "px"
             },
-            playPause: function() {
+            playPause: function () {
                 this.playing ? this.settings.play() : this.settings.pause()
             },
-            play: function() {
+            play: function () {
                 c[b].helpers.addClass(this.wrapper, this.settings.createPlayer.playingClass)
             },
-            pause: function() {
+            pause: function () {
                 c[b].helpers.removeClass(this.wrapper, this.settings.createPlayer.playingClass)
             },
-            updatePlayhead: function(f) {
+            updatePlayhead: function (f) {
                 var g = this.settings.createPlayer,
                     h = a(g.scrubberClass, this.wrapper);
                 a(g.progressClass, this.wrapper).style.width = h.offsetWidth * f + "px";
@@ -1163,11 +1170,11 @@ var unLoadGrayBackground;
                 g.innerHTML = (f < 10 ? "0" : "") + f + ":" + (h < 10 ? "0" : "") + h
             }
         },
-        create: function(f, g) {
+        create: function (f, g) {
             g = g || {};
             return f.length ? this.createAll(g, f) : this.newInstance(f, g)
         },
-        createAll: function(f, g) {
+        createAll: function (f, g) {
             var l = g || document.getElementsByTagName("audio"),
                 k = [];
             f = f || {};
@@ -1176,7 +1183,7 @@ var unLoadGrayBackground;
             }
             return k
         },
-        newInstance: function(f, g) {
+        newInstance: function (f, g) {
             var j = this.helpers.clone(this.settings),
                 i = "audiojs" + this.instanceCount,
                 h = "audiojs_wrapper" + this.instanceCount;
@@ -1209,7 +1216,7 @@ var unLoadGrayBackground;
             }
             return this.instances[i] = h
         },
-        createPlayer: function(f, g, j) {
+        createPlayer: function (f, g, j) {
             var i = document.createElement("div"),
                 h = f.cloneNode(true);
             i.setAttribute("class", "audiojs");
@@ -1228,15 +1235,15 @@ var unLoadGrayBackground;
             }
             return i.getElementsByTagName("audio")[0]
         },
-        attachEvents: function(f, g) {
+        attachEvents: function (f, g) {
             if (g.settings.createPlayer) {
                 var j = g.settings.createPlayer,
                     i = a(j.playPauseClass, f),
                     h = a(j.scrubberClass, f);
-                c[b].events.addListener(i, "click", function() {
+                c[b].events.addListener(i, "click", function () {
                     g.playPause.apply(g)
                 });
-                c[b].events.addListener(h, "click", function(m) {
+                c[b].events.addListener(h, "click", function (m) {
                     m = m.clientX;
                     var n = this,
                         l = 0;
@@ -1249,13 +1256,13 @@ var unLoadGrayBackground;
                 });
                 if (!g.settings.useFlash) {
                     c[b].events.trackLoadProgress(g);
-                    c[b].events.addListener(g.element, "timeupdate", function() {
+                    c[b].events.addListener(g.element, "timeupdate", function () {
                         g.updatePlayhead.apply(g)
                     });
-                    c[b].events.addListener(g.element, "ended", function() {
+                    c[b].events.addListener(g.element, "ended", function () {
                         g.trackEnded.apply(g)
                     });
-                    c[b].events.addListener(g.source, "error", function() {
+                    c[b].events.addListener(g.source, "error", function () {
                         clearInterval(g.readyTimer);
                         clearInterval(g.loadTimer);
                         g.settings.loadError.apply(g)
@@ -1263,28 +1270,28 @@ var unLoadGrayBackground;
                 }
             }
         },
-        attachFlashEvents: function(f, g) {
+        attachFlashEvents: function (f, g) {
             g.swfReady = false;
-            g.load = function(h) {
+            g.load = function (h) {
                 g.mp3 = h;
                 g.swfReady && g.element.load(h)
             };
-            g.loadProgress = function(i, h) {
+            g.loadProgress = function (i, h) {
                 g.loadedPercent = i;
                 g.duration = h;
                 g.settings.loadStarted.apply(g);
                 g.settings.loadProgress.apply(g, [i])
             };
-            g.skipTo = function(h) {
+            g.skipTo = function (h) {
                 if (!(h > g.loadedPercent)) {
                     g.updatePlayhead.call(g, [h]);
                     g.element.skipTo(h)
                 }
             };
-            g.updatePlayhead = function(h) {
+            g.updatePlayhead = function (h) {
                 g.settings.updatePlayhead.apply(g, [h])
             };
-            g.play = function() {
+            g.play = function () {
                 if (!g.settings.preload) {
                     g.settings.preload = true;
                     g.element.init(g.mp3)
@@ -1293,21 +1300,21 @@ var unLoadGrayBackground;
                 g.element.pplay();
                 g.settings.play.apply(g)
             };
-            g.pause = function() {
+            g.pause = function () {
                 g.playing = false;
                 g.element.ppause();
                 g.settings.pause.apply(g)
             };
-            g.setVolume = function(h) {
+            g.setVolume = function (h) {
                 g.element.setVolume(h)
             };
-            g.loadStarted = function() {
+            g.loadStarted = function () {
                 g.swfReady = true;
                 g.settings.preload && g.element.init(g.mp3);
                 g.settings.autoplay && g.play.apply(g)
             }
         },
-        injectFlash: function(f, g) {
+        injectFlash: function (f, g) {
             var j = this.flashSource.replace(/\$1/g, g);
             j = j.replace(/\$2/g, f.settings.swfLocation);
             j = j.replace(/\$3/g, +new Date + Math.random());
@@ -1318,14 +1325,14 @@ var unLoadGrayBackground;
             f.element = this.helpers.getSwf(g)
         },
         helpers: {
-            merge: function(f, g) {
+            merge: function (f, g) {
                 for (attr in g) {
                     if (f.hasOwnProperty(attr) || g.hasOwnProperty(attr)) {
                         f[attr] = g[attr]
                     }
                 }
             },
-            clone: function(f) {
+            clone: function (f) {
                 if (f == null || typeof f !== "object") {
                     return f
                 }
@@ -1336,13 +1343,13 @@ var unLoadGrayBackground;
                 }
                 return g
             },
-            addClass: function(f, g) {
+            addClass: function (f, g) {
                 RegExp("(\\s|^)" + g + "(\\s|$)").test(f.className) || (f.className += " " + g)
             },
-            removeClass: function(f, g) {
+            removeClass: function (f, g) {
                 f.className = f.className.replace(RegExp("(\\s|^)" + g + "(\\s|$)"), " ")
             },
-            injectCss: function(g, h) {
+            injectCss: function (g, h) {
                 for (var p = "", o = document.getElementsByTagName("style"), n = h.replace(/\$1/g, g.settings.imageLocation), l = 0, m = o.length; l < m; l++) {
                     var j = o[l].getAttribute("title");
                     if (j && ~j.indexOf("audiojs")) {
@@ -1368,7 +1375,7 @@ var unLoadGrayBackground;
                     l ? o.insertBefore(m, l) : o.appendChild(styleElement)
                 }
             },
-            cloneHtml5Node: function(f) {
+            cloneHtml5Node: function (f) {
                 var g = document.createDocumentFragment(),
                     h = g.createElement ? g : document;
                 h.createElement("audio");
@@ -1377,7 +1384,7 @@ var unLoadGrayBackground;
                 h.innerHTML = f.outerHTML;
                 return h.firstChild
             },
-            getSwf: function(f) {
+            getSwf: function (f) {
                 f = document[f] || window[f];
                 return f.length > 1 ? f[f.length - 1] : f
             }
@@ -1385,14 +1392,14 @@ var unLoadGrayBackground;
         events: {
             memoryLeaking: false,
             listeners: [],
-            addListener: function(f, g, h) {
+            addListener: function (f, g, h) {
                 if (f.addEventListener) {
                     f.addEventListener(g, h, false)
                 } else {
                     if (f.attachEvent) {
                         this.listeners.push(f);
                         if (!this.memoryLeaking) {
-                            window.attachEvent("onunload", function() {
+                            window.attachEvent("onunload", function () {
                                 if (this.listeners) {
                                     for (var j = 0, i = this.listeners.length; j < i; j++) {
                                         c[b].events.purge(this.listeners[j])
@@ -1401,25 +1408,25 @@ var unLoadGrayBackground;
                             });
                             this.memoryLeaking = true
                         }
-                        f.attachEvent("on" + g, function() {
+                        f.attachEvent("on" + g, function () {
                             h.call(f, window.event)
                         })
                     }
                 }
             },
-            trackLoadProgress: function(f) {
+            trackLoadProgress: function (f) {
                 if (f.settings.preload) {
                     var g, i;
                     f = f;
                     var h = /(ipod|iphone|ipad)/i.test(navigator.userAgent);
-                    g = setInterval(function() {
+                    g = setInterval(function () {
                         if (f.element.readyState > -1) {
                             h || f.init.apply(f)
                         }
                         if (f.element.readyState > 1) {
                             f.settings.autoplay && f.play.apply(f);
                             clearInterval(g);
-                            i = setInterval(function() {
+                            i = setInterval(function () {
                                 f.loadProgress.apply(f);
                                 f.loadedPercent >= 1 && clearInterval(i)
                             })
@@ -1429,7 +1436,7 @@ var unLoadGrayBackground;
                     f.loadTimer = i
                 }
             },
-            purge: function(f) {
+            purge: function (f) {
                 var g = f.attributes,
                     h;
                 if (g) {
@@ -1445,8 +1452,8 @@ var unLoadGrayBackground;
                     }
                 }
             },
-            ready: function() {
-                return function(w) {
+            ready: function () {
+                return function (w) {
                     var x = window,
                         v = false,
                         u = true,
@@ -1455,7 +1462,7 @@ var unLoadGrayBackground;
                         s = t.addEventListener ? "addEventListener" : "attachEvent",
                         o = t.addEventListener ? "removeEventListener" : "detachEvent",
                         j = t.addEventListener ? "" : "on",
-                        l = function(f) {
+                        l = function (f) {
                             if (!(f.type == "readystatechange" && t.readyState != "complete")) {
                                 (f.type == "load" ? x : t)[o](j + f.type, l, false);
                                 if (!v && (v = true)) {
@@ -1463,7 +1470,7 @@ var unLoadGrayBackground;
                                 }
                             }
                         },
-                        h = function() {
+                        h = function () {
                             try {
                                 p.doScroll("left")
                             } catch (f) {
@@ -1478,7 +1485,8 @@ var unLoadGrayBackground;
                         if (t.createEventObject && p.doScroll) {
                             try {
                                 u = !x.frameElement
-                            } catch (g) {}
+                            } catch (g) {
+                            }
                             u && h()
                         }
                         t[s](j + "DOMContentLoaded", l, false);
@@ -1489,11 +1497,11 @@ var unLoadGrayBackground;
             }()
         }
     };
-    c[e] = function(f, g) {
+    c[e] = function (f, g) {
         this.element = f;
         this.wrapper = f.parentNode;
         this.source = f.getElementsByTagName("source")[0] || f;
-        this.mp3 = function(i) {
+        this.mp3 = function (i) {
             var h = i.getElementsByTagName("source")[0];
             return i.getAttribute("src") || (h ? h.getAttribute("src") : null)
         }(f);
@@ -1504,29 +1512,29 @@ var unLoadGrayBackground;
         this.playing = false
     };
     c[e].prototype = {
-        updatePlayhead: function() {
+        updatePlayhead: function () {
             this.settings.updatePlayhead.apply(this, [this.element.currentTime / this.duration])
         },
-        skipTo: function(f) {
+        skipTo: function (f) {
             if (!(f > this.loadedPercent)) {
                 this.element.currentTime = this.duration * f;
                 this.updatePlayhead()
             }
         },
-        load: function(f) {
+        load: function (f) {
             this.loadStartedCalled = false;
             this.source.setAttribute("src", f);
             this.element.load();
             this.mp3 = f;
             c[b].events.trackLoadProgress(this)
         },
-        loadError: function() {
+        loadError: function () {
             this.settings.loadError.apply(this)
         },
-        init: function() {
+        init: function () {
             this.settings.init.apply(this)
         },
-        loadStarted: function() {
+        loadStarted: function () {
             if (!this.element.duration) {
                 return false
             }
@@ -1534,7 +1542,7 @@ var unLoadGrayBackground;
             this.updatePlayhead();
             this.settings.loadStarted.apply(this)
         },
-        loadProgress: function() {
+        loadProgress: function () {
             if (this.element.buffered != null && this.element.buffered.length) {
                 if (!this.loadStartedCalled) {
                     this.loadStartedCalled = this.loadStarted()
@@ -1543,10 +1551,10 @@ var unLoadGrayBackground;
                 this.settings.loadProgress.apply(this, [this.loadedPercent])
             }
         },
-        playPause: function() {
+        playPause: function () {
             this.playing ? this.pause() : this.play()
         },
-        play: function() {
+        play: function () {
             /(ipod|iphone|ipad)/i.test(navigator.userAgent) && this.element.readyState == 0 && this.init.apply(this);
             if (!this.settings.preload) {
                 this.settings.preload = true;
@@ -1557,21 +1565,21 @@ var unLoadGrayBackground;
             this.element.play();
             this.settings.play.apply(this)
         },
-        pause: function() {
+        pause: function () {
             this.playing = false;
             this.element.pause();
             this.settings.pause.apply(this)
         },
-        setVolume: function(f) {
+        setVolume: function (f) {
             this.element.volume = f
         },
-        trackEnded: function() {
+        trackEnded: function () {
             this.skipTo.apply(this, [0]);
             this.settings.loop || this.pause.apply(this);
             this.settings.trackEnded.apply(this)
         }
     };
-    var a = function(g, h) {
+    var a = function (g, h) {
         var n = [];
         h = h || document;
         if (h.getElementsByClassName) {
@@ -1587,13 +1595,13 @@ var unLoadGrayBackground;
         return n.length > 1 ? n : n[0]
     }
 })("audiojs", "audiojsInstance", this);
-(function(a) {
-    a.jpopup = function(c, b) {
+(function (a) {
+    a.jpopup = function (c, b) {
         var e;
         var d = this;
         d.$el = a(c);
         d.el = c;
-        d.init = function() {
+        d.init = function () {
             d.options = a.extend({}, a.jpopup.defaultOptions, b);
             if (!d.options.target) {
                 var f = document.createElement("div");
@@ -1612,7 +1620,7 @@ var unLoadGrayBackground;
                 d.options.target.css("margin-bottom", "0px")
             }
         };
-        d.startOrHiden = function() {
+        d.startOrHiden = function () {
             var f = document.getElementById("tip");
             if (parseInt(f.style.height) == 0) {
                 f.style.display = "block";
@@ -1622,16 +1630,16 @@ var unLoadGrayBackground;
                 e = setInterval("$jpopup.changeH('down')", d.options.speed)
             }
         };
-        d.quickHide = function() {
+        d.quickHide = function () {
             var f = document.getElementById("tip");
             f.style.height = "0px";
             f.style.display = "none"
         };
-        d.isShow = function() {
+        d.isShow = function () {
             var f = document.getElementById("tip");
             return f && f.style.display == "block"
         };
-        d.changeH = function(g) {
+        d.changeH = function (g) {
             var f = document.all ? document.all.tip : document.getElementById("tip");
             if (g == "up") {
                 if (parseInt(f.style.height) >= d.options.height) {
@@ -1659,22 +1667,22 @@ var unLoadGrayBackground;
         target: null,
         speed: 20
     };
-    a.fn.jpopup = function() {
+    a.fn.jpopup = function () {
         var b = Array.prototype.slice.call(arguments);
         return (new a.jpopup(this, b[0]))
     }
 })(jQuery);
-(function(a) {
-    a.autoSubmit = function(c) {
+(function (a) {
+    a.autoSubmit = function (c) {
         var d = this;
         var b = ["YZ", "ZE", "YW", "ZY", "RZ", "SRRB", "YYRW", "RW", "TZ", "GR", "SWZ", "WZ"];
-        d.init = function() {
+        d.init = function () {
             d.options = a.extend({}, a.autoSubmit.defaultOptions, c)
         };
-        d.isTrainPrior = function() {
+        d.isTrainPrior = function () {
             return "2" == a("#_prior").val()
         };
-        d.autoSubmit = function(K, m, g, N) {
+        d.autoSubmit = function (K, m, g, N) {
             var o = new Date().getTime();
             var w = [];
             var B = K.length;
@@ -1813,7 +1821,7 @@ var unLoadGrayBackground;
                             e[A[D]] = z
                         }
                         d.createXBWeight(K, A, e);
-                        K.sort(function(k, j) {
+                        K.sort(function (k, j) {
                             var i = k.trainWeight;
                             var t = j.trainWeight;
                             if (i > t) {
@@ -1834,7 +1842,7 @@ var unLoadGrayBackground;
             }
             return w
         };
-        d.createXBWeight = function(o, n, g) {
+        d.createXBWeight = function (o, n, g) {
             var e = o.length;
             for (var j = 0; j < e; j++) {
                 var h = o[j];
@@ -1854,7 +1862,7 @@ var unLoadGrayBackground;
                 debug("\t车次" + h.queryLeftNewDTO["station_train_code"] + "席别优先权值：" + h.trainWeight)
             }
         };
-        d.checkTrainByTrainNo = function(g, h) {
+        d.checkTrainByTrainNo = function (g, h) {
             var f = g.length;
             if (f > 0) {
                 for (var e = 0; e < f; e++) {
@@ -1865,9 +1873,9 @@ var unLoadGrayBackground;
             }
             return false
         };
-        d.sortTrainZWNum = function(e, f) {
+        d.sortTrainZWNum = function (e, f) {
             debug("   排序了！！！！！" + f);
-            e.sort(function(i, h) {
+            e.sort(function (i, h) {
                 var g = i.queryLeftNewDTO[f];
                 var j = h.queryLeftNewDTO[f];
                 if (g != "--" && g != "无") {
@@ -1895,7 +1903,7 @@ var unLoadGrayBackground;
                 }
             })
         };
-        d.sortTrainPrior = function(f, j) {
+        d.sortTrainPrior = function (f, j) {
             if (j.length > 0) {
                 var h = [];
                 for (var e = 0; e < j.length; e++) {
@@ -1913,7 +1921,7 @@ var unLoadGrayBackground;
             }
             return f
         };
-        d.getXBSize = function(i, h, m) {
+        d.getXBSize = function (i, h, m) {
             var l = 0;
             var j = h.length;
             for (var e = 0; e < j; e++) {
@@ -1960,7 +1968,7 @@ var unLoadGrayBackground;
             }
             return l
         };
-        d.sortedPriorXB = function(g) {
+        d.sortedPriorXB = function (g) {
             var j = [];
             var e = b.length;
             for (var f = 0; f < e; f++) {
@@ -1976,7 +1984,7 @@ var unLoadGrayBackground;
             }
             return j
         };
-        d.removeSameElem = function() {
+        d.removeSameElem = function () {
             for (var f = 0; f < d.options.current_datas.length; f++) {
                 for (var e = f + 1; e < d.options.current_datas.length; e++) {
                     if (d.equals(d.options.current_datas[f], d.options.current_datas[e])) {
@@ -1996,15 +2004,15 @@ var unLoadGrayBackground;
         allSubmit: "autoSubmit",
         prior: "_prior"
     };
-    a.fn.autoSubmit = function() {
+    a.fn.autoSubmit = function () {
         var b = Array.prototype.slice.call(arguments);
         return (new a.autoSubmit(b[0]))
     }
 })(jQuery);
-(function() {
+(function () {
     var a = "YZ,ZE,YW,WZ";
     jQuery.extend({
-        checkSeatTypes: function() {
+        checkSeatTypes: function () {
             if (xbChecked && xbChecked.length > 0) {
                 for (var b = 0; b < xbChecked.length; b++) {
                     if (a.indexOf(xbChecked[b]) == -1) {
@@ -2014,7 +2022,7 @@ var unLoadGrayBackground;
             }
             return true
         },
-        canSelectThisSeatType: function(e) {
+        canSelectThisSeatType: function (e) {
             var b = false;
             if (passengerChecked && passengerChecked.length > 0) {
                 var d = passengerChecked.length;

@@ -19,6 +19,7 @@ public class CookieUtils {
 
     /**
      * 根据键值更新Cookie
+     *
      * @param cookie
      * @param name
      * @param value
@@ -44,6 +45,7 @@ public class CookieUtils {
 
     /**
      * 向response中添加默认的setCookie
+     *
      * @param name
      * @param value
      */
@@ -53,24 +55,26 @@ public class CookieUtils {
 
     /**
      * 向response中添加setCookie
+     *
      * @param name
      * @param value
      */
     public static void setCookie(String name, String value, String path, Integer minute) {
         Cookie setCookie = null;
         try {
-            setCookie = new Cookie(name, URLEncoder.encode(value, "utf-8"));
+            setCookie = new Cookie(name, value == null ? value : URLEncoder.encode(value, "utf-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        setCookie.setPath(path == null? "/": path);
+        setCookie.setPath(path == null ? "/" : path);
         setCookie.setMaxAge(minute == null ? 1800 : minute * 60);    // -1为会话级
-        HttpUtils.getReponse().addCookie(setCookie);
+        HttpUtils.getResponse().addCookie(setCookie);
         logger.info("已添加Set-Cookie：{}={}; Path={}; MaxAge={}", name, value, setCookie.getPath(), setCookie.getMaxAge());
     }
 
     /**
      * 获取request中的cookiew
+     *
      * @param name
      * @return
      */
@@ -90,12 +94,12 @@ public class CookieUtils {
                 }
             }
         }
-
         return value;
     }
 
     /**
      * 移除客户端cookie, 无论原来存不存在
+     *
      * @param name
      * @return
      */

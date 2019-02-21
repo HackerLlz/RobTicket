@@ -23,34 +23,34 @@ configuration 子节点为 appender、logger、root
 
     <!--&lt;!&ndash;滚动文件&ndash;&gt;-->
     <!--<appender name="infoFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--&lt;!&ndash; ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>INFO</level>-->
-        <!--</filter>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-            <!--<fileNamePattern>${LOG_HOME}/log.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <!--<maxHistory>30</maxHistory>&lt;!&ndash;保存最近30天的日志&ndash;&gt;-->
-        <!--</rollingPolicy>-->
-        <!--<encoder>-->
-            <!--<charset>UTF-8</charset>-->
-            <!--<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} : %msg%n</pattern>-->
-        <!--</encoder>-->
+    <!--&lt;!&ndash; ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 &ndash;&gt;-->
+    <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+    <!--<level>INFO</level>-->
+    <!--</filter>-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--<fileNamePattern>${LOG_HOME}/log.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+    <!--<maxHistory>30</maxHistory>&lt;!&ndash;保存最近30天的日志&ndash;&gt;-->
+    <!--</rollingPolicy>-->
+    <!--<encoder>-->
+    <!--<charset>UTF-8</charset>-->
+    <!--<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} : %msg%n</pattern>-->
+    <!--</encoder>-->
     <!--</appender>-->
 
     <!--&lt;!&ndash;滚动文件&ndash;&gt;-->
     <!--<appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--&lt;!&ndash; ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>error</level>-->
-        <!--</filter>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-            <!--<fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <!--<maxHistory>30</maxHistory>&lt;!&ndash;保存最近30天的日志&ndash;&gt;-->
-        <!--</rollingPolicy>-->
-        <!--<encoder>-->
-            <!--<charset>UTF-8</charset>-->
-            <!--<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} : %msg%n</pattern>-->
-        <!--</encoder>-->
+    <!--&lt;!&ndash; ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 &ndash;&gt;-->
+    <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+    <!--<level>error</level>-->
+    <!--</filter>-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--<fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+    <!--<maxHistory>30</maxHistory>&lt;!&ndash;保存最近30天的日志&ndash;&gt;-->
+    <!--</rollingPolicy>-->
+    <!--<encoder>-->
+    <!--<charset>UTF-8</charset>-->
+    <!--<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} : %msg%n</pattern>-->
+    <!--</encoder>-->
     <!--</appender>-->
 
     <!--将日志输出到logstack-->
@@ -88,7 +88,7 @@ configuration 子节点为 appender、logger、root
     private static Logger logger = LoggerFactory.getLogger(Class1.class);
     -->
     <logger name="com.duriamuk.robartifact.common.filter" level="warn" additivity="false">
-        <appender-ref ref="stdout" />
+        <appender-ref ref="stdout"/>
     </logger>
 
 </configuration>

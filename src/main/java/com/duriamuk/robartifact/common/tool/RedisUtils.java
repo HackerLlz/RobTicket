@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +31,7 @@ public class RedisUtils {
 
     /**
      * 根据模板批量删除key
+     *
      * @param pattern
      */
     public static void deleteWithPattern(String pattern) {
@@ -40,6 +43,7 @@ public class RedisUtils {
 
     /**
      * 根据key删除value
+     *
      * @param key
      */
     public static void delete(String key) {
@@ -50,6 +54,7 @@ public class RedisUtils {
 
     /**
      * 判断是否存在key
+     *
      * @param key
      * @return
      */
@@ -59,6 +64,7 @@ public class RedisUtils {
 
     /**
      * 读取缓存
+     *
      * @param key
      * @return
      */
@@ -69,7 +75,18 @@ public class RedisUtils {
     }
 
     /**
+     * 读取缓存List
+     *
+     * @param key
+     * @return
+     */
+    public static List<String> getList(String key) {
+        return objectToList(get(key));
+    }
+
+    /**
      * 写入缓存，不设置设置延迟和过期时间
+     *
      * @param key
      * @param value
      * @return
@@ -88,6 +105,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置延迟和过期时间
+     *
      * @param key
      * @param value
      * @return
@@ -107,6 +125,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置默认延迟和默认过期时间
+     *
      * @param key
      * @param value
      * @return
@@ -126,6 +145,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置延迟
+     *
      * @param key
      * @param value
      * @return
@@ -144,6 +164,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置默认延迟
+     *
      * @param key
      * @param value
      * @return
@@ -162,6 +183,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置过期时间
+     *
      * @param key
      * @param value
      * @return
@@ -181,6 +203,7 @@ public class RedisUtils {
 
     /**
      * 写入缓存，设置默认过期时间
+     *
      * @param key
      * @param value
      * @return
@@ -196,5 +219,13 @@ public class RedisUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private static List<String> objectToList(Object object) {
+        if (object instanceof List) {
+            List<String> list = (List<String>) object;
+            return list;
+        }
+        return null;
     }
 }

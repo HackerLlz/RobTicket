@@ -52,7 +52,7 @@ public class LoginController {
     public String doLogin(@RequestBody String payload) {
         logger.info("开始登陆，入参 ：{}", payload);
         boolean isSuccess = loginService.doLogin(payload);
-        return isSuccess? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
+        return isSuccess ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
     }
 
     @RequestMapping(value = "uamtkStatic", method = RequestMethod.POST)
@@ -84,7 +84,7 @@ public class LoginController {
     public String isLogin() {
         logger.info("开始验证是否已登陆");
         boolean isLogin = loginService.isLogin();
-        return isLogin? AjaxMessage.SUCCESS: AjaxMessage.FAIL;
+        return isLogin ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
     }
 
     @RequestMapping(value = "createQr", method = RequestMethod.POST)

@@ -11,21 +11,21 @@ var qr_submitClickEvent;
 var timeInterval = 1000;
 var timers = 3;
 var intervalProcess;
-(function(a) {
+(function (a) {
     a.TouLocalisPassenger = true
 })(window);
-(function() {
-    $(document).ready(function() {
+(function () {
+    $(document).ready(function () {
         d();
         b();
         a();
-        $("#fczk").click(function() {
+        $("#fczk").click(function () {
             if ($(this).is(":checked")) {
                 dhtmlx.createWin({
                     winId: "dialog_fczk",
                     closeWinId: ["dialog_fczk_close", "dialog_fczk_cancel"],
                     okId: "dialog_fczk_ok",
-                    callback: function() {
+                    callback: function () {
                         $("#fczk")[0]["checked"] = false
                     }
                 })
@@ -46,12 +46,13 @@ var intervalProcess;
         } else {
             x--
         }
-        m = setTimeout(function() {
+        m = setTimeout(function () {
             f(x, w)
         }, w)
     }
+
     jQuery.extend({
-        whatsSelect: function(x) {
+        whatsSelect: function (x) {
             if (x) {
                 var v = $('#normal_passenger_id input[type="checkbox"]:checked').length;
                 if ($("#dj_passenger_id li").length == 0) {
@@ -66,17 +67,18 @@ var intervalProcess;
     });
 
     function b() {
-        $("#nvbbf").on("click", function() {
+        $("#nvbbf").on("click", function () {
             if ($(this).is(":checked")) {
                 $("#jtbf").attr("checked", false)
             }
         });
-        $("#jtbf").on("click", function() {
+        $("#jtbf").on("click", function () {
             if ($(this).is(":checked")) {
                 $("#nvbbf").attr("checked", false)
             }
         })
     }
+
     var l;
 
     function d(U) {
@@ -84,7 +86,7 @@ var intervalProcess;
         dhxWins.enableAutoViewport(true);
         dhxWins.setSkin("dhx_terrace");
         dhxWins.setImagePath(ctx + "resources/js/rich/windows/imgs/");
-        closeWin = function(W, V) {
+        closeWin = function (W, V) {
             unLoadGrayBackground();
             ableClickSubmitButtonOrPreStepBUtton();
             if (dhxWins.isWindow(W + "_")) {
@@ -95,7 +97,7 @@ var intervalProcess;
                 }
             }
         };
-        l = function(ac, Z, W, V, Y) {
+        l = function (ac, Z, W, V, Y) {
             var ab = '<div class="tit">' + (Z ? '<span class="colorC">' + ac + "</span>" : ac) + "</div>";
             var X = "<P>" + W + "</p>";
             var aa = Z ? '<p>请点击[<a href="https://kyfw.12306.cn/otn/view/train_order.html?type=2"><strong>我的12306</strong></a>]办理其他业务。您也可以点击[<a href="https://kyfw.12306.cn/otn/leftTicket/init"><strong>预订车票</strong></a>]，重新规划您的旅程。</p>' : '<P>查看订单处理情况，请点击“<a href="https://kyfw.12306.cn/otn/view/train_order.html?type=1" target="_blank">未完成订单</a>”</P>';
@@ -114,10 +116,10 @@ var intervalProcess;
             $("#orderResultInfo_id").html(ab + (W == "" || W == null || W == "undefined" || W == undefined ? "" : X) + aa);
             N("transforNotice_id");
             if (V) {
-                $("#closeTranforDialog_id").click(function() {
+                $("#closeTranforDialog_id").click(function () {
                     closeWin("transforNotice_id", true)
                 });
-                $("#qr_closeTranforDialog_id").click(function() {
+                $("#qr_closeTranforDialog_id").click(function () {
                     closeWin("transforNotice_id", true);
                     $("#i-ok").css("display", "none")
                 })
@@ -245,10 +247,11 @@ var intervalProcess;
             }
             return false
         }
-        $("#close_checkticketdialog_id").click(function() {
+
+        $("#close_checkticketdialog_id").click(function () {
             closeWin("checkticketinfo_id", true)
         });
-        $("#back_edit_id").click(function() {
+        $("#back_edit_id").click(function () {
             $("#qr_submit_id").show();
             closeWin("checkticketinfo_id", true);
             $("#i-okmypasscode1").css("display", "none");
@@ -285,7 +288,8 @@ var intervalProcess;
                 V.removeClass("btn92").addClass("btn92s")
             }
         }
-        qr_submitClickEvent = function() {
+
+        qr_submitClickEvent = function () {
             if (ifAlertCode && !verifyRandCode($("#randCode")[0], true)) {
                 return
             }
@@ -300,7 +304,8 @@ var intervalProcess;
                     ok: "确定",
                     text: "您还有未选座的乘客，请选座完成后再提交订单！",
                     type: "alert-error",
-                    callback: function() {}
+                    callback: function () {
+                    }
                 })
             }
         };
@@ -318,10 +323,11 @@ var intervalProcess;
                 return
             }
         }
-        submitOrderClickEvent = function() {
+
+        submitOrderClickEvent = function () {
             submitOrderClickEvent_common()
         };
-        doByAlert = function(W) {
+        doByAlert = function (W) {
             var V = $("#qr_submit_id");
             V.unbind("click");
             V.removeClass("btn92s").addClass("btn92");
@@ -336,7 +342,7 @@ var intervalProcess;
                 ifAlertCode = false
             }
         };
-        submitOrderClickEvent_common = function() {
+        submitOrderClickEvent_common = function () {
 
 
             if (isDw == "Y" && $("#chooseAllDW").is(":checked")) {
@@ -463,13 +469,13 @@ var intervalProcess;
                 data: Y,
                 dataType: "json",
                 async: true,
-                success: function(Z) {
+                success: function (Z) {
                     if (Z.status) {
                         if (Z.data.submitStatus) {
                             otsRedirect("post", ctx + "payOrder/init?random=" + new Date().getTime(), {})
                         } else {
                             l("出票失败!", false, "原因： " + Z.data.errMsg + '<a  id="xg_close_win_id">点击修改</a>', false, "lose");
-                            $("#xg_close_win_id").click(function() {
+                            $("#xg_close_win_id").click(function () {
                                 closeWin("transforNotice_id", true);
                                 $("#i-ok").css("display", "none")
                             })
@@ -478,7 +484,7 @@ var intervalProcess;
                         l("订票失败!", true, "很抱歉！请关闭窗口重新预定车票", true, "lose")
                     }
                 },
-                error: function(Z, ab, aa) {
+                error: function (Z, ab, aa) {
                     l("订票失败!", true, "很抱歉！网络忙，请关闭窗口稍后再试。", true, "lose");
                     return
                 }
@@ -552,13 +558,13 @@ var intervalProcess;
                 url: doOrderUrl,
                 data: JSON.stringify(doOrderData),
                 type: "POST",
-                contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
                 dataType: "json",
-                success: function(Z) {
+                success: function (Z) {
                     if (Z.status) {
                         if (!Z.data.submitStatus) {
                             l("出票失败!", false, "原因： " + Z.data.errMsg + '<a id="xg_close_win_id" >点击修改</a>', false, "lose");
-                            $("#xg_close_win_id").click(function() {
+                            $("#xg_close_win_id").click(function () {
                                 closeWin("transforNotice_id", true);
                                 $("#i-ok").css("display", "none")
                             })
@@ -570,7 +576,7 @@ var intervalProcess;
                         l("订票失败!", true, "很抱歉！请关闭窗口重新预定车票", true, "lose")
                     }
                 },
-                error: function(Z, ab, aa) {
+                error: function (Z, ab, aa) {
                     l("订票失败!", true, "很抱歉！网络忙，请关闭窗口稍后再试。", true, "lose");
                     return
                 }
@@ -623,9 +629,9 @@ var intervalProcess;
                     url: doOrderUrl,
                     data: JSON.stringify(doOrderData),
                     type: "POST",
-                    contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                    contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
                     dataType: "json",
-                    success: function(Z) {
+                    success: function (Z) {
                         if (Z.status) {
                             if (Z.data.submitStatus) {
                                 // otsRedirect("post", ctx + "/payOrder/init?random=" + new Date().getTime(), {})
@@ -637,7 +643,7 @@ var intervalProcess;
                             l("下单成功。", false, "", false, "win")
                         }
                     },
-                    error: function(Z, ab, aa) {
+                    error: function (Z, ab, aa) {
                         l("下单成功。", false, "", false, "win")
                     }
                 })
@@ -654,7 +660,7 @@ var intervalProcess;
                     winId: "608_check",
                     closeWinId: ["608_check_close", "608_check_cancel"],
                     okId: "608_check_ok",
-                    okCallBack: function() {
+                    okCallBack: function () {
                         $("#608_name").html(W.name);
                         $("#608_card").html(W.card);
                         $("#608_tel").html(W.tel);
@@ -663,16 +669,17 @@ var intervalProcess;
                             winId: "608_complain",
                             closeWinId: ["608_complain_close", "608_complain_cancel"],
                             okId: "608_complain_ok",
-                            okCallBack: function() {
+                            okCallBack: function () {
                                 var X = dhtmlx.modalbox({
                                     targSrc: '<div><img src="/images/passenger/loading.gif"></img></div>',
-                                    callback: function() {}
+                                    callback: function () {
+                                    }
                                 });
                                 $.ajax({
                                     url: ctx + "confirmPassenger/report",
                                     type: "post",
                                     async: false,
-                                    success: function(Y) {
+                                    success: function (Y) {
                                         dhtmlx.modalbox.hide(X);
                                         if (Y.data == "Y") {
                                             dhtmlx.alert({
@@ -692,21 +699,21 @@ var intervalProcess;
                                         $("#i-okmypasscode1").hide();
                                         refreshImg("passenger", "randp")
                                     },
-                                    error: function(Y, aa, Z) {
+                                    error: function (Y, aa, Z) {
                                         dhtmlx.modalbox.hide(X)
                                     }
                                 })
                             },
-                            checkConfirm: function() {
+                            checkConfirm: function () {
                                 return true
                             }
                         });
                         $("#608_complain").css("top", "200px")
                     },
-                    checkConfirm: function() {
+                    checkConfirm: function () {
                         return true
                     },
-                    callback: function() {
+                    callback: function () {
                         $("#i-okmypasscode1").hide();
                         refreshImg("passenger", "randp")
                     }
@@ -742,16 +749,16 @@ var intervalProcess;
 
             var checkOrderUrl = '/passenger/checkOrderInfo';
             var checkOrderData = {
-                    cancel_flag: "2",
-                    bed_level_order_num: "000000000000000000000000000000",
-                    passengerTicketStr: getpassengerTickets(),
-                    oldPassengerStr: getOldPassengers(),
-                    tour_flag: ticketInfoForPassengerForm.tour_flag,
-                    randCode: $("#randCode").val(),
-                    whatsSelect: $.whatsSelect(true) ? "1" : "0",
-                    _json_att: "",
-                    REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken
-                };
+                cancel_flag: "2",
+                bed_level_order_num: "000000000000000000000000000000",
+                passengerTicketStr: getpassengerTickets(),
+                oldPassengerStr: getOldPassengers(),
+                tour_flag: ticketInfoForPassengerForm.tour_flag,
+                randCode: $("#randCode").val(),
+                whatsSelect: $.whatsSelect(true) ? "1" : "0",
+                _json_att: "",
+                REPEAT_SUBMIT_TOKEN: globalRepeatSubmitToken
+            };
             $.ajax({
                 // url: ctx + "confirmPassenger/checkOrderInfo",
                 url: checkOrderUrl,
@@ -766,10 +773,10 @@ var intervalProcess;
                 //     whatsSelect: $.whatsSelect(true) ? "1" : "0"
                 // },
                 data: JSON.stringify(checkOrderData),
-                contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
                 dataType: "json",
                 async: true,
-                success: function(V) {
+                success: function (V) {
                     if (!V.data.submitStatus) {
                         if (V.data.isRelogin) {
                             // window.location.href = ctx + "view/index.html?random=" + new Date().getTime()
@@ -800,32 +807,32 @@ var intervalProcess;
                     if (V.data.smokeStr != "" && V.data.smokeStr.length > 0) {
                         $("#dialog_smoker_msg").html(V.data.smokeStr);
                         dhtmlx.createWin({
-                        winId: "dialog_smoker",
-                        closeWinId: ["dialog_smoker_close", "dialog_smoker_cancel"],
-                        okId: "dialog_smoker_ok",
-                        okCallBack: function() {
-                            P(V)
-                        },
-                        checkConfirm: function() {
-                            return true
-                        },
-                        callback: function() {
-                            $('div[dhxbox="1"]').hide();
-                            $("#qr_submit_id").show();
-                            closeWin("checkticketinfo_id", true);
-                            $("#i-okmypasscode1").css("display", "none");
-                            try {
-                                TouClick.get("touclick-randCode").reload()
-                            } catch (W) {
-                                refreshImg("passenger", "randp")
+                            winId: "dialog_smoker",
+                            closeWinId: ["dialog_smoker_close", "dialog_smoker_cancel"],
+                            okId: "dialog_smoker_ok",
+                            okCallBack: function () {
+                                P(V)
+                            },
+                            checkConfirm: function () {
+                                return true
+                            },
+                            callback: function () {
+                                $('div[dhxbox="1"]').hide();
+                                $("#qr_submit_id").show();
+                                closeWin("checkticketinfo_id", true);
+                                $("#i-okmypasscode1").css("display", "none");
+                                try {
+                                    TouClick.get("touclick-randCode").reload()
+                                } catch (W) {
+                                    refreshImg("passenger", "randp")
+                                }
                             }
-                        }
-                    })
+                        })
                     } else {
                         P(V)
                     }
                 },
-                error: function(V, X, W) {
+                error: function (V, X, W) {
                     l("网络忙，请稍后再试。", true, "", true, "warn");
                     return
                 }
@@ -842,7 +849,7 @@ var intervalProcess;
                         winId: "608_check",
                         closeWinId: ["608_check_close", "608_check_cancel"],
                         okId: "608_check_ok",
-                        okCallBack: function() {
+                        okCallBack: function () {
                             $("#608_name").html(V.data.name);
                             $("#608_card").html(V.data.card);
                             $("#608_tel").html(V.data.tel);
@@ -851,16 +858,17 @@ var intervalProcess;
                                 winId: "608_complain",
                                 closeWinId: ["608_complain_close", "608_complain_cancel"],
                                 okId: "608_complain_ok",
-                                okCallBack: function() {
+                                okCallBack: function () {
                                     var X = dhtmlx.modalbox({
                                         targSrc: '<div><img src="/images/passenger/loading.gif"></img></div>',
-                                        callback: function() {}
+                                        callback: function () {
+                                        }
                                     });
                                     $.ajax({
                                         url: ctx + "confirmPassenger/report",
                                         type: "post",
                                         async: false,
-                                        success: function(Y) {
+                                        success: function (Y) {
                                             dhtmlx.modalbox.hide(X);
                                             if (Y.data == "Y") {
                                                 dhtmlx.alert({
@@ -880,21 +888,21 @@ var intervalProcess;
                                             $("#i-okmypasscode1").hide();
                                             refreshImg("passenger", "randp")
                                         },
-                                        error: function(Y, aa, Z) {
+                                        error: function (Y, aa, Z) {
                                             dhtmlx.modalbox.hide(X)
                                         }
                                     })
                                 },
-                                checkConfirm: function() {
+                                checkConfirm: function () {
                                     return true
                                 }
                             });
                             $("#608_complain").css("top", "200px")
                         },
-                        checkConfirm: function() {
+                        checkConfirm: function () {
                             return true
                         },
-                        callback: function() {
+                        callback: function () {
                             $("#i-okmypasscode1").hide();
                             refreshImg("passenger", "randp")
                         }
@@ -907,7 +915,7 @@ var intervalProcess;
                         ok: "确定",
                         text: W,
                         type: "alert-error",
-                        callback: function() {
+                        callback: function () {
                             renderTickInfo(limit_tickets);
                             F(ticketInfoForPassengerForm.purpose_codes, V.data.isCheckOrderInfo, V.data.doneHMD)
                         }
@@ -958,9 +966,9 @@ var intervalProcess;
                     //     isCheckOrderInfo: W
                     // },
                     data: JSON.stringify(queueCountData),
-                    contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                    contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
                     dataType: "json",
-                    success: function(Y) {
+                    success: function (Y) {
                         if (Y.status) {
                             if (Y.data.isRelogin == "Y") {
                                 window.location.href = ctx + "view/index.html?random=" + new Date().getTime()
@@ -1004,7 +1012,7 @@ var intervalProcess;
                             S()
                         }
                     },
-                    error: function(Y, aa, Z) {
+                    error: function (Y, aa, Z) {
                         S();
                         return
                     }
@@ -1047,7 +1055,8 @@ var intervalProcess;
             }
             return rt
         }
-        preStepClickEvent = function() {
+
+        preStepClickEvent = function () {
             // otsRedirect("post", ctx + "leftTicket/init?random=" + new Date().getTime(), {
             //     pre_step_flag: "preStep"
             // });
@@ -1202,16 +1211,17 @@ var intervalProcess;
         }
         return true
     }
+
     var n = 0;
     var o = new Array();
 
     function a() {
-        $("div#id-seat-sel div.sel-item a").on("click", function() {
+        $("div#id-seat-sel div.sel-item a").on("click", function () {
             if ($(this).attr("class") == "cur") {
                 $(this).removeClass("cur");
                 n--;
                 var w = $(this).attr("id");
-                $.each(o, function(x, z) {
+                $.each(o, function (x, z) {
                     var y = $(z).attr("id");
                     if (w == y) {
                         o.splice(x, 1)
@@ -1304,7 +1314,7 @@ var intervalProcess;
 
     function j() {
         var v = "";
-        $.each($("div#id-seat-sel div.seat-sel-bd a"), function() {
+        $.each($("div#id-seat-sel div.seat-sel-bd a"), function () {
             if ($(this).attr("class") == "cur") {
                 var w = $(this).attr("id");
                 v += w
@@ -1353,7 +1363,8 @@ var intervalProcess;
             }
         }
     }
-    numSet = function(y, v) {
+
+    numSet = function (y, v) {
         var D = parseInt($("#x_no").text());
         var z = parseInt($("#z_no").text());
         var x = parseInt($("#s_no").text());
@@ -1422,7 +1433,7 @@ var dwLimitErrorStStr = "整包购买，所有乘车人请选择相同的席别(
 
 var M = new Array();
 var az = new Array();
-(function() {
+(function () {
 
     var g = new Array();
     var d = new Array();
@@ -1430,7 +1441,7 @@ var az = new Array();
     var D;
     limit_tickets = new Array();
     var ay = null;
-    $(document).ready(function() {
+    $(document).ready(function () {
         if (isLimitTran == "Y") {
             dhtmlx.alert({
                 title: "温馨提示",
@@ -1473,31 +1484,31 @@ var az = new Array();
 
     function y() {
         $.views.helpers({
-            seatTypePriceForSeatName: function(aA) {
+            seatTypePriceForSeatName: function (aA) {
                 return getSeatTypePriceForSeatName(aA)
             },
-            getValueBykeyFromI18N: function(aA) {
+            getValueBykeyFromI18N: function (aA) {
                 getI18nResourceValueBykeyForJs(aA)
             },
-            isChangeStation: function() {
+            isChangeStation: function () {
                 return CHANGETSFLAG == "Y"
             },
-            getTourFlagByKey: function(aA) {
+            getTourFlagByKey: function (aA) {
                 return ticket_submit_order.tour_flag[aA]
             },
-            getTicketType: function(aA) {
+            getTicketType: function (aA) {
                 return ticket_submit_order.ticket_type[aA]
             },
-            getIdType: function(aA) {
+            getIdType: function (aA) {
                 return ticket_submit_order.passenger_card_type[aA]
             },
-            getSuitName: function(aA, aB) {
+            getSuitName: function (aA, aB) {
                 return getSuitNameByFlag(aA, aB)
             },
-            getCurrentUserIdType: function() {
+            getCurrentUserIdType: function () {
                 return id_type_code
             },
-            isExistWZ: function(aD) {
+            isExistWZ: function (aD) {
                 if (ticket_submit_order.seatType.yz_type == aD) {
                     var aC = getSeatTypePrices();
                     for (var aA = 0; aA < aC.length; aA++) {
@@ -1509,7 +1520,7 @@ var az = new Array();
                 }
                 return false
             },
-            isCanAdd: function() {
+            isCanAdd: function () {
                 return can_add
             }
         })
@@ -1525,7 +1536,7 @@ var az = new Array();
                 }
             }
         }
-        aE = aE.sort(function(aG, aF) {
+        aE = aE.sort(function (aG, aF) {
             if (aF.id > aG.id) {
                 return -1
             } else {
@@ -1540,7 +1551,7 @@ var az = new Array();
     }
 
     function ad() {
-        $("#psInfo").mouseenter(function(aC) {
+        $("#psInfo").mouseenter(function (aC) {
             var aA = aC.pageY + 10;
             var aB = aC.pageX;
             $(".srr-tips").eq(1).css({
@@ -1549,13 +1560,13 @@ var az = new Array();
             });
             $(".srr-tips").eq(1).show()
         });
-        $("#psInfo").mouseleave(function() {
+        $("#psInfo").mouseleave(function () {
             $(".srr-tips").hide()
         })
     }
 
     function am() {
-        $("#psInfo").mouseenter(function(aC) {
+        $("#psInfo").mouseenter(function (aC) {
             var aA = aC.pageY + 10;
             var aB = aC.pageX;
             $(".srr-tips").eq(0).css({
@@ -1564,34 +1575,34 @@ var az = new Array();
             });
             $(".srr-tips").eq(0).show()
         });
-        $("#psInfo").mouseleave(function() {
+        $("#psInfo").mouseleave(function () {
             $(".srr-tips").hide()
         })
     }
 
     function h() {
-        $("#randCodeForm_id").on("submit", function(aA) {
+        $("#randCodeForm_id").on("submit", function (aA) {
             aA.preventDefault()
         })
     }
 
     function ac() {
-        $(".pos-rel input").focus(function() {
+        $(".pos-rel input").focus(function () {
             elemOnkeyupNotice(this);
             $(this).next().show();
             $(this).css("border", "1px solid #2D8DCF")
-        }).mouseover(function() {
+        }).mouseover(function () {
             if (!$(this).prop("disabled")) {
                 elemOnkeyupNotice(this);
                 $(this).next().show();
                 $(this).css("border", "1px solid #2D8DCF")
             }
         });
-        $(".pos-rel input").mouseout(function() {
+        $(".pos-rel input").mouseout(function () {
             $(this).next().hide();
             $(this).css("border", "1px solid #CFCDC7")
         });
-        $(".pos-rel input").blur(function() {
+        $(".pos-rel input").blur(function () {
             $(this).next().hide();
             $(this).css("border", "1px solid #CFCDC7")
         })
@@ -1646,20 +1657,20 @@ var az = new Array();
     }
 
     function F() {
-        $("#quickQueryPassenger_id").blur(function() {
+        $("#quickQueryPassenger_id").blur(function () {
             if ($.trim($("#quickQueryPassenger_id").val()) == "") {
                 $("#quickQueryPassenger_id").val("输入乘客姓名")
             }
-        }).click(function() {
+        }).click(function () {
             if ($.trim($("#quickQueryPassenger_id").val()) == "输入乘客姓名") {
                 $("#quickQueryPassenger_id").val("")
             }
-        }).keyup(function() {
+        }).keyup(function () {
             var aA = $("#quickQueryPassenger_id").val();
             J(aA);
             f()
         });
-        $("#submit_quickQueryPassenger").click(function() {
+        $("#submit_quickQueryPassenger").click(function () {
             J($("#quickQueryPassenger_id").val());
             f()
         })
@@ -1674,7 +1685,7 @@ var az = new Array();
     }
 
     function ax() {
-        $("#show_more_passenger_id").click(function() {
+        $("#show_more_passenger_id").click(function () {
             if ($("#show_more_passenger_id").attr("flaged") == "flaged") {
                 $("#show_more_passenger_id").removeAttr("flaged");
                 $("#show_more_passenger_id").attr("title", "展开");
@@ -1757,7 +1768,8 @@ var az = new Array();
             }
         }
     }
-    responseDjPassengerClick = function(aD) {
+
+    responseDjPassengerClick = function (aD) {
         var aH = "";
         aH = $(aD).attr("id");
         if (aD.checked) {
@@ -1832,12 +1844,12 @@ var az = new Array();
                     winId: "dialog_xsertcj",
                     closeWinId: ["dialog_xsertcj_close", "dialog_xsertcj_cancel"],
                     okId: "dialog_xsertcj_ok",
-                    callback: function() {
+                    callback: function () {
                         aI.ticket_type = "1";
                         aI.seatTypes = ticket_seat_codeMap["1"];
                         renderTickInfo(limit_tickets, false)
                     },
-                    okCallBack: function() {
+                    okCallBack: function () {
                         renderTickInfo(limit_tickets, false)
                     }
                 })
@@ -1984,7 +1996,8 @@ var az = new Array();
         }
         return aC
     }
-    responseNormalPassengerClick = function(aC) {
+
+    responseNormalPassengerClick = function (aC) {
         var aG = "";
         aG = $(aC).attr("id");
         if (aC.checked) {
@@ -2059,12 +2072,12 @@ var az = new Array();
                     winId: "dialog_xsertcj",
                     closeWinId: ["dialog_xsertcj_close", "dialog_xsertcj_cancel"],
                     okId: "dialog_xsertcj_ok",
-                    callback: function() {
+                    callback: function () {
                         aH.ticket_type = "1";
                         aH.seatTypes = ticket_seat_codeMap["1"];
                         renderTickInfo(limit_tickets, false)
                     },
-                    okCallBack: function() {
+                    okCallBack: function () {
                         renderTickInfo(limit_tickets, false)
                     }
                 })
@@ -2093,7 +2106,7 @@ var az = new Array();
         }
         f()
     };
-    getpassengerTickets = function() {
+    getpassengerTickets = function () {
         var aA = "";
         for (var aB = 0; aB < limit_tickets.length; aB++) {
             var aC = limit_tickets[aB].seat_type + ",0," + limit_tickets[aB].ticket_type + "," + limit_tickets[aB].name + "," + limit_tickets[aB].id_type + "," + limit_tickets[aB].id_no + "," + (limit_tickets[aB].phone_no == null ? "" : limit_tickets[aB].phone_no) + "," + (limit_tickets[aB].save_status == "" ? "N" : "Y");
@@ -2101,7 +2114,7 @@ var az = new Array();
         }
         return aA.substring(0, aA.length - 1)
     };
-    getOldPassengers = function() {
+    getOldPassengers = function () {
         var aE = "";
         for (var aD = 0; aD < limit_tickets.length; aD++) {
             var aA = limit_tickets[aD];
@@ -2145,7 +2158,7 @@ var az = new Array();
         } else {
             am()
         }
-        $("#dj_passenger_id li").click(function(aD) {
+        $("#dj_passenger_id li").click(function (aD) {
             if (aD.target.tagName.toUpperCase() == "LABEL") {
                 return
             }
@@ -2166,11 +2179,11 @@ var az = new Array();
 
     function U(aA) {
         if (aA) {
-            $("input[id^=djPassenger_]").change(function() {
+            $("input[id^=djPassenger_]").change(function () {
                 responseDjPassengerClick(this)
             })
         } else {
-            $("input[id^=normalPassenger_]").change(function() {
+            $("input[id^=normalPassenger_]").change(function () {
                 responseNormalPassengerClick(this)
             })
         }
@@ -2188,7 +2201,7 @@ var az = new Array();
             U(false)
         }
         am();
-        $("#normal_passenger_id li").click(function(aD) {
+        $("#normal_passenger_id li").click(function (aD) {
             if (aD.target.tagName.toUpperCase() == "LABEL") {
                 return
             }
@@ -2205,8 +2218,9 @@ var az = new Array();
             }
         })
     }
+
     var aw = "";
-    excuteClickEditPassenger = function(aA) {
+    excuteClickEditPassenger = function (aA) {
         var aD = "";
         var aH = aA.attr("id");
         if (aA.attr("disabled") == "disabled") {
@@ -2292,7 +2306,7 @@ var az = new Array();
                 winId: "dialog_update",
                 closeWinId: ["dialog_update_close", "dialog_update_cancel"],
                 okId: "dialog_update_ok",
-                okCallBack: function() {
+                okCallBack: function () {
                     var aM = false;
                     if (W == "1") {
                         if (isCanGP("1", R)) {
@@ -2368,26 +2382,26 @@ var az = new Array();
                     $("#" + aL).attr("totalTimes", R);
                     $("#" + aL).unbind("change");
                     if (aF == "normalPassenger_") {
-                        $("#" + aL).change(function() {
+                        $("#" + aL).change(function () {
                             responseNormalPassengerClick(this)
                         });
                         responseNormalPassengerClick($("#" + aL)[0])
                     }
                     if (aF == "djPassenger_") {
-                        $("#" + aL).change(function() {
+                        $("#" + aL).change(function () {
                             responseDjPassengerClick(this)
                         });
                         responseDjPassengerClick($("#" + aL)[0])
                     }
                 },
-                checkConfirm: function() {
+                checkConfirm: function () {
                     return checkWinUpdatePassenger()
                 }
             })
         }
     };
     var s = null;
-    checkWinUpdatePassenger = function() {
+    checkWinUpdatePassenger = function () {
         var aC = $("#typeselect_update").val();
         var aD = $.trim($("#pname_update_value").val());
         if ($.trim(aD) != "") {
@@ -2525,7 +2539,8 @@ var az = new Array();
         }
         var aE = dhtmlx.modalbox({
             targSrc: '<div id="loadingdiv"><img src="/images/passenger/loading.gif"></img></div>',
-            callback: function() {}
+            callback: function () {
+            }
         });
         $("#loadingdiv")[0].style["z-index"] = "20009";
         $("#dialog_update").hide();
@@ -2544,14 +2559,14 @@ var az = new Array();
             url: ctx + "passengers/editReal",
             type: "post",
             data: s,
-            error: function(aF, aH, aG) {
+            error: function (aF, aH, aG) {
                 dhtmlx.modalbox.hide(aE);
                 $("#dialog_update").show();
                 $("#error_update_tr").show();
                 $("#error_for_update_nameandidno").html("您的网络可能有问题").show()
             },
             async: false,
-            success: function(aF) {
+            success: function (aF) {
                 dhtmlx.modalbox.hide(aE);
                 if (aF.data.flag) {
                     $("#error_for_update_nameandidno").hide();
@@ -2568,7 +2583,7 @@ var az = new Array();
         });
         return aA
     };
-    renderTickInfo = function(aI, aD) {
+    renderTickInfo = function (aI, aD) {
         var aM = $("#ticketInfo_id tr");
         var aL = aM.length;
         var aC = aI.length;
@@ -2620,11 +2635,11 @@ var az = new Array();
 
     function e() {
         var aA = $("select[id^=seatType_]");
-        $.each(aA, function(aC, aB) {
-            $(aB).width(function() {
+        $.each(aA, function (aC, aB) {
+            $(aB).width(function () {
                 var aE = 0;
                 var aD = $("#ticket_con_id span");
-                $.each(aD, function(aF, aG) {
+                $.each(aD, function (aF, aG) {
                     if ($(aG).width() > aE) {
                         aE = $(aG).width()
                     }
@@ -2633,7 +2648,8 @@ var az = new Array();
             })
         })
     }
-    renderCheckTickInfo = function(aF) {
+
+    renderCheckTickInfo = function (aF) {
         var aJ = $("#checkTicketInfoTemplate").html().replace("<!--", "").replace("-->", "");
         $.templates({
             leftTableTemplate: aJ
@@ -2705,6 +2721,7 @@ var az = new Array();
     }
 
     var passengerUrl = '/passenger/passengerInfo';
+
     function v() {
         $.ajax({
             // type: "post",
@@ -2713,7 +2730,7 @@ var az = new Array();
             url: passengerUrl,
             dataType: 'json',
             async: true,
-            success: function(aA) {
+            success: function (aA) {
                 if (aA.status) {
                     if (aA.data.isExist) {
                         M = aA.data.dj_passengers;
@@ -2766,7 +2783,7 @@ var az = new Array();
                 ableClickSubmitButtonOrPreStepBUtton();
                 f()
             },
-            error: function(aA, aC, aB) {
+            error: function (aA, aC, aB) {
                 ableClickSubmitButtonOrPreStepBUtton();
                 return
             }
@@ -2820,7 +2837,8 @@ var az = new Array();
     function au() {
         disableClickSubmitButtonOrPreStepBUtton()
     }
-    ableClickSubmitButtonOrPreStepBUtton = function() {
+
+    ableClickSubmitButtonOrPreStepBUtton = function () {
         var aA = $("#preStep_id");
         aA.bind("click", preStepClickEvent);
         if (timers <= 0) {
@@ -2832,7 +2850,7 @@ var az = new Array();
             aB.removeClass("btn92").addClass("btn92s")
         }
     };
-    disableClickSubmitButtonOrPreStepBUtton = function() {
+    disableClickSubmitButtonOrPreStepBUtton = function () {
         var aB = $("#submitOrder_id");
         var aA = $("#preStep_id");
         aA.bind("click", preStepClickEvent);
@@ -2870,6 +2888,7 @@ var az = new Array();
         this.ticket_type_name = aA;
         this.ticket_price = Number(aG / 100).toFixed(1)
     }
+
     var V = {
         O: 100,
         M: 99,
@@ -2924,7 +2943,7 @@ var az = new Array();
         this.isDisabled = aI == ticket_submit_order.ticket_type.student ? true : aN;
         this.isDefaultUsed = false;
         this.checkboxStatus = aC;
-        this.toString = function() {
+        this.toString = function () {
             return this.name + "_" + this.id_type + "_" + this.id_no + "_" + this.phone_no
         };
         if (aB) {
@@ -2951,10 +2970,11 @@ var az = new Array();
             }
         }
     }
+
     var W;
     var o = true;
     var R = null;
-    showAddPassengerWin = function() {
+    showAddPassengerWin = function () {
         if (S(limit_tickets)) {
             return
         }
@@ -2995,7 +3015,7 @@ var az = new Array();
             winId: "dialog_add",
             closeWinId: ["dialog_add_cancel", "dialog_add_close"],
             okId: "dialog_add_ok",
-            okCallBack: function() {
+            okCallBack: function () {
                 var aH = false;
                 var aI = "";
                 var aO = ' disabled="disabled" style="color:#999999" ';
@@ -3072,17 +3092,17 @@ var az = new Array();
                 if (!aH) {
                     return
                 }
-                $("#" + aM).change(function() {
+                $("#" + aM).change(function () {
                     responseNormalPassengerClick(this)
                 });
                 responseNormalPassengerClick($("#" + aM)[0])
             },
-            checkConfirm: function() {
+            checkConfirm: function () {
                 return checkWinAddPassenger()
             }
         })
     };
-    checkWinAddPassenger = function() {
+    checkWinAddPassenger = function () {
         var aD = $.trim($("#pname_value").val());
         var aC = $("#typeselect").val();
         if ($.trim(aD) != "") {
@@ -3227,7 +3247,8 @@ var az = new Array();
         }
         var aE = dhtmlx.modalbox({
             targSrc: '<div id="loadingdiv"><img src="/images/passenger/loading.gif"></img></div>',
-            callback: function() {}
+            callback: function () {
+            }
         });
         $("#loadingdiv")[0].style["z-index"] = "20009";
         $("#dialog_add").hide();
@@ -3242,14 +3263,14 @@ var az = new Array();
                 passenger_type: $("#ptypeselect").val(),
                 country_code: $("#pcountry_value").val()
             },
-            error: function(aF, aH, aG) {
+            error: function (aF, aH, aG) {
                 dhtmlx.modalbox.hide(aE);
                 $("#dialog_add").show();
                 $("#error_tr").show();
                 $("#error_for_nameandidno").html("您的网络可能有问题").show()
             },
             async: false,
-            success: function(aF) {
+            success: function (aF) {
                 dhtmlx.modalbox.hide(aE);
                 if (aF.data.flag) {
                     $("#error_for_nameandidno").hide();
@@ -3266,7 +3287,7 @@ var az = new Array();
         });
         return aA
     };
-    addPassengerInfo = function() {
+    addPassengerInfo = function () {
         if (S(limit_tickets)) {
             return
         }
@@ -3285,7 +3306,7 @@ var az = new Array();
         renderTickInfo(limit_tickets, false);
         f()
     };
-    delPassengerInfo = function(aE) {
+    delPassengerInfo = function (aE) {
         if ($("span[id^='del_']").length < 2) {
             $("#selected_ticket_passenger_all").prop("checked", false);
             var aG = $(aE).attr("id");
@@ -3389,7 +3410,7 @@ var az = new Array();
         }
         f()
     };
-    addChildPassengerInfo = function(aC) {
+    addChildPassengerInfo = function (aC) {
         if (S(limit_tickets)) {
             return
         }
@@ -3420,7 +3441,7 @@ var az = new Array();
             $("#seatType_" + aB.substr(6) + " option[value='" + aH + "']").attr("selected", "selected")
         }
     };
-    upadateSavePassengerInfo = function() {
+    upadateSavePassengerInfo = function () {
         var aC = $("span[id^='del_']");
         for (var aE = 0; aE < aC.length; aE++) {
             var aA = $(aC[aE]).attr("id");
@@ -3448,7 +3469,7 @@ var az = new Array();
         }
         f()
     };
-    selectedTicketPassengerAll = function(aC, aA) {
+    selectedTicketPassengerAll = function (aC, aA) {
         if (aC.checked) {
             for (var aB = 0; aB < limit_tickets.length; aB++) {
                 limit_tickets[aB].save_status = "checked='checked'";
@@ -3467,13 +3488,13 @@ var az = new Array();
             }
         }
     };
-    doTicketTitleShow = function(aA) {
+    doTicketTitleShow = function (aA) {
         var aE = new Array();
         var aH = ticketInfoForPassengerForm.queryLeftNewDetailDTO;
         var aI = ticketInfoForPassengerForm.queryLeftTicketRequestDTO;
         var aD = aI.train_date.substr(0, 4) + "-" + aI.train_date.substr(4, 2) + "-" + aI.train_date.substr(6, 2);
         var aB = t(new Date(Date.parse(aD.replace(/-/g, "/"))));
-        var aJ = function(aL, aN, aK, aP, aM, aO, aR, aQ) {
+        var aJ = function (aL, aN, aK, aP, aM, aO, aR, aQ) {
             this.date = aL;
             this.week = aN;
             this.station_train_code = aK;
@@ -3757,7 +3778,8 @@ var az = new Array();
             return true
         }
     }
-    stepFirValidatorTicketInfo = function(aA) {
+
+    stepFirValidatorTicketInfo = function (aA) {
         var aG = "";
         if (!aA) {
             aG = $("input[id^='passenger_name_']");
@@ -3800,7 +3822,7 @@ var az = new Array();
             }
         }
     };
-    elemOnkeyupNotice = function(aF) {
+    elemOnkeyupNotice = function (aF) {
         var aD = av(aF).split(",");
         var aC = aD[0];
         var aB = aD[1];
@@ -3858,7 +3880,8 @@ var az = new Array();
         aG = aE + "," + aB + "," + aA + "," + aI;
         return aG
     }
-    updateAllCheckBox = function() {
+
+    updateAllCheckBox = function () {
         var aB = $("input[id^='save_']");
         for (var aA = 0; aA < aB.length; aA++) {
             if (!$(aB[aA]).prop("checked")) {
@@ -3868,7 +3891,7 @@ var az = new Array();
         }
         $("#selected_ticket_passenger_all").prop("checked", true)
     };
-    updateSeatTypeByeTickeType = function(aF) {
+    updateSeatTypeByeTickeType = function (aF) {
         var aI = $(aF).prop("id").split("_")[1];
         var aC = $("#seatType_" + aI).val();
         var aG = ticket_seat_codeMap[$(aF).val()];
@@ -3930,7 +3953,7 @@ var az = new Array();
                         winId: "dialog_xsertcj",
                         closeWinId: ["dialog_xsertcj_close", "dialog_xsertcj_cancel"],
                         okId: "dialog_xsertcj_ok",
-                        callback: function() {
+                        callback: function () {
                             $(aF).find("option").first().attr("selected", "selected");
                             $("#seatType_" + aI).trigger("change");
                             aG = ticket_seat_codeMap[$(aF).find("option").first().val()];
@@ -3952,7 +3975,7 @@ var az = new Array();
                                 aO.attr("selected", "selected")
                             }
                         },
-                        okCallBack: function() {
+                        okCallBack: function () {
                             if (!(aH.indexOf("djPassenger_") > -1 || aH.indexOf("normalPassenger_") > -1)) {
                                 $("#save_" + aI).next().removeClass("i-save i-save-dis").addClass("i-save");
                                 a($(aF).val(), aI);
@@ -3986,7 +4009,7 @@ var az = new Array();
                     winId: "dialog_xsertcj",
                     closeWinId: ["dialog_xsertcj_close", "dialog_xsertcj_cancel"],
                     okId: "dialog_xsertcj_ok",
-                    callback: function() {
+                    callback: function () {
                         $(aF).find("option").first().attr("selected", "selected");
                         $("#seatType_" + aI).trigger("change");
                         aG = ticket_seat_codeMap[$(aF).find("option").first().val()];
@@ -4017,7 +4040,7 @@ var az = new Array();
                             aO.attr("selected", "selected")
                         }
                     },
-                    okCallBack: function() {
+                    okCallBack: function () {
                         if ($(aF).val() == ticket_submit_order.ticket_type.adult) {
                             $("#addchild_" + aI).attr("onclick", "javascript:addChildPassengerInfo(this);");
                             $("#addchild_" + aI).html("添加儿童票 ")
@@ -4187,7 +4210,8 @@ var az = new Array();
             }
         }
     }
-    getSeatTypePriceForSeatName = function(aA) {
+
+    getSeatTypePriceForSeatName = function (aA) {
         var aD = 0;
         var aC = getSeatTypePrices();
         for (var aB = 0; aB < aC.length; aB++) {
@@ -4198,8 +4222,8 @@ var az = new Array();
         }
         return aD
     };
-    getSeatTypePrices = function() {
-        var aE = function(aI, aH, aG) {
+    getSeatTypePrices = function () {
+        var aE = function (aI, aH, aG) {
             this.seat_type_name = aI;
             this.ticket_price = aH == Number(0) ? "" : aH;
             this.ticket_statu = aG;
@@ -4212,7 +4236,7 @@ var az = new Array();
             var aA = new aE(aB[0], Number(aB[1].replace("元", "") == "--" ? 0 : aB[1].replace("元", "")).toFixed(1), aB[2]);
             aF.push(aA)
         }
-        aF = aF.sort(function(aH, aG) {
+        aF = aF.sort(function (aH, aG) {
             if (Number(aH.ticket_price) < Number(aG.ticket_price)) {
                 return 1
             } else {
@@ -4225,10 +4249,10 @@ var az = new Array();
         });
         return aF
     };
-    getI18nResourceValueBykeyForJs = function(aA) {
+    getI18nResourceValueBykeyForJs = function (aA) {
         return submitorder_messages[aA]
     };
-    getSuitNameByFlag = function(aC, aF) {
+    getSuitNameByFlag = function (aC, aF) {
         var aB = 0;
         var aE = 0;
         var aA = 0;
@@ -4286,7 +4310,7 @@ var az = new Array();
 
     function j() {
         if (isDw == "Y") {
-            $("#chooseAllDW").change(function() {
+            $("#chooseAllDW").change(function () {
                 if ($(this).is(":checked")) {
                     var aA = true;
                     var aD = $("#ticketInfo_id").find("select[id^=seatType_]");
@@ -4359,17 +4383,18 @@ function OrderQueueWaitTime(a, c, b) {
     this.isFinished = false;
     this.waitObj
 }
-OrderQueueWaitTime.prototype.start = function(a) {
+
+OrderQueueWaitTime.prototype.start = function (a) {
     if (!a) {
         a = 1000
     }
     var b = this;
     b.timerJob();
-    window.setInterval(function() {
+    window.setInterval(function () {
         b.timerJob()
     }, parseInt(a))
 };
-OrderQueueWaitTime.prototype.timerJob = function() {
+OrderQueueWaitTime.prototype.timerJob = function () {
     if (this.isFinished) {
         return
     }
@@ -4393,7 +4418,7 @@ OrderQueueWaitTime.prototype.timerJob = function() {
     }
     this.waitMethod(this.tourFlag, this.dispTime > 1 ? --this.dispTime : 1, c)
 };
-OrderQueueWaitTime.prototype.getWaitTime = function() {
+OrderQueueWaitTime.prototype.getWaitTime = function () {
     var a = this;
 
     var queryOrderWaitTimeUrl = "/passenger/queryOrderWaitTime";
@@ -4409,9 +4434,9 @@ OrderQueueWaitTime.prototype.getWaitTime = function() {
         //     tourFlag: a.tourFlag
         // },
         data: JSON.stringify(queryOrderWaitTimeData),
-        contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+        contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
         dataType: "json",
-        success: function(c) {
+        success: function (c) {
             var e = c.data;
             if (!e.queryOrderWaitTimeStatus) {
                 // window.location.href = ctx + "view/index.html?random=" + new Date().getTime()
@@ -4429,26 +4454,762 @@ OrderQueueWaitTime.prototype.getWaitTime = function() {
                 }
             }
         },
-        error: function(b, d, c) {
+        error: function (b, d, c) {
             return false
         }
     })
 };
 
-jQuery.validator.addMethod("checkLoginUserName",function(f,d){var a=false;var c=/^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])|(19[0-9])|(16[0-9])\d{8}$/;var b=/^[A-Za-z]{1}([A-Za-z0-9]|[_]){0,29}$/;var e=/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;if(b.test(f)||e.test(f)||c.test(f)){a=true}return this.optional(d)||a},"wrong username.");jQuery.validator.addMethod("requiredUserName",function(b,a){if("用户名／邮箱／手机号"==b){return false}if(b==null||""==b){return false}return true},"wrong username.");jQuery.validator.addMethod("requiredSchoolName",function(b,a){if("简码／汉字"==b){return false}if(b==null||""==b){return false}return true},"wrong schoolname.");jQuery.validator.addMethod("randCodeRequired",function(b,a){$("#i-ok").css("display","none");return b.length>0},"验证码错误!");jQuery.validator.addMethod("randCodeFormat",function(c,b){$("#i-ok").css("display","none");var a=/^[a-zA-Z0-9]+$/;return this.optional(b)||a.test(c)},"验证码错误!");jQuery.validator.addMethod("randCodeLength",function(b,a){$("#i-ok").css("display","none");return b.length==4},"验证码错误!.");jQuery.validator.addMethod("integrationCheck",function(b,a){var c=/^\d{6}$/;return this.optional(a)||c.test(b)},"wrong integrationpassword");jQuery.validator.addMethod("integrationPwdCheck",function(b,a,c){if($("#"+c[0]).val()==$("#"+c[1]).val()){return true}return false},"两次输入密码不一致!.");jQuery.validator.addMethod("checkRandCode",function(c,b,d){var a=true;if(c&&c.length==4){$.ajax({url:ctx+"passcodeNew/checkRandCodeAnsyn",type:"post",data:{randCode:c,rand:d},async:false,success:function(e){if(e.data=="N"){a=false;$("#i-ok").css("display","none")}else{a=true;$("#i-ok").css("display","block")}}})}else{a=false;$("#i-ok").css("display","none")}return a},"验证码错误!.");jQuery.validator.addMethod("validateUsersName",function(b,a){return this.optional(a)||/^[A-Za-z]{1}([A-Za-z0-9]|[_]){0,29}$/.test(b)},"用户名只能由字母、数字或_组成");jQuery.validator.addMethod("checkWriteSpace",function(c,b){for(var a=0;a<c.length;a++){if(c.charCodeAt(a)==32){return false}}return true},"contain writespace");jQuery.validator.addMethod("validateRandCode",function(b,a){return this.optional(a)||/^[a-zA-Z0-9]+$/.test(b)},"验证码错误!.");jQuery.validator.addMethod("checkPassward",function(c,b,e){var d=true;for(var a=0;a<c.length;a++){if(c.charCodeAt(a)==39||c.charCodeAt(a)==60||c.charCodeAt(a)==62){d=false}if(!d){break}}return this.optional(b)||d},"Passward wrong");function validateSecIdCard(g){var f=0;var a=g;var e={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙",21:"辽宁",22:"吉林",23:"黑龙",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",83:"台湾",91:"国外"};if(!/^\d{17}(\d|x)$/i.test(a)){return false}a=a.replace(/x$/i,"a");if(e[parseInt(a.substr(0,2))]==null){return false}var c=a.substr(6,4)+"-"+Number(a.substr(10,2))+"-"+Number(a.substr(12,2));var h=new Date(c.replace(/-/g,"/"));if(c!=(h.getFullYear()+"-"+(h.getMonth()+1)+"-"+h.getDate())){return false}for(var b=17;b>=0;b--){f+=(Math.pow(2,b)%11)*parseInt(a.charAt(17-b),11)}if(f%11!=1){return false}return true}function validateFirIdCard(g){var f=0;var a;var e={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙",21:"辽宁",22:"吉林",23:"黑龙",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",83:"台湾",91:"国外"};if(g.length==15){a=idCardUpdate(g)}else{a=g}if(!/^\d{17}(\d|x)$/i.test(a)){return false}a=a.replace(/x$/i,"a");if(e[parseInt(a.substr(0,2))]==null){return false}var c=a.substr(6,4)+"-"+Number(a.substr(10,2))+"-"+Number(a.substr(12,2));var h=new Date(c.replace(/-/g,"/"));if(c!=(h.getFullYear()+"-"+(h.getMonth()+1)+"-"+h.getDate())){return false}for(var b=17;b>=0;b--){f+=(Math.pow(2,b)%11)*parseInt(a.charAt(17-b),11)}if(f%11!=1){return false}return true}function idCardUpdate(g){var b;var f=/^(\d){15}$/;if(f.test(g)){var e=0;var a=new Array(7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2);var d=new Array("1","0","X","9","8","7","6","5","4","3","2");g=g.substr(0,6)+"19"+g.substr(6,g.length-6);for(var c=0;c<g.length;c++){e+=parseInt(g.substr(c,1))*a[c]}g+=d[e%11];b=g}else{b="#"}return b}jQuery.validator.addMethod("checkBorth",function(e,c){var b=e;if(b==""){return true}else{var a=b.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);if(a==null){return false}var f=new Date(a[1],a[3]-1,a[4]);return(f.getFullYear()==a[1]&&(f.getMonth()+1)==a[3]&&f.getDate()==a[4])}},"日期格式不合法");jQuery.validator.addMethod("byteRangeLength",function(d,b,e){var c=d.length;for(var a=0;a<d.length;a++){if(d.charCodeAt(a)>127){c++}}return this.optional(b)||(c>=e[0]&&c<=e[1])},"length wrong");jQuery.validator.addMethod("checkNameCharBlank",function(c,b,d){var a=d.split("@");if($("#"+a[1]).val()==""){return true}else{if($("#"+a[0]).val()=="1"||$("#"+a[0]).val()=="2"){return this.optional(b)||/^[a-zA-Z·.．\u3400-\u9FFF]+$/.test(c)}else{if($("#"+a[0]).val()=="B"){if(/^[-]+$/.test(c)){return false}return this.optional(b)||/^[a-z A-Z·.．\u3400-\u9FFF\-]+$/.test(c)}else{if($("#"+a[0]).val()=="H"){return true}else{return this.optional(b)||/^[a-z A-Z·.．\u3400-\u9FFF]+$/.test(c)}}}}},"wrong name.");jQuery.validator.addMethod("checkNameCharBlankForWork",function(c,b,d){var a=d.split("@");if($("#"+a[0]).val()=="H"){return this.optional(b)||/^[a-zA-Z ]+$/.test(c)}else{return true}},"wrong name.");jQuery.validator.addMethod("checkIdValidStr",function(c,b){var a=/^[a-zA-Z0-9\_\-\(\)]+$/;return this.optional(b)||(a.test(c))},"wrong id");jQuery.validator.addMethod("isSecIDCard",function(b,a,c){if(!checkIfSecIdCard($(c).val())){return true}return validateSecIdCard(b)},"wrong");function checkIfSecIdCard(a){if(a=="1"){return true}return false}function checkIfFirIdCard(a){if(a=="2"){return true}return false}function checkCardForHKorTW(a){if(a=="C"||a=="G"){return true}return false}jQuery.validator.addMethod("isFirIDCard",function(b,a,c){if(!checkIfFirIdCard($(c).val())){return true}return validateFirIdCard(b)},"wrong");jQuery.validator.addMethod("checkHkongMacao",function(c,b,d){if($(d).val()=="C"){var a=/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/;return this.optional(b)||(a.test(c))}else{return true}},"wrong format.");jQuery.validator.addMethod("checkTaiw",function(c,a,e){if($(e).val()=="G"){var d=/^[0-9]{8}$/;var b=/^[0-9]{10}$/;return this.optional(a)||(d.test(c))||(b.test(c))}else{return true}},"wrong format.");jQuery.validator.addMethod("checkPassport",function(d,b,e){if($(e).val()=="B"){var c=/^[a-zA-Z]{5,17}$/;var a=/^[a-zA-Z0-9]{5,17}$/;return this.optional(b)||(a.test(d))||c.test(d)}else{return true}},"wrong format.");jQuery.validator.addMethod("checkWork",function(c,b,d){if($(d).val()=="H"){var a=/^[a-zA-Z]{3}[0-9]{12}$/;return this.optional(b)||(a.test(c))}else{return true}},"wrong format.");jQuery.validator.addMethod("checkGATJmjzz",function(d,b,e){var a=e.split("@");if($("#"+a[0]).val()=="1"){var c=d.substring(0,2);if($("#"+a[1]).is(":checked")){if(c!="81"&&c!="82"&&c!="83"){return false}}else{if(c=="81"||c=="82"||c=="83"){return false}}}return true},"wrong format.");jQuery.validator.addMethod("isMobile",function(d,b){var c=d.length;var a=/^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])|(19[0-9])|(16[0-9])\d{8}$/;return this.optional(b)||(c==11&&a.test(d))},"wrong mobile phone ");jQuery.validator.addMethod("isTelePhone",function(b,a){var c=/(^[0-9]{3,4}\-[0-9]{3,8}$)|(^[0-9]{3,8}$)|(^[0-9]{3,4}\)[0-9]{3,8}$)|(^0{0,1}13[0-9]{9}#)/;return this.optional(a)||(c.test(b))},"wrong telePhone ");jQuery.validator.addMethod("illegalChar",function(c,b,e){var d=true;if(c.indexOf("$")>=0){return false}for(var a=0;a<c.length;a++){if(c.charCodeAt(a)==39||c.charCodeAt(a)==60||c.charCodeAt(a)==62||c.charCodeAt(a)==34||c.charCodeAt(a)==63){d=false}if(!d){break}}return this.optional(b)||d},"Illegal char wrong");jQuery.validator.addMethod("isZipCode",function(c,b){var a=/^[0-9]{6}$/;return this.optional(b)||(a.test(c))},"wrong zipcode");jQuery.validator.addMethod("isEmail",function(c,a){var b=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;return this.optional(a)||(b.test(trim(c)))},"wrong email");function replaceChar(b){var a=b.value.replace(/['"<> ?]/g,"");b.value=a}function checkNameChar1(a){return/^[a-zA-Z0-9\u3400-\u9FFF]+$/.test(a)}function trim(a){return a.replace(/(^\s*)|(\s*$)/g,"")}function ltrim(a){return a.replace(/(^\s*)/g,"")}function rtrim(a){return a.replace(/(\s*$)/g,"")}jQuery.validator.addMethod("validateName",function(b,a){return this.optional(a)||/^[a-zA-Z\u3400-\u9FFF0-9\_]+$/.test(b)},"wrong username.");jQuery.validator.addMethod("studentRequired",function(b,a,c){if($(c).val()=="3"){return b&&trim(b)!=""}return true},"wrong studentRequired.");jQuery.validator.addMethod("studentStationRequired",function(b,a,c){if($(c).val()=="3"){return b&&trim(b)!="简拼/全拼/汉字"&&trim(b)!=""}return true},"wrong studentStationRequired.");jQuery.validator.addMethod("studentValidateName",function(b,a,c){if($(c).val()=="3"){return this.optional(a)||/^[a-zA-Z\u3400-\u9FFF0-9\_]+$/.test(b)}return true},"wrong username.");jQuery.validator.addMethod("checkStudentName",function(b,a,c){if($(c).val()=="3"){if((!b||trim(b)==""||trim(b)=="简码/汉字")){return false}}return true},"wrong username.");jQuery.validator.addMethod("isQuestionNull",function(b,a,c){if(jQuery.trim(b)!=""){if(jQuery.trim($(c[0]).val())=="customQuestion"&&jQuery.trim($(c[1]).val())==""||jQuery.trim($(c[0]).val())==""){return false}}return true},"you should input the question");jQuery.validator.addMethod("isAnswerNull",function(b,a,c){if((jQuery.trim($(c[0]).val())=="customQuestion"&&jQuery.trim($(c[1]).val())!="")||(jQuery.trim($(c[0]).val())!="")){if(jQuery.trim(b)==""){return false}}return true},"you should input the answer");function checkSex(c,b,a){if(!checkSexByCardId(c,b,a)){if(!confirm("性别与身份证中的性别不符，是否继续?")){return false}else{return true}}else{return true}}function checkSexByCardId(c,e,a){function b(h,i){var g=null;if(i.length==15){g=i.substring(14,15)}else{if(i.length==18){g=i.substring(16,17)}else{return true}}if(g=="x"||g=="X"){g="10"}var f=parseInt(g);var j=f%2;if(j===0&&h==="F"){return true}else{if(j===1&&h==="M"){return true}else{return false}}}var d=$(a).val();if(checkIfSecIdCard($(e).val())&&validateSecIdCard(d)){if(d!==""){return b(c,d)}else{return true}}else{if(checkIfFirIdCard($(e).val())&&validateFirIdCard(d)){if(d!==""){return b(c,d)}else{return true}}else{return true}}}function checkBirdDateByCardId(c,e,b){var a=null;var d=$(b).val();if(checkIfSecIdCard($(e).val())&&d!==""&&validateSecIdCard(d)){a=d.substring(6,14)}else{if(checkIfFirIdCard($(e).val())&&d!==""&&validateFirIdCard(d)){if(d.length==15){a="19"+d.substring(6,12)}else{if(d.length==18){a=d.substring(6,14)}}}else{return true}}if(c!==""){c=c.replace(/-/g,"");if(c!=a){return false}else{return true}}else{return true}}function checkBirdate(c,b,a){if(!checkBirdDateByCardId(c,b,a)){if(!confirm("出生日期与身份证中的出生日期不符，是否继续?")){return false}else{return true}}else{return true}}jQuery.validator.addMethod("checkPwdValidate",function(b,a){return this.optional(a)||/(?![a-z]+$|[0-9]+$|_+$)^[a-zA-Z0-9_]{6,}$/.test(b)},"contain writespace");jQuery.validator.addMethod("checkConfirmPassWard",function(b,a,c){if($(c).val()!=null){return $(c).val()==b}return true},"contain writespace");jQuery.validator.addMethod("IVR_passwd_format",function(b,a){var c=/^[0-9]{6}$/;return this.optional(a)||c.test(b)},"验证码错误!.");jQuery.validator.addMethod("checkStation",function(b,a){if((!b||trim(b)==""||trim(b)=="简拼/全拼/汉字"||trim(b)=="简拼/全拼/汉字或↑↓")){return false}return true},"wrong username.");jQuery.validator.addMethod("checkAnsyUserName",function(e,c,f){var b=f[0];var d=$("#"+f[1]).val();var a=true;$.ajax({url:b+"?user_name="+e,type:"get",async:false,success:function(g,h){if(g.data==true){a=false}else{a=true}},error:function(g,i,h){a=false}});return a},"wrong cardNo");function checkPwdRank(e,a,d){var b=$(e);var c=b.val();if(c.length<=6||new RegExp("^[a-zA-Z]{6,}$").test(c)||new RegExp("^[0-9]{6,}$").test(c)||new RegExp("^[_]{6,}$").test(c)){$("#"+a).attr("title","危险");$("#"+d).html("危险");$("#"+a).removeClass("rank-a");$("#"+a).removeClass("rank-b");$("#"+a).removeClass("rank-c");$("#"+a).addClass("rank-a")}else{if(c.length>6&&new RegExp("[a-zA-Z]").test(c)&&new RegExp("[0-9]").test(c)&&new RegExp("[_]").test(c)){$("#"+a).attr("title","安全");$("#"+d).html("安全");$("#"+a).removeClass("rank-a");$("#"+a).removeClass("rank-b");$("#"+a).removeClass("rank-c");$("#"+a).addClass("rank-c")}else{$("#"+a).attr("title","一般");$("#"+d).html("一般");$("#"+a).removeClass("rank-a");$("#"+a).removeClass("rank-b");$("#"+a).removeClass("rank-c");$("#"+a).addClass("rank-b")}}}Array.prototype.unique=function(){var b={},a=this.length;for(var c=0;c<a;c++){if(typeof b[this[c]]=="undefined"){b[this[c]]=1}}this.length=0;a=0;for(var c in b){this[a++]=c}return this};function checkSearchPwdRank(h,c,g){var e=$(h);var f=e.val();if(f.length<6){$("#"+c).attr("title","危险");$("#"+g).html("危险");$("#"+c).removeClass("rank-a");$("#"+c).removeClass("rank-b");$("#"+c).removeClass("rank-c");$("#"+c).addClass("rank-a")}else{var a=[];for(var b=0;b<6;b++){a.push(f.charAt(b))}a=a.unique();var d=a.length;if(d==1){$("#"+c).attr("title","危险");$("#"+g).html("危险");$("#"+c).removeClass("rank-a");$("#"+c).removeClass("rank-b");$("#"+c).removeClass("rank-c");$("#"+c).addClass("rank-a")}else{if(d>1&&d<5){$("#"+c).attr("title","一般");$("#"+g).html("一般");$("#"+c).removeClass("rank-a");$("#"+c).removeClass("rank-b");$("#"+c).removeClass("rank-c");$("#"+c).addClass("rank-b")}else{$("#"+c).attr("title","安全");$("#"+g).html("安全");$("#"+c).removeClass("rank-a");$("#"+c).removeClass("rank-b");$("#"+c).removeClass("rank-c");$("#"+c).addClass("rank-c")}}}}jQuery.validator.addMethod("checkDetailAddress",function(b,a){return this.optional(a)||/^[0-9a-zA-Z\u3400-\u9FFF\#]+$/.test(b)},"wrong name.");jQuery.validator.addMethod("checkAddressName",function(b,a){if(/^[-]+$/.test(b)){return false}return this.optional(a)||/^[a-z A-Z·.．\u3400-\u9FFF\-]+$/.test(b)||/^[a-zA-Z·.．\u3400-\u9FFF]+$/.test(b)},"wrong name.");jQuery.validator.addMethod("checkAddressSelect",function(b,a){if(""==b){return false}if(b){return true}return this.optional(a)},"wrong name.");
+jQuery.validator.addMethod("checkLoginUserName", function (f, d) {
+    var a = false;
+    var c = /^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])|(19[0-9])|(16[0-9])\d{8}$/;
+    var b = /^[A-Za-z]{1}([A-Za-z0-9]|[_]){0,29}$/;
+    var e = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+    if (b.test(f) || e.test(f) || c.test(f)) {
+        a = true
+    }
+    return this.optional(d) || a
+}, "wrong username.");
+jQuery.validator.addMethod("requiredUserName", function (b, a) {
+    if ("用户名／邮箱／手机号" == b) {
+        return false
+    }
+    if (b == null || "" == b) {
+        return false
+    }
+    return true
+}, "wrong username.");
+jQuery.validator.addMethod("requiredSchoolName", function (b, a) {
+    if ("简码／汉字" == b) {
+        return false
+    }
+    if (b == null || "" == b) {
+        return false
+    }
+    return true
+}, "wrong schoolname.");
+jQuery.validator.addMethod("randCodeRequired", function (b, a) {
+    $("#i-ok").css("display", "none");
+    return b.length > 0
+}, "验证码错误!");
+jQuery.validator.addMethod("randCodeFormat", function (c, b) {
+    $("#i-ok").css("display", "none");
+    var a = /^[a-zA-Z0-9]+$/;
+    return this.optional(b) || a.test(c)
+}, "验证码错误!");
+jQuery.validator.addMethod("randCodeLength", function (b, a) {
+    $("#i-ok").css("display", "none");
+    return b.length == 4
+}, "验证码错误!.");
+jQuery.validator.addMethod("integrationCheck", function (b, a) {
+    var c = /^\d{6}$/;
+    return this.optional(a) || c.test(b)
+}, "wrong integrationpassword");
+jQuery.validator.addMethod("integrationPwdCheck", function (b, a, c) {
+    if ($("#" + c[0]).val() == $("#" + c[1]).val()) {
+        return true
+    }
+    return false
+}, "两次输入密码不一致!.");
+jQuery.validator.addMethod("checkRandCode", function (c, b, d) {
+    var a = true;
+    if (c && c.length == 4) {
+        $.ajax({
+            url: ctx + "passcodeNew/checkRandCodeAnsyn",
+            type: "post",
+            data: {randCode: c, rand: d},
+            async: false,
+            success: function (e) {
+                if (e.data == "N") {
+                    a = false;
+                    $("#i-ok").css("display", "none")
+                } else {
+                    a = true;
+                    $("#i-ok").css("display", "block")
+                }
+            }
+        })
+    } else {
+        a = false;
+        $("#i-ok").css("display", "none")
+    }
+    return a
+}, "验证码错误!.");
+jQuery.validator.addMethod("validateUsersName", function (b, a) {
+    return this.optional(a) || /^[A-Za-z]{1}([A-Za-z0-9]|[_]){0,29}$/.test(b)
+}, "用户名只能由字母、数字或_组成");
+jQuery.validator.addMethod("checkWriteSpace", function (c, b) {
+    for (var a = 0; a < c.length; a++) {
+        if (c.charCodeAt(a) == 32) {
+            return false
+        }
+    }
+    return true
+}, "contain writespace");
+jQuery.validator.addMethod("validateRandCode", function (b, a) {
+    return this.optional(a) || /^[a-zA-Z0-9]+$/.test(b)
+}, "验证码错误!.");
+jQuery.validator.addMethod("checkPassward", function (c, b, e) {
+    var d = true;
+    for (var a = 0; a < c.length; a++) {
+        if (c.charCodeAt(a) == 39 || c.charCodeAt(a) == 60 || c.charCodeAt(a) == 62) {
+            d = false
+        }
+        if (!d) {
+            break
+        }
+    }
+    return this.optional(b) || d
+}, "Passward wrong");
+
+function validateSecIdCard(g) {
+    var f = 0;
+    var a = g;
+    var e = {
+        11: "北京",
+        12: "天津",
+        13: "河北",
+        14: "山西",
+        15: "内蒙",
+        21: "辽宁",
+        22: "吉林",
+        23: "黑龙",
+        31: "上海",
+        32: "江苏",
+        33: "浙江",
+        34: "安徽",
+        35: "福建",
+        36: "江西",
+        37: "山东",
+        41: "河南",
+        42: "湖北",
+        43: "湖南",
+        44: "广东",
+        45: "广西",
+        46: "海南",
+        50: "重庆",
+        51: "四川",
+        52: "贵州",
+        53: "云南",
+        54: "西藏",
+        61: "陕西",
+        62: "甘肃",
+        63: "青海",
+        64: "宁夏",
+        65: "新疆",
+        71: "台湾",
+        81: "香港",
+        82: "澳门",
+        83: "台湾",
+        91: "国外"
+    };
+    if (!/^\d{17}(\d|x)$/i.test(a)) {
+        return false
+    }
+    a = a.replace(/x$/i, "a");
+    if (e[parseInt(a.substr(0, 2))] == null) {
+        return false
+    }
+    var c = a.substr(6, 4) + "-" + Number(a.substr(10, 2)) + "-" + Number(a.substr(12, 2));
+    var h = new Date(c.replace(/-/g, "/"));
+    if (c != (h.getFullYear() + "-" + (h.getMonth() + 1) + "-" + h.getDate())) {
+        return false
+    }
+    for (var b = 17; b >= 0; b--) {
+        f += (Math.pow(2, b) % 11) * parseInt(a.charAt(17 - b), 11)
+    }
+    if (f % 11 != 1) {
+        return false
+    }
+    return true
+}
+
+function validateFirIdCard(g) {
+    var f = 0;
+    var a;
+    var e = {
+        11: "北京",
+        12: "天津",
+        13: "河北",
+        14: "山西",
+        15: "内蒙",
+        21: "辽宁",
+        22: "吉林",
+        23: "黑龙",
+        31: "上海",
+        32: "江苏",
+        33: "浙江",
+        34: "安徽",
+        35: "福建",
+        36: "江西",
+        37: "山东",
+        41: "河南",
+        42: "湖北",
+        43: "湖南",
+        44: "广东",
+        45: "广西",
+        46: "海南",
+        50: "重庆",
+        51: "四川",
+        52: "贵州",
+        53: "云南",
+        54: "西藏",
+        61: "陕西",
+        62: "甘肃",
+        63: "青海",
+        64: "宁夏",
+        65: "新疆",
+        71: "台湾",
+        81: "香港",
+        82: "澳门",
+        83: "台湾",
+        91: "国外"
+    };
+    if (g.length == 15) {
+        a = idCardUpdate(g)
+    } else {
+        a = g
+    }
+    if (!/^\d{17}(\d|x)$/i.test(a)) {
+        return false
+    }
+    a = a.replace(/x$/i, "a");
+    if (e[parseInt(a.substr(0, 2))] == null) {
+        return false
+    }
+    var c = a.substr(6, 4) + "-" + Number(a.substr(10, 2)) + "-" + Number(a.substr(12, 2));
+    var h = new Date(c.replace(/-/g, "/"));
+    if (c != (h.getFullYear() + "-" + (h.getMonth() + 1) + "-" + h.getDate())) {
+        return false
+    }
+    for (var b = 17; b >= 0; b--) {
+        f += (Math.pow(2, b) % 11) * parseInt(a.charAt(17 - b), 11)
+    }
+    if (f % 11 != 1) {
+        return false
+    }
+    return true
+}
+
+function idCardUpdate(g) {
+    var b;
+    var f = /^(\d){15}$/;
+    if (f.test(g)) {
+        var e = 0;
+        var a = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+        var d = new Array("1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2");
+        g = g.substr(0, 6) + "19" + g.substr(6, g.length - 6);
+        for (var c = 0; c < g.length; c++) {
+            e += parseInt(g.substr(c, 1)) * a[c]
+        }
+        g += d[e % 11];
+        b = g
+    } else {
+        b = "#"
+    }
+    return b
+}
+
+jQuery.validator.addMethod("checkBorth", function (e, c) {
+    var b = e;
+    if (b == "") {
+        return true
+    } else {
+        var a = b.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+        if (a == null) {
+            return false
+        }
+        var f = new Date(a[1], a[3] - 1, a[4]);
+        return (f.getFullYear() == a[1] && (f.getMonth() + 1) == a[3] && f.getDate() == a[4])
+    }
+}, "日期格式不合法");
+jQuery.validator.addMethod("byteRangeLength", function (d, b, e) {
+    var c = d.length;
+    for (var a = 0; a < d.length; a++) {
+        if (d.charCodeAt(a) > 127) {
+            c++
+        }
+    }
+    return this.optional(b) || (c >= e[0] && c <= e[1])
+}, "length wrong");
+jQuery.validator.addMethod("checkNameCharBlank", function (c, b, d) {
+    var a = d.split("@");
+    if ($("#" + a[1]).val() == "") {
+        return true
+    } else {
+        if ($("#" + a[0]).val() == "1" || $("#" + a[0]).val() == "2") {
+            return this.optional(b) || /^[a-zA-Z·.．\u3400-\u9FFF]+$/.test(c)
+        } else {
+            if ($("#" + a[0]).val() == "B") {
+                if (/^[-]+$/.test(c)) {
+                    return false
+                }
+                return this.optional(b) || /^[a-z A-Z·.．\u3400-\u9FFF\-]+$/.test(c)
+            } else {
+                if ($("#" + a[0]).val() == "H") {
+                    return true
+                } else {
+                    return this.optional(b) || /^[a-z A-Z·.．\u3400-\u9FFF]+$/.test(c)
+                }
+            }
+        }
+    }
+}, "wrong name.");
+jQuery.validator.addMethod("checkNameCharBlankForWork", function (c, b, d) {
+    var a = d.split("@");
+    if ($("#" + a[0]).val() == "H") {
+        return this.optional(b) || /^[a-zA-Z ]+$/.test(c)
+    } else {
+        return true
+    }
+}, "wrong name.");
+jQuery.validator.addMethod("checkIdValidStr", function (c, b) {
+    var a = /^[a-zA-Z0-9\_\-\(\)]+$/;
+    return this.optional(b) || (a.test(c))
+}, "wrong id");
+jQuery.validator.addMethod("isSecIDCard", function (b, a, c) {
+    if (!checkIfSecIdCard($(c).val())) {
+        return true
+    }
+    return validateSecIdCard(b)
+}, "wrong");
+
+function checkIfSecIdCard(a) {
+    if (a == "1") {
+        return true
+    }
+    return false
+}
+
+function checkIfFirIdCard(a) {
+    if (a == "2") {
+        return true
+    }
+    return false
+}
+
+function checkCardForHKorTW(a) {
+    if (a == "C" || a == "G") {
+        return true
+    }
+    return false
+}
+
+jQuery.validator.addMethod("isFirIDCard", function (b, a, c) {
+    if (!checkIfFirIdCard($(c).val())) {
+        return true
+    }
+    return validateFirIdCard(b)
+}, "wrong");
+jQuery.validator.addMethod("checkHkongMacao", function (c, b, d) {
+    if ($(d).val() == "C") {
+        var a = /^[HMhm]{1}([0-9]{10}|[0-9]{8})$/;
+        return this.optional(b) || (a.test(c))
+    } else {
+        return true
+    }
+}, "wrong format.");
+jQuery.validator.addMethod("checkTaiw", function (c, a, e) {
+    if ($(e).val() == "G") {
+        var d = /^[0-9]{8}$/;
+        var b = /^[0-9]{10}$/;
+        return this.optional(a) || (d.test(c)) || (b.test(c))
+    } else {
+        return true
+    }
+}, "wrong format.");
+jQuery.validator.addMethod("checkPassport", function (d, b, e) {
+    if ($(e).val() == "B") {
+        var c = /^[a-zA-Z]{5,17}$/;
+        var a = /^[a-zA-Z0-9]{5,17}$/;
+        return this.optional(b) || (a.test(d)) || c.test(d)
+    } else {
+        return true
+    }
+}, "wrong format.");
+jQuery.validator.addMethod("checkWork", function (c, b, d) {
+    if ($(d).val() == "H") {
+        var a = /^[a-zA-Z]{3}[0-9]{12}$/;
+        return this.optional(b) || (a.test(c))
+    } else {
+        return true
+    }
+}, "wrong format.");
+jQuery.validator.addMethod("checkGATJmjzz", function (d, b, e) {
+    var a = e.split("@");
+    if ($("#" + a[0]).val() == "1") {
+        var c = d.substring(0, 2);
+        if ($("#" + a[1]).is(":checked")) {
+            if (c != "81" && c != "82" && c != "83") {
+                return false
+            }
+        } else {
+            if (c == "81" || c == "82" || c == "83") {
+                return false
+            }
+        }
+    }
+    return true
+}, "wrong format.");
+jQuery.validator.addMethod("isMobile", function (d, b) {
+    var c = d.length;
+    var a = /^(13[0-9])|(14[0-9])|(15[0-9])|(18[0-9])|(17[0-9])|(19[0-9])|(16[0-9])\d{8}$/;
+    return this.optional(b) || (c == 11 && a.test(d))
+}, "wrong mobile phone ");
+jQuery.validator.addMethod("isTelePhone", function (b, a) {
+    var c = /(^[0-9]{3,4}\-[0-9]{3,8}$)|(^[0-9]{3,8}$)|(^[0-9]{3,4}\)[0-9]{3,8}$)|(^0{0,1}13[0-9]{9}#)/;
+    return this.optional(a) || (c.test(b))
+}, "wrong telePhone ");
+jQuery.validator.addMethod("illegalChar", function (c, b, e) {
+    var d = true;
+    if (c.indexOf("$") >= 0) {
+        return false
+    }
+    for (var a = 0; a < c.length; a++) {
+        if (c.charCodeAt(a) == 39 || c.charCodeAt(a) == 60 || c.charCodeAt(a) == 62 || c.charCodeAt(a) == 34 || c.charCodeAt(a) == 63) {
+            d = false
+        }
+        if (!d) {
+            break
+        }
+    }
+    return this.optional(b) || d
+}, "Illegal char wrong");
+jQuery.validator.addMethod("isZipCode", function (c, b) {
+    var a = /^[0-9]{6}$/;
+    return this.optional(b) || (a.test(c))
+}, "wrong zipcode");
+jQuery.validator.addMethod("isEmail", function (c, a) {
+    var b = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return this.optional(a) || (b.test(trim(c)))
+}, "wrong email");
+
+function replaceChar(b) {
+    var a = b.value.replace(/['"<> ?]/g, "");
+    b.value = a
+}
+
+function checkNameChar1(a) {
+    return /^[a-zA-Z0-9\u3400-\u9FFF]+$/.test(a)
+}
+
+function trim(a) {
+    return a.replace(/(^\s*)|(\s*$)/g, "")
+}
+
+function ltrim(a) {
+    return a.replace(/(^\s*)/g, "")
+}
+
+function rtrim(a) {
+    return a.replace(/(\s*$)/g, "")
+}
+
+jQuery.validator.addMethod("validateName", function (b, a) {
+    return this.optional(a) || /^[a-zA-Z\u3400-\u9FFF0-9\_]+$/.test(b)
+}, "wrong username.");
+jQuery.validator.addMethod("studentRequired", function (b, a, c) {
+    if ($(c).val() == "3") {
+        return b && trim(b) != ""
+    }
+    return true
+}, "wrong studentRequired.");
+jQuery.validator.addMethod("studentStationRequired", function (b, a, c) {
+    if ($(c).val() == "3") {
+        return b && trim(b) != "简拼/全拼/汉字" && trim(b) != ""
+    }
+    return true
+}, "wrong studentStationRequired.");
+jQuery.validator.addMethod("studentValidateName", function (b, a, c) {
+    if ($(c).val() == "3") {
+        return this.optional(a) || /^[a-zA-Z\u3400-\u9FFF0-9\_]+$/.test(b)
+    }
+    return true
+}, "wrong username.");
+jQuery.validator.addMethod("checkStudentName", function (b, a, c) {
+    if ($(c).val() == "3") {
+        if ((!b || trim(b) == "" || trim(b) == "简码/汉字")) {
+            return false
+        }
+    }
+    return true
+}, "wrong username.");
+jQuery.validator.addMethod("isQuestionNull", function (b, a, c) {
+    if (jQuery.trim(b) != "") {
+        if (jQuery.trim($(c[0]).val()) == "customQuestion" && jQuery.trim($(c[1]).val()) == "" || jQuery.trim($(c[0]).val()) == "") {
+            return false
+        }
+    }
+    return true
+}, "you should input the question");
+jQuery.validator.addMethod("isAnswerNull", function (b, a, c) {
+    if ((jQuery.trim($(c[0]).val()) == "customQuestion" && jQuery.trim($(c[1]).val()) != "") || (jQuery.trim($(c[0]).val()) != "")) {
+        if (jQuery.trim(b) == "") {
+            return false
+        }
+    }
+    return true
+}, "you should input the answer");
+
+function checkSex(c, b, a) {
+    if (!checkSexByCardId(c, b, a)) {
+        if (!confirm("性别与身份证中的性别不符，是否继续?")) {
+            return false
+        } else {
+            return true
+        }
+    } else {
+        return true
+    }
+}
+
+function checkSexByCardId(c, e, a) {
+    function b(h, i) {
+        var g = null;
+        if (i.length == 15) {
+            g = i.substring(14, 15)
+        } else {
+            if (i.length == 18) {
+                g = i.substring(16, 17)
+            } else {
+                return true
+            }
+        }
+        if (g == "x" || g == "X") {
+            g = "10"
+        }
+        var f = parseInt(g);
+        var j = f % 2;
+        if (j === 0 && h === "F") {
+            return true
+        } else {
+            if (j === 1 && h === "M") {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    var d = $(a).val();
+    if (checkIfSecIdCard($(e).val()) && validateSecIdCard(d)) {
+        if (d !== "") {
+            return b(c, d)
+        } else {
+            return true
+        }
+    } else {
+        if (checkIfFirIdCard($(e).val()) && validateFirIdCard(d)) {
+            if (d !== "") {
+                return b(c, d)
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
+    }
+}
+
+function checkBirdDateByCardId(c, e, b) {
+    var a = null;
+    var d = $(b).val();
+    if (checkIfSecIdCard($(e).val()) && d !== "" && validateSecIdCard(d)) {
+        a = d.substring(6, 14)
+    } else {
+        if (checkIfFirIdCard($(e).val()) && d !== "" && validateFirIdCard(d)) {
+            if (d.length == 15) {
+                a = "19" + d.substring(6, 12)
+            } else {
+                if (d.length == 18) {
+                    a = d.substring(6, 14)
+                }
+            }
+        } else {
+            return true
+        }
+    }
+    if (c !== "") {
+        c = c.replace(/-/g, "");
+        if (c != a) {
+            return false
+        } else {
+            return true
+        }
+    } else {
+        return true
+    }
+}
+
+function checkBirdate(c, b, a) {
+    if (!checkBirdDateByCardId(c, b, a)) {
+        if (!confirm("出生日期与身份证中的出生日期不符，是否继续?")) {
+            return false
+        } else {
+            return true
+        }
+    } else {
+        return true
+    }
+}
+
+jQuery.validator.addMethod("checkPwdValidate", function (b, a) {
+    return this.optional(a) || /(?![a-z]+$|[0-9]+$|_+$)^[a-zA-Z0-9_]{6,}$/.test(b)
+}, "contain writespace");
+jQuery.validator.addMethod("checkConfirmPassWard", function (b, a, c) {
+    if ($(c).val() != null) {
+        return $(c).val() == b
+    }
+    return true
+}, "contain writespace");
+jQuery.validator.addMethod("IVR_passwd_format", function (b, a) {
+    var c = /^[0-9]{6}$/;
+    return this.optional(a) || c.test(b)
+}, "验证码错误!.");
+jQuery.validator.addMethod("checkStation", function (b, a) {
+    if ((!b || trim(b) == "" || trim(b) == "简拼/全拼/汉字" || trim(b) == "简拼/全拼/汉字或↑↓")) {
+        return false
+    }
+    return true
+}, "wrong username.");
+jQuery.validator.addMethod("checkAnsyUserName", function (e, c, f) {
+    var b = f[0];
+    var d = $("#" + f[1]).val();
+    var a = true;
+    $.ajax({
+        url: b + "?user_name=" + e, type: "get", async: false, success: function (g, h) {
+            if (g.data == true) {
+                a = false
+            } else {
+                a = true
+            }
+        }, error: function (g, i, h) {
+            a = false
+        }
+    });
+    return a
+}, "wrong cardNo");
+
+function checkPwdRank(e, a, d) {
+    var b = $(e);
+    var c = b.val();
+    if (c.length <= 6 || new RegExp("^[a-zA-Z]{6,}$").test(c) || new RegExp("^[0-9]{6,}$").test(c) || new RegExp("^[_]{6,}$").test(c)) {
+        $("#" + a).attr("title", "危险");
+        $("#" + d).html("危险");
+        $("#" + a).removeClass("rank-a");
+        $("#" + a).removeClass("rank-b");
+        $("#" + a).removeClass("rank-c");
+        $("#" + a).addClass("rank-a")
+    } else {
+        if (c.length > 6 && new RegExp("[a-zA-Z]").test(c) && new RegExp("[0-9]").test(c) && new RegExp("[_]").test(c)) {
+            $("#" + a).attr("title", "安全");
+            $("#" + d).html("安全");
+            $("#" + a).removeClass("rank-a");
+            $("#" + a).removeClass("rank-b");
+            $("#" + a).removeClass("rank-c");
+            $("#" + a).addClass("rank-c")
+        } else {
+            $("#" + a).attr("title", "一般");
+            $("#" + d).html("一般");
+            $("#" + a).removeClass("rank-a");
+            $("#" + a).removeClass("rank-b");
+            $("#" + a).removeClass("rank-c");
+            $("#" + a).addClass("rank-b")
+        }
+    }
+}
+
+Array.prototype.unique = function () {
+    var b = {}, a = this.length;
+    for (var c = 0; c < a; c++) {
+        if (typeof b[this[c]] == "undefined") {
+            b[this[c]] = 1
+        }
+    }
+    this.length = 0;
+    a = 0;
+    for (var c in b) {
+        this[a++] = c
+    }
+    return this
+};
+
+function checkSearchPwdRank(h, c, g) {
+    var e = $(h);
+    var f = e.val();
+    if (f.length < 6) {
+        $("#" + c).attr("title", "危险");
+        $("#" + g).html("危险");
+        $("#" + c).removeClass("rank-a");
+        $("#" + c).removeClass("rank-b");
+        $("#" + c).removeClass("rank-c");
+        $("#" + c).addClass("rank-a")
+    } else {
+        var a = [];
+        for (var b = 0; b < 6; b++) {
+            a.push(f.charAt(b))
+        }
+        a = a.unique();
+        var d = a.length;
+        if (d == 1) {
+            $("#" + c).attr("title", "危险");
+            $("#" + g).html("危险");
+            $("#" + c).removeClass("rank-a");
+            $("#" + c).removeClass("rank-b");
+            $("#" + c).removeClass("rank-c");
+            $("#" + c).addClass("rank-a")
+        } else {
+            if (d > 1 && d < 5) {
+                $("#" + c).attr("title", "一般");
+                $("#" + g).html("一般");
+                $("#" + c).removeClass("rank-a");
+                $("#" + c).removeClass("rank-b");
+                $("#" + c).removeClass("rank-c");
+                $("#" + c).addClass("rank-b")
+            } else {
+                $("#" + c).attr("title", "安全");
+                $("#" + g).html("安全");
+                $("#" + c).removeClass("rank-a");
+                $("#" + c).removeClass("rank-b");
+                $("#" + c).removeClass("rank-c");
+                $("#" + c).addClass("rank-c")
+            }
+        }
+    }
+}
+
+jQuery.validator.addMethod("checkDetailAddress", function (b, a) {
+    return this.optional(a) || /^[0-9a-zA-Z\u3400-\u9FFF\#]+$/.test(b)
+}, "wrong name.");
+jQuery.validator.addMethod("checkAddressName", function (b, a) {
+    if (/^[-]+$/.test(b)) {
+        return false
+    }
+    return this.optional(a) || /^[a-z A-Z·.．\u3400-\u9FFF\-]+$/.test(b) || /^[a-zA-Z·.．\u3400-\u9FFF]+$/.test(b)
+}, "wrong name.");
+jQuery.validator.addMethod("checkAddressSelect", function (b, a) {
+    if ("" == b) {
+        return false
+    }
+    if (b) {
+        return true
+    }
+    return this.optional(a)
+}, "wrong name.");
 
 var defaultLoadGrayBackgroundModalbox = "";
 var loadGrayBackground;
 var unLoadGrayBackground;
-(function() {
-    loadGrayBackground = function() {
+(function () {
+    loadGrayBackground = function () {
         var a = dhtmlx.modalbox({
             targSrc: '<div><img src="/images/passenger/loading.gif"></img></div>',
-            callback: function() {}
+            callback: function () {
+            }
         });
         defaultLoadGrayBackgroundModalbox = a
     };
-    unLoadGrayBackground = function() {
+    unLoadGrayBackground = function () {
         if (defaultLoadGrayBackgroundModalbox != "") {
             dhtmlx.modalbox.hide(defaultLoadGrayBackgroundModalbox);
             defaultLoadGrayBackgroundModalbox = ""

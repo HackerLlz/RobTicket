@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duriamuk.robartifact.mapper.CodeImageMapper">
+
+    <resultMap id="codeImageMap" type="com.duriamuk.robartifact.entity.DTO.code.CodeImage">
+        <result column="id" property="id"/>
+        <result column="text" property="ocrResult"/>
+        <result column="hash" property="hash"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id, text, hash
+    </sql>
+
+    <select id="countCodeImage" parameterType="com.duriamuk.robartifact.entity.DTO.code.CodeImage" resultType="integer">
+        SELECT
+        COUNT (0)
+        FROM
+        code_image
+        WHERE
+        text = #{ocrResult} and md5 = #{hash}
+    </select>
+
+    <insert id="insertCodeImage" parameterType="com.duriamuk.robartifact.entity.DTO.code.CodeImage">
+        INSERT IGNORE INTO
+        code_image(text, hash)
+        VALUES
+        ( #{ocrResult}, #{hash})
+    </insert>
+</mapper>

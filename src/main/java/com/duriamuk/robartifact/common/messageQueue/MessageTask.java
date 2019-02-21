@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
  * @description:
  * @create: 2019-01-10 20:44
  */
-public class MessageTask <T> implements Runnable{
+public class MessageTask<T> implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(MessageTask.class);
 
     private T messageConsumerService;
@@ -36,7 +36,7 @@ public class MessageTask <T> implements Runnable{
         this.message = message;
 
         HttpServletRequest request = HttpUtils.getRequest();
-        this.cookie = !ObjectUtils.isEmpty(request)? request.getHeader(HttpUtils.COOKIE): ThreadLocalUtils.get();
+        cookie = !ObjectUtils.isEmpty(request) ? request.getHeader(HttpUtils.COOKIE) : ThreadLocalUtils.get();
     }
 
     @Override
@@ -56,11 +56,11 @@ public class MessageTask <T> implements Runnable{
         }
     }
 
-    public void setFuture(Future future){
+    public void setFuture(Future future) {
         this.future = future;
     }
 
-    private void massage() throws Exception{
+    private void massage() throws Exception {
         Class clazz = messageConsumerService.getClass();
         Method method = clazz.getDeclaredMethod(methodName, String.class);  // new Class[]({String.class, int.class})
         method.invoke(messageConsumerService, message);

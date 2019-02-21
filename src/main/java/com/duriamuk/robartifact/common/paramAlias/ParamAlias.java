@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ParamAlias{
+public @interface ParamAlias {
     /**
      * 参数别名列表
      */

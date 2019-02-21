@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @create: 2019-01-10 14:44
  */
 @Service("mailSendService")
-public class MailSendServiceImpl implements MailSendService{
+public class MailSendServiceImpl implements MailSendService {
     private static final Logger logger = LoggerFactory.getLogger(MailSendServiceImpl.class);
     private static final int RETRY_TIMES = 2;
 
@@ -28,8 +28,8 @@ public class MailSendServiceImpl implements MailSendService{
         UserInfoPO userInfoPO = userService.getUserInfo();
         String username = userInfoPO.getUsername();
         String mail = userInfoPO.getSendMail();
-        String content = "恭喜" +  username + "用户！抢票成功";
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        String content = "恭喜" + username + "用户！抢票成功";
+        for (int i = 0; i < RETRY_TIMES; i++) {
             boolean isSend = retrySendMail(username, mail, content);
             if (isSend) {
                 logger.info("邮件最终发送成功：{}", content);

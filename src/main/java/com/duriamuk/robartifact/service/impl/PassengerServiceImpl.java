@@ -21,7 +21,7 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public String passengerInfo() {
         logger.info("获得乘客信息");
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String url = UrlConstant.OTN_URL + "confirmPassenger/getPassengerDTOs";
             String result = HttpUtils.doPostForm(url, null, true);
             if (result.startsWith("{")) {
@@ -40,7 +40,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public String doOrder(String url,String data) {
+    public String doOrder(String url, String data) {
         logger.info("确认下单， 入参:{}, {}", url, data);
         url = UrlConstant.OTN_URL + url;
         String result = HttpUtils.doPostForm(url, data, true);

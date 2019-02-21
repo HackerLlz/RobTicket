@@ -95,7 +95,7 @@ public class ExcelUtils {
         }
     }
 
-    private static <T>void setCellContent(Row row, Integer key, T value) {
+    private static <T> void setCellContent(Row row, Integer key, T value) {
         if (ObjectUtils.isEmpty(row)) {
             return;
         }

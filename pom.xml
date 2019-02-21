@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>frp</artifactId>
+    <groupId>com.duriamuk</groupId>
+    <artifactId>robartifact</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>frp</name>
-    <description>Demo project for Spring Boot</description>
+    <name>robartifact</name>
+    <description>rob artifact</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -58,6 +58,10 @@
             <artifactId>httpcore</artifactId>
             <groupId>org.apache.httpcomponents</groupId>
         </dependency>
+        <dependency>
+            <artifactId>httpmime</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
+        </dependency>
 
         <!-- json -->
         <dependency>
@@ -66,12 +70,12 @@
             <version>1.2.31</version>
         </dependency>
 
-        <!-- 热部署 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!-- 热部署 --> <!-- 与图片识别有本地方法的冲突！！！-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-devtools</artifactId>-->
+            <!--<optional>true</optional>-->
+        <!--</dependency>-->
 
         <!-- lombok编译支持 -->
         <dependency>
@@ -99,7 +103,7 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- mybatis --> <!-- slf4j集成logback日志 -->
+        <!-- mybatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -130,6 +134,21 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
+        <!--图片处理-->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+
+        <!-- OCR扫描 -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -138,9 +157,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <!-- 开启热部署 -->
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
+                <!--<configuration>-->
+                    <!--<fork>true</fork>-->
+                <!--</configuration>-->
             </plugin>
         </plugins>
     </build>

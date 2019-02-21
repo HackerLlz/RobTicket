@@ -1,12 +1,11 @@
-
 server:
   port: 9999
 
 spring:
   # 热部署
-  devtools:
-    restart:
-      enabled: true
+#  devtools:
+#    restart:
+#      enabled: true
   # 模板引擎缓存
   thymeleaf:
     cache: false
@@ -24,7 +23,10 @@ spring:
     port: 6379
     timeout: 3600
 
-
 # MyBatis configuration
 mybatis:
   mapper-locations: classpath:META-INF/mybatis/*.xml
+
+constant:
+  # 人工验证图片训练库路径
+  codeImagePath: "O:\\图片\\12306\\图库\\"

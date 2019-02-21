@@ -5,7 +5,7 @@
     <resultMap id="loginPOMap" type="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
         <result column="id" property="id"/>
         <result column="username" property="username"/>
-        <result column="send_mail" property="sendMail" />
+        <result column="send_mail" property="sendMail"/>
     </resultMap>
 
     <sql id="baseColumn">

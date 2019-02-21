@@ -2,56 +2,88 @@
  * My97 DatePicker 4.8 Beta2
  * License: http://www.my97.net/dp/license.asp
  */
-var $dp,WdatePicker;(function(){var $={
-$langList:[{name:"en",charset:"UTF-8"},{name:"zh-cn",charset:"UTF-8"},{name:"zh-tw",charset:"UTF-8"}],
-$skinList:[
-	{name:"default",charset:"gb2312"},
-	{name:"whyGreen",charset:"gb2312"},
-	{name:"blue",charset:"gb2312"},
-	{name:"green",charset:"gb2312"},
-	{name:"ext",charset:"gb2312"},
-	{name:"blueFresh",charset:"gb2312"}
-],
-$wdate:true,
-$crossFrame:true,
-$preLoad:false,
-doubleCalendar:false,
-enableKeyboard:true,
-enableInputMask:true,
-autoUpdateOnChanged:null,
-weekMethod:"ISO8601",
-position:{},
-lang:"auto",
-skin:"default",
-dateFmt:"yyyy-MM-dd",
-realDateFmt:"yyyy-MM-dd",
-realTimeFmt:"HH:mm:ss",
-realFullFmt:"%Date %Time",
-minDate:"1900-01-01 00:00:00",
-maxDate:"2099-12-31 23:59:59",
-startDate:"",
-alwaysUseStartDate:false,
-yearOffset:1911,
-firstDayOfWeek:0,
-isShowWeek:false,
-highLineWeekDay:true,
-isShowClear:true,
-isShowToday:true,
-isShowOK:false,
-isShowOthers:true,
-readOnly:false,
-errDealMode:0,
-autoPickDate:null,
-qsEnabled:true,
-autoShowQS:false,
+var $dp, WdatePicker;
+(function () {
+    var $ = {
+        $langList: [{name: "en", charset: "UTF-8"}, {name: "zh-cn", charset: "UTF-8"}, {
+            name: "zh-tw",
+            charset: "UTF-8"
+        }],
+        $skinList: [
+            {name: "default", charset: "gb2312"},
+            {name: "whyGreen", charset: "gb2312"},
+            {name: "blue", charset: "gb2312"},
+            {name: "green", charset: "gb2312"},
+            {name: "ext", charset: "gb2312"},
+            {name: "blueFresh", charset: "gb2312"}
+        ],
+        $wdate: true,
+        $crossFrame: true,
+        $preLoad: false,
+        doubleCalendar: false,
+        enableKeyboard: true,
+        enableInputMask: true,
+        autoUpdateOnChanged: null,
+        weekMethod: "ISO8601",
+        position: {},
+        lang: "auto",
+        skin: "default",
+        dateFmt: "yyyy-MM-dd",
+        realDateFmt: "yyyy-MM-dd",
+        realTimeFmt: "HH:mm:ss",
+        realFullFmt: "%Date %Time",
+        minDate: "1900-01-01 00:00:00",
+        maxDate: "2099-12-31 23:59:59",
+        startDate: "",
+        alwaysUseStartDate: false,
+        yearOffset: 1911,
+        firstDayOfWeek: 0,
+        isShowWeek: false,
+        highLineWeekDay: true,
+        isShowClear: true,
+        isShowToday: true,
+        isShowOK: false,
+        isShowOthers: true,
+        readOnly: false,
+        errDealMode: 0,
+        autoPickDate: null,
+        qsEnabled: true,
+        autoShowQS: false,
 
-specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, opposite: false, onpicking: null, onpicked: null, onclearing: null, oncleared: null, ychanging: null, ychanged: null, Mchanging: null, Mchanged: null, dchanging: null, dchanged: null, Hchanging: null, Hchanged: null, mchanging: null, mchanged: null, schanging: null, schanged: null, eCont: null, vel: null, elProp: "", errMsg: "", quickSel: [], has: {}, getRealLang: function() {
-	var _ = $.$langList;
-	for (var A = 0; A < _.length; A++)
-		if (_[A].name == this.lang) return _[A];
-	return _[0]
-}
-};
+        specialDates: null,
+        specialDays: null,
+        disabledDates: null,
+        disabledDays: null,
+        opposite: false,
+        onpicking: null,
+        onpicked: null,
+        onclearing: null,
+        oncleared: null,
+        ychanging: null,
+        ychanged: null,
+        Mchanging: null,
+        Mchanged: null,
+        dchanging: null,
+        dchanged: null,
+        Hchanging: null,
+        Hchanged: null,
+        mchanging: null,
+        mchanged: null,
+        schanging: null,
+        schanged: null,
+        eCont: null,
+        vel: null,
+        elProp: "",
+        errMsg: "",
+        quickSel: [],
+        has: {},
+        getRealLang: function () {
+            var _ = $.$langList;
+            for (var A = 0; A < _.length; A++)
+                if (_[A].name == this.lang) return _[A];
+            return _[0]
+        }
+    };
     WdatePicker = T;
     var X = window,
         S = {
@@ -70,7 +102,8 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
     if ($.$crossFrame) {
         try {
             while (U.parent && U.parent[M] != U[M] && U.parent[M][C]("frameset").length == 0) U = U.parent
-        } catch (N) {}
+        } catch (N) {
+        }
     }
     if (!U.$dp) U.$dp = {
         ff: G,
@@ -81,7 +114,7 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
         defMaxDate: $.maxDate
     };
     B();
-    if ($.$preLoad && $dp.status == 0) E(X, "onload", function() {
+    if ($.$preLoad && $dp.status == 0) E(X, "onload", function () {
         T(null, true)
     });
     if (!X[M].docMD) {
@@ -92,20 +125,20 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
         E(U[M], "onmousedown", D);
         U[M].docMD = true
     }
-    E(X, "onunload", function() {
+    E(X, "onunload", function () {
         if ($dp.dd) O($dp.dd, "none")
     });
 
     function B() {
         U.$dp = U.$dp || {};
         obj = {
-            $: function($) {
+            $: function ($) {
                 return (typeof $ == "string") ? X[M].getElementById($) : $
             },
-            $D: function($, _) {
+            $D: function ($, _) {
                 return this.$DV(this.$($).value, _)
             },
-            $DV: function(_, $) {
+            $DV: function (_, $) {
                 if (_ != "") {
                     this.dt = $dp.cal.splitDate(_, $dp.cal.dateFmt);
                     if ($)
@@ -123,7 +156,7 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
                 }
                 return ""
             },
-            show: function() {
+            show: function () {
                 var A = U[M].getElementsByTagName("div"),
                     $ = 100000;
                 for (var B = 0; B < A.length; B++) {
@@ -133,7 +166,7 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
                 this.dd.style.zIndex = $ + 2;
                 O(this.dd, "block")
             },
-            hide: function() {
+            hide: function () {
                 O(this.dd, "none")
             },
             attachEvent: E
@@ -146,7 +179,7 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
         if (R) A.attachEvent($, _);
         else if (_) {
             var B = $.replace(/on/, "");
-            _._ieEmuEventHandler = function($) {
+            _._ieEmuEventHandler = function ($) {
                 return _($)
             };
             A.addEventListener(B, _._ieEmuEventHandler, false)
@@ -192,7 +225,8 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
                         _ += E.top;
                         break
                     }
-                } catch (B) {}
+                } catch (B) {
+                }
             }
             $ = $.parent
         }
@@ -277,12 +311,14 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
         var _ = $ ? ($.srcElement || $.target) : null;
         try {
             if ($dp.cal && !$dp.eCont && $dp.dd && _ != $dp.el && $dp.dd.style.display == "block") $dp.cal.close()
-        } catch ($) {}
+        } catch ($) {
+        }
     }
 
     function Y() {
         $dp.status = 2
     }
+
     var P, _;
 
     function T(N, F) {
@@ -293,7 +329,7 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
             if (K.substring(0, 1) != "$" && N[K] === undefined) N[K] = $[K];
         if (F) {
             if (!L()) {
-                _ = _ || setInterval(function() {
+                _ = _ || setInterval(function () {
                     if (U[M].readyState == "complete") clearInterval(_);
                     T(null, true)
                 }, 50);
@@ -321,7 +357,8 @@ specialDates: null, specialDays: null, disabledDates: null, disabledDays: null, 
             if (!N.el || N.el["My97Mark"] === true || N.el.disabled || ($dp.dd && O($dp.dd) != "none" && $dp.dd.style.left != "-970px")) {
                 try {
                     N.el["My97Mark"] = false
-                } catch (C) {}
+                } catch (C) {
+                }
                 return
             }
             I(N);

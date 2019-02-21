@@ -14,29 +14,28 @@ import java.util.Set;
 
 public class EntityValidator {
 
-    public static <T> ValidateResult validateEntity(T domain){
+    public static <T> ValidateResult validateEntity(T domain) {
         return validate(domain);
     }
-    
+
     /**
      * @AUTHOR: 榴莲
      * @DESCRIPTION: 用于校验存在List属性的POJO
      * @DATE: CREATE AT 10:39 2018/7/19
-     * @MODIFIED_BY: 
+     * @MODIFIED_BY:
      */
-    public static ValidateResult validateEntityWithList(Object obj, Class<?>... groups){
+    public static ValidateResult validateEntityWithList(Object obj, Class<?>... groups) {
         ValidateResult validateResult = null;
         if (obj instanceof Collection) {
             validateResult = validateEntityList((Collection) obj, groups);
-        }
-        else if (!ObjectUtils.isEmpty(obj)) {
+        } else if (!ObjectUtils.isEmpty(obj)) {
             validateResult = validate(obj, groups);
             if (validateResult.hasError()) {
                 return validateResult;
             }
             validateResult = validateListField(obj, groups);
         }
-        return validateResult == null? new ValidateResult(): validateResult;
+        return validateResult == null ? new ValidateResult() : validateResult;
     }
 
     private static ValidateResult validateEntityList(Collection objList, Class<?>... groups) {

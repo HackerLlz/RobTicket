@@ -48,7 +48,7 @@ public class TicketServiceImpl implements TicketService {
     private void changeQueryUrl(String result) {
         if (result.startsWith("{") && result.length() < 100) {
             JSONObject jsonObject = JSON.parseObject(result);
-            if (!(Boolean)jsonObject.get("status")) {
+            if (!(Boolean) jsonObject.get("status")) {
                 // 单例
                 QUERY_URL = jsonObject.getString("c_url");
                 logger.info("已改变QUERY_URL为：{}", QUERY_URL);

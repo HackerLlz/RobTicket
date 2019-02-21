@@ -22,11 +22,12 @@ import java.util.List;
  * @description:
  * @create: 2019-01-12 17:03
  */
+@Deprecated
 @Service("authCodeService")
 public class AuthCodeServiceImpl implements AuthCodeService {
     private static final Logger logger = LoggerFactory.getLogger(AuthCodeServiceImpl.class);
-    private static final List<String> answerList = Arrays.asList("42,46", "115,48", "188,46", "260,43", "258,116", "183,117", "117,117", "37,117");
-    private static final List<String> positionList = Arrays.asList("0","1","2","3","4","5","0,1","0,2","0,3","0,4","0,5","1,2","1,3","1,4","1,5","2,3","2,4","2,5","3,4","3,5","4,5","0,1,2","0,1,3","0,1,4","0,1,5","0,2,3","0,2,4","0,2,5","0,3,4","0,3,5","0,4,5","1,2,3","1,2,4","1,2,5","1,3,4","1,3,5","1,4,5","2,3,4","2,3,5","2,4,5","3,4,5","0,1,2,3","0,1,2,4","0,1,2,5","0,1,3,4","0,1,3,5","0,1,4,5","0,2,3,4","0,2,3,5","0,2,4,5","0,3,4,5","1,2,3,4","1,2,3,5","1,2,4,5","1,3,4,5","2,3,4,5","0,1,2,3,4","0,1,2,3,5","0,1,2,4,5","0,1,3,4,5","0,2,3,4,5","1,2,3,4,5","0,1,2,3,4,5");
+    private static final List<String> answerList = Arrays.asList("42,46", "115,48", "188,46", "260,43", "37,117", "117,117", "183,117", "258,116");
+    private static final List<String> positionList = Arrays.asList("0", "1", "2", "3", "4", "5", "0,1", "0,2", "0,3", "0,4", "0,5", "1,2", "1,3", "1,4", "1,5", "2,3", "2,4", "2,5", "3,4", "3,5", "4,5", "0,1,2", "0,1,3", "0,1,4", "0,1,5", "0,2,3", "0,2,4", "0,2,5", "0,3,4", "0,3,5", "0,4,5", "1,2,3", "1,2,4", "1,2,5", "1,3,4", "1,3,5", "1,4,5", "2,3,4", "2,3,5", "2,4,5", "3,4,5", "0,1,2,3", "0,1,2,4", "0,1,2,5", "0,1,3,4", "0,1,3,5", "0,1,4,5", "0,2,3,4", "0,2,3,5", "0,2,4,5", "0,3,4,5", "1,2,3,4", "1,2,3,5", "1,2,4,5", "1,3,4,5", "2,3,4,5", "0,1,2,3,4", "0,1,2,3,5", "0,1,2,4,5", "0,1,3,4,5", "0,2,3,4,5", "1,2,3,4,5", "0,1,2,3,4,5");
     private static final int CLIMB_TIMES = 100000;  // 一个线程 一万次，五万条数据 五个小时
 
     @Autowired
@@ -41,33 +42,33 @@ public class AuthCodeServiceImpl implements AuthCodeService {
     @Override
     public void climbAuthCode(String message) {
         logger.info("爬取验证码图片");
-        for (int i = 0; i < CLIMB_TIMES; i ++) {
+        for (int i = 0; i < CLIMB_TIMES; i++) {
             String result = loginService.getCode();
             if (result.startsWith("{")) {
-                    JSONObject resultJson = JSON.parseObject(result);
-                    if (resultJson.getInteger("result_code") == 0) {
-                        String md5 = DigestUtils.md5Hex(resultJson.getString("image"));
-                        AuthCodePO authCodePO = getAuthCodeByMd5(md5);
-                        if (ObjectUtils.isEmpty(authCodePO)) {
-                            authCodePO = new AuthCodePO(md5, 0, 0);
-                            insertAuthCode(authCodePO);
-                        }
-                        if (authCodePO.getStatus() == -1) {
-                            // 已遍历列表但验证最终未成功
-                            continue;
-                        }
-                        String answer = buildAnswer(authCodePO);
-                        result = loginService.checkCode(answer);
-                        if (result.startsWith("{")) {
-                            resultJson = JSON.parseObject(result);
-                            setAuthCodePO(authCodePO, resultJson);
-                            // 若验证返回的是html页面，则数据库不做更新
-                            updateAuthCode(authCodePO);
-                        }
+                JSONObject resultJson = JSON.parseObject(result);
+                if (resultJson.getInteger("result_code") == 0) {
+                    String md5 = DigestUtils.md5Hex(resultJson.getString("image"));
+                    AuthCodePO authCodePO = getAuthCodeByMd5(md5);
+                    if (ObjectUtils.isEmpty(authCodePO)) {
+                        authCodePO = new AuthCodePO(md5, 0, 0);
+                        insertAuthCode(authCodePO);
                     }
+                    if (authCodePO.getStatus() == -1) {
+                        // 已遍历列表但验证最终未成功
+                        continue;
+                    }
+                    String answer = buildAnswer(authCodePO);
+                    result = loginService.checkCode(answer);
+                    if (result.startsWith("{")) {
+                        // 若验证返回的是html页面，则数据库不做更新
+                        resultJson = JSON.parseObject(result);
+                        setAuthCodePO(authCodePO, resultJson);
+                        updateAuthCode(authCodePO);
+                    }
+                }
             }
             // 清空cookie，模拟新请求
-            ThreadLocalUtils.set("");
+            ThreadLocalUtils.set(null);
         }
     }
 
@@ -93,7 +94,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
         String answerIndex = positionList.get(authCodePO.getCheckPosition());
         String[] indexes = answerIndex.split(",");
         StringBuffer sb = new StringBuffer();
-        for (String index: indexes) {
+        for (String index : indexes) {
             sb.append(",").append(answerList.get(Integer.valueOf(index)));
         }
         return sb.replace(0, 1, "").toString();

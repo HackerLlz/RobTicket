@@ -7,6 +7,7 @@ import com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO;
  * @description:
  * @create: 2019-01-12 16:56
  */
+@Deprecated
 public interface AuthCodeService {
     void climbAuthCode(String message);
 

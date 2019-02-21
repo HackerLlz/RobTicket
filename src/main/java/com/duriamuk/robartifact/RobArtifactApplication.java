@@ -1,6 +1,5 @@
 package com.duriamuk.robartifact;
 
-import com.duriamuk.robartifact.common.calculate.Calculater;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,5 +23,4 @@ public class RobArtifactApplication {
     public String robArtifact() {
         return "login/view";
     }
-
 }

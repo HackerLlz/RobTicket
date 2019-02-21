@@ -1,18 +1,18 @@
-(function(C) {
+(function (C) {
     jQuery.extend({
-        ht_getcookie: function(W) {
+        ht_getcookie: function (W) {
             var k = document.cookie.indexOf(W);
             var i = document.cookie.indexOf(";", k);
             return k == -1 ? "" : unescape(document.cookie.substring(k + W.length + 1, (i > k ? i : document.cookie.length)))
         },
-        ht_setcookie: function(aa, Z, Y, X, k, W) {
+        ht_setcookie: function (aa, Z, Y, X, k, W) {
             var i = new Date();
             i.setTime(i.getTime() + Y * 1000);
             document.cookie = escape(aa) + "=" + escape(Z) + (i ? "; expires=" + i.toGMTString() : "") + (X ? "; path=" + X : "; path=/") + (k ? "; domain=" + k : "") + (W ? "; secure" : "")
         },
-        textFocus: function(W) {
+        textFocus: function (W) {
             var k, i, W = W === undefined ? 0 : parseInt(W);
-            this.each(function() {
+            this.each(function () {
                 if (!this.setSelectionRange) {
                     k = this.createTextRange();
                     W === 0 ? k.collapse(false) : k.move("character", W);
@@ -80,18 +80,18 @@
 
     C.stationFor12306 = {
         bindInputs: [],
-        get_initInputValue: function() {
+        get_initInputValue: function () {
             return h
         },
-        get_initTopInputValue: function() {
+        get_initTopInputValue: function () {
             return n
         },
-        city_Bind: function(k) {
+        city_Bind: function (k) {
             if (k.length == 0) {
                 return
             }
             var i = "";
-            C.each(k, function(W) {
+            C.each(k, function (W) {
                 if (O == k[W][2]) {
                     i += "<div class='cityline' id='citem_" + W + "' cturn='" + k[W][6] + "'><span class='ralign'><b>" + k[W][1] + "</b></span></div>\n"
                 } else {
@@ -99,16 +99,16 @@
                 }
             });
             C("#panel_cities").html(i);
-            C(".cityline").mouseover(function() {
+            C(".cityline").mouseover(function () {
                 C.stationFor12306.city_shiftSelect(this)
-            }).click(function() {
+            }).click(function () {
                 C.stationFor12306.city_confirmSelect();
                 E = C.stationFor12306.filterCity("");
                 C.stationFor12306.city_showlist(0)
             });
             C.stationFor12306.city_shiftSelect(C("#citem_0"))
         },
-        city_changeSelectIndex: function(i) {
+        city_changeSelectIndex: function (i) {
             var k = A + i;
             if (k == -1) {
                 C.stationFor12306.city_showlist(z - 1);
@@ -122,7 +122,7 @@
                 }
             }
         },
-        city_confirmSelect: function() {
+        city_confirmSelect: function () {
             I.val(S[1]);
             curObjCode.val(S[2]);
             if (B) {
@@ -141,7 +141,7 @@
                 J(I, curObjCode)
             }
         },
-        city_shiftSelect: function(k) {
+        city_shiftSelect: function (k) {
             if (v != k) {
                 if (v != 0) {
                     C(v).removeClass("citylineover").addClass("cityline").css("backgroundColor", "white")
@@ -153,11 +153,12 @@
                         A = Number(i.attr("id").split("_")[1]);
                         S = w[Number(i.attr("cturn"))];
                         C("#cityid").val(S[2])
-                    } catch (W) {}
+                    } catch (W) {
+                    }
                 }
             }
         },
-        city_shiftSelectInLi: function(i) {
+        city_shiftSelectInLi: function (i) {
             if (y != i) {
                 if (y != 0) {
                     C(y).removeClass("ac_over").addClass("ac_odd")
@@ -166,11 +167,12 @@
                     try {
                         y = i;
                         C(y).removeClass("ac_odd").addClass("ac_over")
-                    } catch (k) {}
+                    } catch (k) {
+                    }
                 }
             }
         },
-        js: function(W) {
+        js: function (W) {
             var k;
             for (k = 1; k <= 7; k++) {
                 if (C("#nav_list" + k).attr("class")) {
@@ -205,9 +207,9 @@
                 }
             }
             if (1 != W) {
-                C(".ac_even").on("mouseover", function() {
+                C(".ac_even").on("mouseover", function () {
                     C.stationFor12306.city_shiftSelectInLi(this)
-                }).on("click", function() {
+                }).on("click", function () {
                     I.val(C(this).text());
                     curObjCode.val(C(this).attr("data"));
                     if (B) {
@@ -226,7 +228,7 @@
                 })
             }
         },
-        tHtmlGetCityName: function(k, i, X) {
+        tHtmlGetCityName: function (k, i, X) {
             switch (k) {
                 case 0:
                     if (i == -1) {
@@ -322,11 +324,11 @@
                     break
             }
         },
-        closeShowCity: function() {
+        closeShowCity: function () {
             C("#form_cities2").css("display", "none");
             m = -1;
             y = 0;
-            C.each(C.stationFor12306.bindInputs, function(Y, X) {
+            C.each(C.stationFor12306.bindInputs, function (Y, X) {
                 var W = "#" + X;
                 var k = "#" + X + "Text";
                 var i = C(k).val();
@@ -337,7 +339,7 @@
                 }
             })
         },
-        showAllCity: function() {
+        showAllCity: function () {
             var ab = "";
             var k = "440px";
             if (B) {
@@ -396,7 +398,7 @@
             ab += '<div id="flip_cities2"> 翻页控制区</div>';
             ab += "</div>";
             C("#panel_cities2").html(ab);
-            C("#thetable").on("click", function() {
+            C("#thetable").on("click", function () {
                 if (C("#form_cities2").css("display") == "block") {
                     if (m == 1 | m == 0) {
                         m == -1
@@ -404,7 +406,7 @@
                     I.select()
                 }
             });
-            C("#form_cities").on("click", function() {
+            C("#form_cities").on("click", function () {
                 if (C("#form_cities").css("display") == "block") {
                     if (m == 1 | m == 0) {
                         m == -1
@@ -412,9 +414,9 @@
                     I.select()
                 }
             });
-            C(".ac_even").on("mouseover", function() {
+            C(".ac_even").on("mouseover", function () {
                 C.stationFor12306.city_shiftSelectInLi(this)
-            }).on("click", function() {
+            }).on("click", function () {
                 I.val(C(this).text());
                 curObjCode.val(C(this).attr("data"));
                 if (B) {
@@ -434,7 +436,7 @@
             C("#flip_cities2").css("display", "none");
             return w
         },
-        LoadJS: function(W) {
+        LoadJS: function (W) {
             if (((typeof(mm_addjs) != "undefined")) && ("" != mm_addjs) && (mm_addjs == 1)) {
                 var k = document.getElementsByTagName("HEAD").item(0);
                 var i = document.createElement("SCRIPT");
@@ -443,7 +445,7 @@
                 k.appendChild(i)
             }
         },
-        addZMHtml: function(X, Y) {
+        addZMHtml: function (X, Y) {
             var W = "";
             if (X && X.length > 0) {
                 var Z = X[0][0].charAt(0);
@@ -461,7 +463,7 @@
             }
             return W
         },
-        pageDesigh: function(Z, ac, ad) {
+        pageDesigh: function (Z, ac, ad) {
             var W = "";
             if (Z > 1) {
                 if (ac == -1) {
@@ -500,10 +502,11 @@
                 if (I) {
                     I.select()
                 }
-            } else {}
-            C(".ac_even").on("mouseover", function() {
+            } else {
+            }
+            C(".ac_even").on("mouseover", function () {
                 C.stationFor12306.city_shiftSelectInLi(this)
-            }).on("click", function() {
+            }).on("click", function () {
                 I.val(C(this).text());
                 curObjCode.val(C(this).attr("data"));
                 if (B) {
@@ -521,7 +524,7 @@
                 }
             })
         },
-        filterCity: function(Z) {
+        filterCity: function (Z) {
             if (Z.length == 0) {
                 C("#top_cities").html(n);
                 return w
@@ -543,10 +546,10 @@
                 return []
             }
         },
-        replaceChar: function(i, W, k) {
+        replaceChar: function (i, W, k) {
             return i.substr(0, W) + k + i.substr(W + 1, i.length - 1)
         },
-        isMatchCity: function(Z, ac, W) {
+        isMatchCity: function (Z, ac, W) {
             var ac = ac.toLowerCase();
             var k = [Z[4].toLowerCase(), Z[1], Z[3].toLowerCase()];
             var ab = -1;
@@ -592,7 +595,7 @@
             }
             return true
         },
-        city_showlist_page: function(ad, Y) {
+        city_showlist_page: function (ad, Y) {
             var Z = "";
             Z += '<div class="citypage">';
             Z += (ad == 0) ? "" : '<a href="#" class="pagetxt" onclick="$.stationFor12306.city_showlist(' + (ad - 1) + ');return false;"><<</a>';
@@ -623,7 +626,7 @@
             Z += "</div>";
             return Z
         },
-        city_showlist: function(W) {
+        city_showlist: function (W) {
             if (E.length > 6) {
                 var k = Math.ceil((E.length) / 6);
                 if (W == -1) {
@@ -651,7 +654,7 @@
                 I.focus()
             }
         },
-        fixDivBugInIE6: function(i) {
+        fixDivBugInIE6: function (i) {
             try {
                 i.bgiframe();
                 if (i.width() > C("> ul", i).width()) {
@@ -666,9 +669,10 @@
                     C("> iframe.bgiframe", i).height(C("> ul", i).height());
                     i.css("overflow", "scroll")
                 }
-            } catch (k) {}
+            } catch (k) {
+            }
         },
-        clearStation: function(i) {
+        clearStation: function (i) {
             m = -1;
             var W = I.val();
             var X = curObjCode.val();
@@ -695,7 +699,7 @@
                 }
             }
         },
-        MapCityID: function(W) {
+        MapCityID: function (W) {
             for (var k = 0; k < w.length; k++) {
                 if (w[k][1] == W) {
                     return w[k][2]
@@ -703,7 +707,7 @@
             }
             return 0
         },
-        MapCityName: function(k) {
+        MapCityName: function (k) {
             for (var W = 0; W < w.length; W++) {
                 if (w[W][2] == k) {
                     return w[W][1]
@@ -711,7 +715,7 @@
             }
             return ""
         },
-        SetISPos: function(Y) {
+        SetISPos: function (Y) {
             if (Q) {
                 Q(C("#form_cities"), C("#form_cities2"))
             } else {
@@ -729,7 +733,7 @@
             i.css("left", W);
             k.css("left", W)
         },
-        myHandlerFg: function(i) {
+        myHandlerFg: function (i) {
             if (i == null) {
                 i.keyCode = 9
             } else {
@@ -742,7 +746,7 @@
                 }
             }
         },
-        myHandler2: function(i) {
+        myHandler2: function (i) {
             if (i == null) {
                 i = window.event;
                 i.returnValue = false
@@ -765,7 +769,7 @@
                 }
             }
         },
-        from_to_station_class_plain: function(i) {
+        from_to_station_class_plain: function (i) {
             if (l && l != "") {
                 i.removeClass(l)
             }
@@ -773,7 +777,7 @@
                 i.addClass(r)
             }
         },
-        from_to_station_class_gray: function(i) {
+        from_to_station_class_gray: function (i) {
             if (r && r != "") {
                 i.removeClass(r)
             }
@@ -781,7 +785,7 @@
                 i.addClass(l)
             }
         },
-        setStationStyle: function() {
+        setStationStyle: function () {
             var i = I.val();
             if (i == "") {
                 I.val(h);
@@ -791,14 +795,14 @@
                 C.stationFor12306.from_to_station_class_plain(I)
             }
         },
-        setCurValue: function() {
+        setCurValue: function () {
             I.val(S[1]);
             curObjCode.val(S[2])
         },
-        bindEvent: function(i) {
+        bindEvent: function (i) {
             var W = "#" + i;
             var k = "#" + i + "Text";
-            C(k).keydown(function(Y) {
+            C(k).keydown(function (Y) {
                 I = C(k);
                 curObjCode = C(W);
                 m = 0;
@@ -807,7 +811,7 @@
                 C("#form_cities2").css("display", "none");
                 y = 0;
                 var X = C(k).width();
-                if (-[1, ]) {
+                if (-[1,]) {
                     X = X - 4
                 }
                 X = X < 220 ? 220 : X;
@@ -848,7 +852,7 @@
                         }
                     }
                 }
-            }).focus(function() {
+            }).focus(function () {
                 L = true;
                 if (a) {
                     C("#form_cities2").css("display", "none");
@@ -879,7 +883,7 @@
                 m = 0;
                 U = true;
                 C.stationFor12306.SetISPos(I)
-            }).blur(function() {
+            }).blur(function () {
                 I = C(k);
                 curObjCode = C(W);
                 m = 0;
@@ -896,7 +900,7 @@
                     C.stationFor12306.city_showlist(0);
                     C.stationFor12306.setStationStyle()
                 }
-            }).keyup(function(X) {
+            }).keyup(function (X) {
                 I = C(k);
                 curObjCode = C(W);
                 m = 0;
@@ -906,18 +910,18 @@
                     E = C.stationFor12306.filterCity(I.val());
                     C.stationFor12306.city_showlist(0)
                 }
-            }).click(function() {
+            }).click(function () {
                 C.stationFor12306.clearStation("click")
             });
             C.stationFor12306.bindInputs.push(i)
         },
-        getStationInCookies: function() {
+        getStationInCookies: function () {
             var W = [];
             var k = C.ht_getcookie("_city_name_save_station");
             if (k) {
                 var i = k.split(",");
                 if (i && i.length > 0) {
-                    C.each(i, function(aa, Z) {
+                    C.each(i, function (aa, Z) {
                         var X = Z.split("#");
                         var Y = [];
                         Y[0] = X[0];
@@ -928,7 +932,7 @@
             }
             return W
         },
-        setStationInCookies: function(af, W) {
+        setStationInCookies: function (af, W) {
             var ac = C.stationFor12306.getStationInCookies();
             var Z = [];
             var ag = ac.length;
@@ -970,7 +974,7 @@
             }
             C.ht_setcookie("_city_name_save_station", X, 365 * 24 * 60 * 60)
         },
-        li_click: function(i) {
+        li_click: function (i) {
             I.val(C(i).text());
             curObjCode.val(C(i).attr("data"));
             if (B) {
@@ -987,7 +991,7 @@
                 J(I, curObjCode)
             }
         },
-        init: function(ac, ad) {
+        init: function (ac, ad) {
             if (typeof(ad) != "undefined") {
                 if (typeof(ad._init_input) != "undefined") {
                     h = ad._init_input
@@ -1068,18 +1072,18 @@
             C.stationFor12306.fixDivBugInIE6(C("#form_cities"));
             C.stationFor12306.fixDivBugInIE6(C("#form_cities2"));
             if (ac && ac.length > 0) {
-                C.each(ac, function(k, i) {
+                C.each(ac, function (k, i) {
                     C.stationFor12306.bindEvent(i)
                 })
             }
-            C("#form_cities").mousedown(function() {
+            C("#form_cities").mousedown(function () {
                 g = true
-            }).mouseup(function() {
+            }).mouseup(function () {
                 g = false
             });
-            C("#form_cities2").mousedown(function() {
+            C("#form_cities2").mousedown(function () {
                 H = true
-            }).mouseup(function() {
+            }).mouseup(function () {
                 H = false
             })
         }
@@ -1099,7 +1103,7 @@ function bO() {
     }
 }
 
-$("#change_station").bind("click", function() {
+$("#change_station").bind("click", function () {
     var cv = $("#fromStationText").val();
     var cx = $("#fromStation").val();
     var cw = $("#toStationText").val();
@@ -1129,7 +1133,7 @@ var ca = "";
 var ccSelected = [];
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     if ($("#fromStationText").val() != "" && $("#fromStationText").val() != "简拼/全拼/汉字" || $("#toStationText").val() != "" && $("#toStationText").val() != "简拼/全拼/汉字") {
         $("#fromStationText").removeClass().addClass("inp_selected");
         $("#toStationText").removeClass().addClass("inp_selected")
@@ -1137,10 +1141,10 @@ $(document).ready(function() {
 
     var date = new Date();
     var today = date.format("yyyy-MM-dd");
-    if (!$("#train_date").val()){
+    if (!$("#train_date").val()) {
         $("#train_date").val(today);
     }
-    $("#train_date").blur(function() {
+    $("#train_date").blur(function () {
         if (!$("#train_date").val()) {
             $("#train_date").val(today);
         }
@@ -1152,7 +1156,7 @@ $(document).ready(function() {
         _top_4_initInput: "简拼/全拼/汉字或↑↓",
         _unselected_class: "inpt_unselected",
         _selected_class: "inp_selected",
-        confirmCallBack: function(cs, ct) {
+        confirmCallBack: function (cs, ct) {
             $("#yxtrain_close").click();
             cs.removeClass("error");
             if (cs.attr("id") == "fromStationText") {
@@ -1186,22 +1190,22 @@ $(document).ready(function() {
         }
     });
     $("#fromStation_icon_image").css("cursor", "pointer");
-    $("#fromStationText_label").click(function() {
+    $("#fromStationText_label").click(function () {
         $("#fromStationText").focus()
     });
-    $("#fromStation_icon_image").click(function() {
+    $("#fromStation_icon_image").click(function () {
         $("#fromStationText").focus()
     });
     $("#toStation_icon_image").css("cursor", "pointer");
-    $("#toStationText_label").click(function() {
+    $("#toStationText_label").click(function () {
         $("#toStationText").focus()
     });
-    $("#toStation_icon_image").click(function() {
+    $("#toStation_icon_image").click(function () {
         $("#toStationText").focus()
     })
 })
 
-Array.prototype.unique = function() {
+Array.prototype.unique = function () {
     var b = {},
         a = this.length;
     for (var c = 0; c < a; c++) {

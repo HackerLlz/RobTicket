@@ -5,8 +5,8 @@
     <resultMap id="authCodePOMap" type="com.duriamuk.robartifact.entity.PO.authCode.AuthCodePO">
         <result column="id" property="id"/>
         <result column="md5" property="md5"/>
-        <result column="check_position" property="checkPosition" />
-        <result column="status" property="status" />
+        <result column="check_position" property="checkPosition"/>
+        <result column="status" property="status"/>
     </resultMap>
 
     <sql id="baseColumn">
@@ -26,12 +26,12 @@
         UPDATE
         auth_code
         <set>
-        <if test="checkPosition != null">
-            check_position = #{checkPosition},
-        </if>
-        <if test="status != null">
-            status = #{status},
-        </if>
+            <if test="checkPosition != null">
+                check_position = #{checkPosition},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
         </set>
         WHERE
         id = #{id}

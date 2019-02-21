@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 public class IOUtils {
     /**
      * 流转换成字符串
+     *
      * @param is
      * @return
      */
@@ -21,7 +22,7 @@ public class IOUtils {
         StringBuilder sb = new StringBuilder();
         String line;
         try {
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line + "\r\n");
             }
         } catch (IOException e) {

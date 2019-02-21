@@ -8,6 +8,7 @@ package com.duriamuk.robartifact.common.tool;
 public class StrUtils {
     /**
      * 查找字符串中第一个某个特征属性后面的值
+     *
      * @param name
      * @param afterName
      * @param interval
@@ -24,7 +25,7 @@ public class StrUtils {
         int start = queryIndex + queryName.length() + interval;
         if (endStr != null) {
             int end = str.indexOf(endStr, start);
-            if  (end  > 0) {
+            if (end > 0) {
                 // start和end若为负数会变为0
                 return str.substring(start, end);
             }
@@ -34,6 +35,7 @@ public class StrUtils {
 
     /**
      * 查找字符串中第一个某个特征属性前面的值
+     *
      * @param name
      * @param beforeName
      * @param interval

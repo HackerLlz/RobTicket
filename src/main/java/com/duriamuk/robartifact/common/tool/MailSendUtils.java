@@ -23,38 +23,38 @@ import javax.mail.internet.MimeUtility;
  */
 public class MailSendUtils {
     private static final Logger logger = LoggerFactory.getLogger(MailSendUtils.class);
-
+    private static final String HOST;
+    private static final String FROM_MAIL;
+    private static final String PWD;
+    private static final String FROM_NAME;
+    private static final String TO_NAME;
     private static final Properties properties = new Properties();
 
     static {
-        InputStream in = MailSendUtils.class.getClassLoader().getResourceAsStream("static/mail.properties");
+        InputStream in = MailSendUtils.class.getClassLoader().getResourceAsStream("META-INF/conf/mail.properties");
         try {
             properties.load(in);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        HOST = properties.getProperty("host");
+        FROM_MAIL = properties.getProperty("fromMail");
+        PWD = properties.getProperty("pwd");
+        FROM_NAME = properties.getProperty("fromName");
+        TO_NAME = properties.getProperty("toName");
     }
 
-    public static void sendHtmlMessage(String to, String subject, String content)
-                    throws MessagingException, UnsupportedEncodingException {
-        String host = properties.getProperty("host");
-        String from = properties.getProperty("from");
-        String pwd = properties.getProperty("pwd");
-        String fromName = properties.getProperty("fromName");
-        String toName = properties.getProperty("toName");
-
+    public static void sendHtmlMessage(String toEmail, String subject, String content)
+            throws MessagingException, UnsupportedEncodingException {
         Properties props = new Properties();
         props.setProperty("mail.smtp.auth", "true");
-
         props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class",
-        "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.port", "465");
         Session mailSession = Session.getDefaultInstance(props);
 
-        InternetAddress fromAddress = new InternetAddress(from, fromName);
-        InternetAddress toAddress = new InternetAddress(to, toName);
-
+        InternetAddress fromAddress = new InternetAddress(FROM_MAIL, FROM_NAME);
+        InternetAddress toAddress = new InternetAddress(toEmail, TO_NAME);
         MimeMessage message = new MimeMessage(mailSession);
         message.setFrom(fromAddress);
         message.addRecipient(Message.RecipientType.TO, toAddress);
@@ -63,7 +63,7 @@ public class MailSendUtils {
         message.setContent(content, "text/html;charset=UTF-8");
 
         Transport transport = mailSession.getTransport("smtp");
-        transport.connect(host, from, pwd);
+        transport.connect(HOST, FROM_MAIL, PWD);
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }

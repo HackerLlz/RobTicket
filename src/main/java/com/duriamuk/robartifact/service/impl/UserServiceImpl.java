@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public String logout(){
+    public String logout() {
         logger.info("注销用户");
         String url = UrlConstant.OTN_URL + "login/loginOut";
         String result = HttpUtils.doPostForm(url, null, true);
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUserNameFrom12306() {
         logger.info("获取用户名");
-        for (int i = 0; i < RETRY_TIMES; i ++) {
+        for (int i = 0; i < RETRY_TIMES; i++) {
             String result = getUserInfoFrom12306();
             if (result.startsWith("{")) {
                 String username = JSON.parseObject(result).getJSONObject("data").getJSONObject("userDTO")

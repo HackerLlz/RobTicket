@@ -3,7 +3,7 @@ package com.duriamuk.robartifact.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.common.constant.TableName;
+import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.schedule.RobScheduledThreadPool;
 import com.duriamuk.robartifact.common.schedule.RobTask;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
@@ -57,7 +57,7 @@ public class RobController {
 
     @RequestMapping(value = "doRob", method = RequestMethod.POST)
     @ResponseBody
-    public String doRob(@RequestBody String payload){
+    public String doRob(@RequestBody String payload) {
         logger.info("开始抢票，入参：{}", payload);
         JSONObject jsonObject = JSON.parseObject(payload);
         RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
@@ -73,7 +73,7 @@ public class RobController {
         boolean isInsert = robService.insertRobRecord(robParamsDTO);
         if (isInsert) {
             long id = robParamsDTO.getId();
-            RedisUtils.setWithExpire(TableName.ROB_RECORD + id, true, 30, TimeUnit.DAYS);
+            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, true, 30, TimeUnit.DAYS);
             RobScheduledThreadPool.schedule(new RobTask(payload, 1, id));
             return AjaxMessage.SUCCESS;
         }
@@ -83,14 +83,14 @@ public class RobController {
     @RequestMapping(value = "stopRobTask", method = RequestMethod.GET)
     public String stopRobTask(Long id) {
         logger.info("开始停止抢票任务，入参：{}", id);
-        RedisUtils.setWithExpire(TableName.ROB_RECORD + id, null, 0);
+        RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, null, 0);
         return "redirect:/user/view";
     }
 
     @RequestMapping(value = "deleteRobTask", method = RequestMethod.GET)
     public String deleteRobTask(Long id) {
         logger.info("开始删除抢票任务，入参：{}", id);
-        RedisUtils.setWithExpire(TableName.ROB_RECORD + id, null, 0);
+        RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, null, 0);
         robService.deleteRobRecordById(id);
         return "redirect:/user/view";
     }

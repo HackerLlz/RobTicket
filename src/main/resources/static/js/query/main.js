@@ -80,7 +80,7 @@ function getScSnameListFn() {
         data: {
             station_telecode: $("#sale").val()
         },
-        success: function(e) {
+        success: function (e) {
             var t = e.data;
             if ($(".content").height(""), $(".sale-list").empty(), e.data) {
                 $("#ticket-box-tips").show();
@@ -95,7 +95,8 @@ function getScSnameListFn() {
             } else $(".sale-list").empty(), $("#ticket-box-tips").hide(), $(".result-none").show();
             footerFn()
         },
-        error: function(e) {}
+        error: function (e) {
+        }
     })
 }
 
@@ -106,7 +107,8 @@ function loadingShow() {
 function loadingHide() {
     $(".mask").fadeOut()
 }
-define("g/g-header", ["jquery"], function(e) {
+
+define("g/g-header", ["jquery"], function (e) {
     function t() {
         function t(e) {
             e[0].indexOf(e[1]) > -1 && (e[0] = e[0].replace(e[1], '<span style="color:red;">' + e[1] + "</span>"));
@@ -129,7 +131,7 @@ define("g/g-header", ["jquery"], function(e) {
                     withCredentials: !0
                 },
                 crossDomain: !0,
-                success: function(i) {
+                success: function (i) {
                     var s = JSON.stringify(i.data);
                     localStorage.setItem("common_search_firstData", s), h = localStorage.getItem("common_search_firstData");
                     var d = i.data.length;
@@ -289,7 +291,7 @@ define("g/g-header", ["jquery"], function(e) {
                             var m = "dingdanchaxun";
                             _ = t([i.data[v].word, a, m, i.data[v].url, _])
                         }
-                    e(".search-down-list").html(_), e(".search-down").fadeIn(), e(".search-down-list").off("click", "li").on("click", "li", function() {
+                    e(".search-down-list").html(_), e(".search-down").fadeIn(), e(".search-down-list").off("click", "li").on("click", "li", function () {
                         var t = {
                             innerText: e(this)[0].innerText,
                             url: e(this)[0].getAttribute("url")
@@ -303,7 +305,8 @@ define("g/g-header", ["jquery"], function(e) {
                         }
                     })
                 },
-                error: function(e) {}
+                error: function (e) {
+                }
             })
         }
 
@@ -319,11 +322,12 @@ define("g/g-header", ["jquery"], function(e) {
             var s = new Date;
             s.setTime(s.getTime() + 1e3 * a), document.cookie = escape(e) + "=" + escape(t) + (i ? "; path=" + i : ";path=/") + "; domain=" + o + (n ? "; secure" : "") + ";expires=" + s
         }
+
         jQuery.support.cors = !0;
         var o, s, l, c = [],
             u = [],
             d = !0;
-        e(".header-search .search-input").on("focus", function() {
+        e(".header-search .search-input").on("focus", function () {
             if (d = !0, f.splice(0, f.length), e(this).addClass("focus"), e(".search-btn").css({
                 background: "#2676E3"
             }), e(".search-down").fadeOut(), e(".search-input").val(""), "" == e(".search-input").val() && (b = 0), r("searchHistory"))
@@ -332,14 +336,14 @@ define("g/g-header", ["jquery"], function(e) {
                     e(".search-history-list").html(t), e(".search-history").fadeIn()
                 } else e(".search-history").fadeOut();
             else "" != u ? e(".search-history").fadeIn() : e(".search-history").fadeOut();
-            e(".search-btn")[0].onclick = function() {
+            e(".search-btn")[0].onclick = function () {
                 var t = e(".header-search .search-input").val();
                 if (t = t.replace(/^ +| +$/g, ""), !(t.length <= 0)) {
                     for (var a = e(".search-input").val(), h = "[@`~!#$^&*()=|{}':;',\\[\\].<>《》/?~！#￥……&*（）——|{}【】‘；：”“'。，、？]‘’", f = a.length, p = 0; p <= f - 1; p++)
                         if (h.indexOf(a[p]) > -1) return;
                     1 == d && i(a);
                     var v = e(".search-down-list li");
-                    if ("noresults" == l);
+                    if ("noresults" == l) ;
                     else {
                         if (0 == v.length) return;
                         window.open(v.eq(0).attr("url"))
@@ -354,7 +358,7 @@ define("g/g-header", ["jquery"], function(e) {
                         e(".search-history-list").html(m)
                     }
                 }
-            }, e(".search-history-list")[0].onclick = function(t) {
+            }, e(".search-history-list")[0].onclick = function (t) {
                 var t = t || window.event,
                     a = t.target || t.srcElement;
                 if ("li" === a.nodeName.toLowerCase()) {
@@ -362,7 +366,7 @@ define("g/g-header", ["jquery"], function(e) {
                     e(".search-down-list li");
                     window.open(a.getAttribute("url"))
                 }
-            }, e(".history-clear").on("click", function() {
+            }, e(".history-clear").on("click", function () {
                 c.splice(0, c.length), s = c.slice(0, 10), n("searchHistory", JSON.stringify(s), 60), o = JSON.parse(r("searchHistory")), u = o, list = "", e(".search-history-list").html(u)
             })
         });
@@ -372,7 +376,7 @@ define("g/g-header", ["jquery"], function(e) {
                 v = p.split(";"),
                 _ = v && v.length > 1,
                 m = _ ? v[1].replace(/[ ]/g, "") : "";
-            document.onmousedown = function(t) {
+            document.onmousedown = function (t) {
                 var t = t || window.event;
                 if ("MSIE8.0" == m || "MSIE9.0" == m || "MSIE10.0" == m || "WOW64" == m) {
                     var a = t.clientX,
@@ -385,18 +389,19 @@ define("g/g-header", ["jquery"], function(e) {
                     (a < r || a > n || i < o || i > l) && (e(".search-down").fadeOut(), e(".search-history").fadeOut(), f.splice(0, f.length))
                 }
             }
-        } else e(".header-search .search-input").on("blur", function() {
+        } else e(".header-search .search-input").on("blur", function () {
             e(".search-history").fadeOut(), e(this).removeClass("focus"), e(".search-btn").css({
                 "background-color": "#3B99FC"
             }), e(".search-down").fadeOut(), f.splice(0, f.length)
         });
         var g, y, w, b = 0;
-        e(".header-search .search-input").on("keyup", function(t) {
+        e(".header-search .search-input").on("keyup", function (t) {
             function a(e) {
                 void 0 !== e && "" !== e && window.open(e)
             }
+
             8 == t.keyCode && (b = 0), e(".search-history").fadeOut();
-            g = t.timeStamp, 16 != t.keyCode && 38 != t.keyCode && 40 != t.keyCode && 37 != t.keyCode && 39 != t.keyCode && setTimeout(function() {
+            g = t.timeStamp, 16 != t.keyCode && 38 != t.keyCode && 40 != t.keyCode && 37 != t.keyCode && 39 != t.keyCode && setTimeout(function () {
                 try {
                     if (g - t.timeStamp == 0) {
                         k = e(".search-input").val().toUpperCase(), "" == k && (e(".search-down-list").html(""), e(".search-down").fadeOut()), f.push(k);
@@ -445,7 +450,7 @@ define("g/g-header", ["jquery"], function(e) {
                         _ = 204 * (v - 1) - 30;
                     e(".search-down-list").scrollTop(_)
                 }
-                l.eq(b - 1).click(function() {
+                l.eq(b - 1).click(function () {
                     window.open(l.eq(b - 1).attr("url"))
                 })
             }
@@ -468,7 +473,7 @@ define("g/g-header", ["jquery"], function(e) {
                         _ = 203.5 * (v - 1) - 30;
                     e(".search-down-list").scrollTop(_)
                 }
-                l.eq(b - 1).on("click", function() {
+                l.eq(b - 1).on("click", function () {
                     window.open(l.eq(b).attr("url"))
                 })
             }
@@ -486,7 +491,7 @@ define("g/g-header", ["jquery"], function(e) {
             }
             for (var T = "", p = 0; p <= u.length - 1; p++) T += "<li url=" + u[p].url + ">" + u[p].innerText + "</li>";
             e(".search-history-list").html(T)
-        }), e(".search-down .close").on("click", function() {
+        }), e(".search-down .close").on("click", function () {
             e(".search-input").val(""), e(this).parent().fadeOut(), f.splice(0, f.length)
         }), a()
     }
@@ -498,10 +503,10 @@ define("g/g-header", ["jquery"], function(e) {
             type: "POST",
             timeout: 1e4,
             async: !1,
-            success: function(a) {
+            success: function (a) {
                 a.data && (window.psr_qr_code_result = a.data.psr_qr_code_result, stu_control = a.data.stu_control, other_control = a.data.other_control, "Y" == a.data.is_login ? (t = "Y", window.isLogin = t, window.ajaxLogin_flag = !0, r(), e("#J-header-logout a.txt-primary").html(a.data.name), e("#J-header-logout a.logout").attr("href", logout)) : "Y" === a.data.is_uam_login ? n(a.data) : (isOver = !isOver, o(dynimic_url_path + "/" + a.data.login_url)))
             },
-            error: function(e) {
+            error: function (e) {
                 window.ajaxLogin_flag = !0
             }
         })
@@ -527,10 +532,10 @@ define("g/g-header", ["jquery"], function(e) {
             type: "POST",
             timeout: 1e4,
             async: !1,
-            success: function(e) {
+            success: function (e) {
                 "0" == e.result_code ? (isLogin = "Y", window.isLogin = isLogin, window.ajaxLogin = (new Date).getTime(), isOver = !isOver, o(userLogin_url)) : (isLogin = "N", window.isLogin = isLogin, window.ajaxLogin = (new Date).getTime(), isOver = !isOver, o(static_url_path + "/" + t.login_url)), window.ajaxLogin_flag = !0
             },
-            error: function(e) {
+            error: function (e) {
                 window.ajaxLogin_flag = !0
             }
         })
@@ -539,21 +544,22 @@ define("g/g-header", ["jquery"], function(e) {
     function o(e) {
         window.location.href = e
     }
-    return window.isLogin = "N", window.ajaxLogin_flag = !1, e("#index_ads") && e("#index_ads").length > 0 ? e("#gLink").click(function() {
+
+    return window.isLogin = "N", window.ajaxLogin_flag = !1, e("#index_ads") && e("#index_ads").length > 0 ? e("#gLink").click(function () {
         return e("html, body").animate({
             scrollTop: e("#index_ads").offset().top
         }, {
             duration: 500,
             easing: "swing"
         }), !1
-    }) : e("#gLink").click(function() {
+    }) : e("#gLink").click(function () {
         e("#gLink").attr("href", ggHtml)
     }), {
-        initialize: function() {
+        initialize: function () {
             t(), window.gHeader = (new Date).getTime()
         }
     }
-}), define("g/g-footer", ["jquery"], function(e) {
+}), define("g/g-footer", ["jquery"], function (e) {
     function t() {
         var t = e(window).height(),
             a = e(".footer").height(),
@@ -561,14 +567,15 @@ define("g/g-header", ["jquery"], function(e) {
             r = t - 109 - a;
         i <= r && e(".content").height(r)
     }
+
     return {
-        initialize: function() {
+        initialize: function () {
             t(), window.gFooter = (new Date).getTime()
         }
     }
-}), define("g/g-href", ["jquery"], function(e) {
+}), define("g/g-href", ["jquery"], function (e) {
     function t() {
-        e('a[name="g_href"]').click(function() {
+        e('a[name="g_href"]').click(function () {
             var t = e(this).attr("data-redirect"),
                 a = e(this).attr("data-type"),
                 i = e(this).attr("data-href"),
@@ -576,17 +583,18 @@ define("g/g-header", ["jquery"], function(e) {
             "Y" == t ? "_blank" == r ? 1 == a ? window.open(href_baseUrl_1 + href_path_1 + i) : 2 == a ? window.open(href_baseUrl_2 + href_path_2 + i) : 3 == a ? window.open(href_baseUrl_3 + href_path_3 + i) : 4 == a ? window.open(href_baseUrl_4 + href_path_4 + i) : 5 == a ? window.open(href_baseUrl_5 + href_path_5 + i) : 6 == a ? window.open(href_baseUrl_6 + href_path_6 + i) : 10 == a && window.open(href_baseUrl_10 + href_path_10 + i) : 1 == a ? window.location.href = href_baseUrl_1 + href_path_1 + i : 2 == a ? window.location.href = href_baseUrl_2 + href_path_2 + i : 3 == a ? window.location.href = href_baseUrl_3 + href_path_3 + i : 4 == a ? window.location.href = href_baseUrl_4 + href_path_4 + i : 5 == a ? window.location.href = href_baseUrl_5 + href_path_5 + i : 6 == a ? window.location.href = href_baseUrl_6 + href_path_6 + i : 10 == a && (window.location.href = href_baseUrl_10 + href_path_10 + i) : "_blank" == r ? window.open(i) : window.location.href = i
         })
     }
+
     return {
-        initialize: function() {
+        initialize: function () {
             t()
         }
     }
 }),
-    function(e) {
+    function (e) {
         "function" == typeof define && define.amd ? define("core/common/jquery.SuperSlide", ["jquery"], e) : e(jQuery)
-    }(function(e) {
-        ! function(e) {
-            e.fn.slide = function(t) {
+    }(function (e) {
+        !function (e) {
+            e.fn.slide = function (t) {
                 return e.fn.slide.defaults = {
                     type: "slide",
                     effect: "fade",
@@ -616,7 +624,7 @@ define("g/g-header", ["jquery"], function(e) {
                     mouseOverStop: !0,
                     defaultPlay: !0,
                     returnDefault: !1
-                }, this.each(function() {
+                }, this.each(function () {
                     var a, i = e.extend({}, e.fn.slide.defaults, t),
                         r = e(this),
                         n = i.effect,
@@ -658,19 +666,19 @@ define("g/g-header", ["jquery"], function(e) {
                         Y = _,
                         Q = f >= T ? f % y != 0 ? f % y : y : 0,
                         B = "leftMarquee" == n || "topMarquee" == n,
-                        $ = function() {
+                        $ = function () {
                             e.isFunction(i.startFun) && i.startFun(_, d, r, e(i.titCell, r), h, v, o, s)
                         },
-                        z = function() {
+                        z = function () {
                             e.isFunction(i.endFun) && i.endFun(_, d, r, e(i.titCell, r), h, v, o, s)
                         },
-                        R = function() {
+                        R = function () {
                             u.removeClass(E), M && u.eq(H).addClass(E)
                         };
-                    if ("menu" == i.type) return M && u.removeClass(E).eq(_).addClass(E), u.hover(function() {
+                    if ("menu" == i.type) return M && u.removeClass(E).eq(_).addClass(E), u.hover(function () {
                         a = e(this).find(i.targetCell);
                         var t = u.index(e(this));
-                        F = setTimeout(function() {
+                        F = setTimeout(function () {
                             switch (_ = t, u.removeClass(E).eq(_).addClass(E), $(), n) {
                                 case "fade":
                                     a.stop(!0, !0).animate({
@@ -683,7 +691,7 @@ define("g/g-header", ["jquery"], function(e) {
                                     }, m, L, z)
                             }
                         }, i.triggerTime)
-                    }, function() {
+                    }, function () {
                         switch (clearTimeout(F), n) {
                             case "fade":
                                 a.animate({
@@ -695,9 +703,9 @@ define("g/g-header", ["jquery"], function(e) {
                                     height: "hide"
                                 }, m, L)
                         }
-                    }), void(x && r.hover(function() {
+                    }), void(x && r.hover(function () {
                         clearTimeout(P)
-                    }, function() {
+                    }, function () {
                         P = setTimeout(R, m)
                     }));
                     if (0 == d && (d = f), B && (d = 2), D) {
@@ -718,11 +726,11 @@ define("g/g-header", ["jquery"], function(e) {
                         var u = u.children()
                     }
                     if (f >= T) {
-                        h.children().each(function() {
+                        h.children().each(function () {
                             e(this).width() > O && (O = e(this).width(), I = e(this).outerWidth(!0)), e(this).height() > q && (q = e(this).height(), j = e(this).outerHeight(!0))
                         });
                         var G = h.children(),
-                            V = function() {
+                            V = function () {
                                 for (var e = 0; e < T; e++) G.eq(e).clone().addClass("clone").appendTo(h);
                                 for (var e = 0; e < Q; e++) G.eq(f - e - 1).clone().addClass("clone").prependTo(h)
                             };
@@ -790,16 +798,16 @@ define("g/g-header", ["jquery"], function(e) {
                                 })
                         }
                     }
-                    var K = function(e) {
+                    var K = function (e) {
                             var t = e * y;
                             return e == d ? t = f : -1 == e && f % y != 0 && (t = -f % y), t
                         },
-                        X = function(t) {
-                            var a = function(a) {
-                                for (var i = a; i < T + a; i++) t.eq(i).find("img[" + p + "]").each(function() {
+                        X = function (t) {
+                            var a = function (a) {
+                                for (var i = a; i < T + a; i++) t.eq(i).find("img[" + p + "]").each(function () {
                                     var t = e(this);
                                     if (t.attr("src", t.attr(p)).removeAttr(p), h.find(".clone")[0])
-                                        for (var a = h.children(), i = 0; i < a.size(); i++) a.eq(i).find("img[" + p + "]").each(function() {
+                                        for (var a = h.children(), i = 0; i < a.size(); i++) a.eq(i).find("img[" + p + "]").each(function () {
                                             e(this).attr(p) == t.attr("src") && e(this).attr("src", e(this).attr(p)).removeAttr(p)
                                         })
                                 })
@@ -828,26 +836,26 @@ define("g/g-header", ["jquery"], function(e) {
                                     a(o)
                             }
                         },
-                        ee = function(e) {
+                        ee = function (e) {
                             if (!M || A != _ || e || B) {
-                                if (B ? _ >= 1 ? _ = 1 : _ <= 0 && (_ = 0) : (Y = _, _ >= d ? _ = 0 : _ < 0 && (_ = d - 1)), $(), null != p && X(h.children()), v[0] && (a = v.eq(_), null != p && X(v), "slideDown" == n ? (v.not(a).stop(!0, !0).slideUp(m), a.slideDown(m, L, function() {
+                                if (B ? _ >= 1 ? _ = 1 : _ <= 0 && (_ = 0) : (Y = _, _ >= d ? _ = 0 : _ < 0 && (_ = d - 1)), $(), null != p && X(h.children()), v[0] && (a = v.eq(_), null != p && X(v), "slideDown" == n ? (v.not(a).stop(!0, !0).slideUp(m), a.slideDown(m, L, function () {
                                     h[0] || z()
                                 })) : (v.not(a).stop(!0, !0).hide(), a.animate({
                                     opacity: "show"
-                                }, m, function() {
+                                }, m, function () {
                                     h[0] || z()
                                 }))), f >= T) switch (n) {
                                     case "fade":
                                         h.children().stop(!0, !0).eq(_).animate({
                                             opacity: "show"
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             z()
                                         }).siblings().hide();
                                         break;
                                     case "fold":
                                         h.children().stop(!0, !0).eq(_).animate({
                                             opacity: "show"
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             z()
                                         }).siblings().animate({
                                             opacity: "hide"
@@ -856,14 +864,14 @@ define("g/g-header", ["jquery"], function(e) {
                                     case "top":
                                         h.stop(!0, !1).animate({
                                             top: -_ * y * j
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             z()
                                         });
                                         break;
                                     case "left":
                                         h.stop(!0, !1).animate({
                                             left: -_ * y * I
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             z()
                                         });
                                         break;
@@ -871,7 +879,7 @@ define("g/g-header", ["jquery"], function(e) {
                                         var t = Y;
                                         h.stop(!0, !0).animate({
                                             left: -(K(Y) + Q) * I
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             t <= -1 ? h.css("left", -(Q + (d - 1) * y) * I) : t >= d && h.css("left", -Q * I), z()
                                         });
                                         break;
@@ -879,7 +887,7 @@ define("g/g-header", ["jquery"], function(e) {
                                         var t = Y;
                                         h.stop(!0, !0).animate({
                                             top: -(K(Y) + Q) * j
-                                        }, m, L, function() {
+                                        }, m, L, function () {
                                             t <= -1 ? h.css("top", -(Q + (d - 1) * y) * j) : t >= d && h.css("top", -Q * j), z()
                                         });
                                         break;
@@ -887,11 +895,11 @@ define("g/g-header", ["jquery"], function(e) {
                                         var i = h.css("left").replace("px", "");
                                         0 == _ ? h.animate({
                                             left: ++i
-                                        }, 0, function() {
+                                        }, 0, function () {
                                             h.css("left").replace("px", "") >= 0 && h.css("left", -f * I)
                                         }) : h.animate({
                                             left: --i
-                                        }, 0, function() {
+                                        }, 0, function () {
                                             h.css("left").replace("px", "") <= -(f + Q) * I && h.css("left", -Q * I)
                                         });
                                         break;
@@ -899,83 +907,85 @@ define("g/g-header", ["jquery"], function(e) {
                                         var r = h.css("top").replace("px", "");
                                         0 == _ ? h.animate({
                                             top: ++r
-                                        }, 0, function() {
+                                        }, 0, function () {
                                             h.css("top").replace("px", "") >= 0 && h.css("top", -f * j)
                                         }) : h.animate({
                                             top: --r
-                                        }, 0, function() {
+                                        }, 0, function () {
                                             h.css("top").replace("px", "") <= -(f + Q) * j && h.css("top", -Q * j)
                                         })
                                 }
                                 u.removeClass(E).eq(_).addClass(E), A = _, k || (s.removeClass("nextStop"), o.removeClass("prevStop"), 0 == _ && o.addClass("prevStop"), _ == d - 1 && s.addClass("nextStop")), l.html("<span>" + (_ + 1) + "</span>/" + d)
                             }
                         };
-                    M && ee(!0), x && r.hover(function() {
+                    M && ee(!0), x && r.hover(function () {
                         clearTimeout(P)
-                    }, function() {
-                        P = setTimeout(function() {
+                    }, function () {
+                        P = setTimeout(function () {
                             _ = H, M ? ee() : "slideDown" == n ? a.slideUp(m, R) : a.animate({
                                 opacity: "hide"
                             }, m, R), A = _
                         }, 300)
                     });
-                    var te = function(e) {
-                            N = setInterval(function() {
+                    var te = function (e) {
+                            N = setInterval(function () {
                                 b ? _-- : _++, ee()
                             }, e || g)
                         },
-                        ae = function(e) {
+                        ae = function (e) {
                             N = setInterval(ee, e || g)
                         },
-                        ie = function() {
+                        ie = function () {
                             C || !w || c.hasClass("pauseState") || (clearInterval(N), te())
                         },
-                        re = function() {
+                        re = function () {
                             (k || _ != d - 1) && (_++, ee(), B || ie())
                         },
-                        ne = function() {
+                        ne = function () {
                             (k || 0 != _) && (_--, ee(), B || ie())
                         },
-                        oe = function() {
+                        oe = function () {
                             clearInterval(N), B ? ae() : te(), c.removeClass("pauseState")
                         },
-                        se = function() {
+                        se = function () {
                             clearInterval(N), c.addClass("pauseState")
                         };
-                    if (w ? B ? (b ? _-- : _++, ae(), C && h.hover(se, oe)) : (te(), C && r.hover(se, oe)) : (B && (b ? _-- : _++), c.addClass("pauseState")), c.click(function() {
+                    if (w ? B ? (b ? _-- : _++, ae(), C && h.hover(se, oe)) : (te(), C && r.hover(se, oe)) : (B && (b ? _-- : _++), c.addClass("pauseState")), c.click(function () {
                         c.hasClass("pauseState") ? oe() : se()
-                    }), "mouseover" == i.trigger ? u.hover(function() {
+                    }), "mouseover" == i.trigger ? u.hover(function () {
                         var e = u.index(this);
-                        F = setTimeout(function() {
+                        F = setTimeout(function () {
                             _ = e, ee(), ie()
                         }, i.triggerTime)
-                    }, function() {
+                    }, function () {
                         clearTimeout(F)
-                    }) : u.click(function() {
+                    }) : u.click(function () {
                         _ = u.index(this), ee(), ie()
                     }), B) {
                         if (s.mousedown(re), o.mousedown(ne), k) {
-                            var le, ce = function() {
-                                    le = setTimeout(function() {
+                            var le, ce = function () {
+                                    le = setTimeout(function () {
                                         clearInterval(N), ae(g / 10 ^ 0)
                                     }, 150)
                                 },
-                                ue = function() {
+                                ue = function () {
                                     clearTimeout(le), clearInterval(N), ae()
                                 };
                             s.mousedown(ce), s.mouseup(ue), o.mousedown(ce), o.mouseup(ue)
                         }
-                        "mouseover" == i.trigger && (s.hover(re, function() {}), o.hover(ne, function() {}))
+                        "mouseover" == i.trigger && (s.hover(re, function () {
+                        }), o.hover(ne, function () {
+                        }))
                     } else s.click(re), o.click(ne);
                     if ("auto" == i.vis && 1 == y && ("left" == n || "leftLoop" == n)) {
-                        var de, he = function() {
+                        var de, he = function () {
                             S && (h.width("auto"), h.children().width("auto")), h.parent().width("auto"), I = h.parent().width(), S && h.parent().width(I), h.children().width(I), "left" == n ? (h.width(I * f), h.stop(!0, !1).animate({
                                 left: -_ * I
                             }, 0)) : (h.width(I * (f + 2)), h.stop(!0, !1).animate({
                                 left: -(_ + 1) * I
                             }, 0)), S || I == h.parent().width() || he()
                         };
-                        e(window).resize(function() {
+                        e(window).resize(function () {
                             clearTimeout(de), de = setTimeout(he, 100)
                         }), he()
                     }
@@ -983,73 +993,73 @@ define("g/g-header", ["jquery"], function(e) {
             }
         }(jQuery), jQuery.easing.jswing = jQuery.easing.swing, jQuery.extend(jQuery.easing, {
             def: "easeOutQuad",
-            swing: function(e, t, a, i, r) {
+            swing: function (e, t, a, i, r) {
                 return jQuery.easing[jQuery.easing.def](e, t, a, i, r)
             },
-            easeInQuad: function(e, t, a, i, r) {
+            easeInQuad: function (e, t, a, i, r) {
                 return i * (t /= r) * t + a
             },
-            easeOutQuad: function(e, t, a, i, r) {
+            easeOutQuad: function (e, t, a, i, r) {
                 return -i * (t /= r) * (t - 2) + a
             },
-            easeInOutQuad: function(e, t, a, i, r) {
+            easeInOutQuad: function (e, t, a, i, r) {
                 return (t /= r / 2) < 1 ? i / 2 * t * t + a : -i / 2 * (--t * (t - 2) - 1) + a
             },
-            easeInCubic: function(e, t, a, i, r) {
+            easeInCubic: function (e, t, a, i, r) {
                 return i * (t /= r) * t * t + a
             },
-            easeOutCubic: function(e, t, a, i, r) {
+            easeOutCubic: function (e, t, a, i, r) {
                 return i * ((t = t / r - 1) * t * t + 1) + a
             },
-            easeInOutCubic: function(e, t, a, i, r) {
+            easeInOutCubic: function (e, t, a, i, r) {
                 return (t /= r / 2) < 1 ? i / 2 * t * t * t + a : i / 2 * ((t -= 2) * t * t + 2) + a
             },
-            easeInQuart: function(e, t, a, i, r) {
+            easeInQuart: function (e, t, a, i, r) {
                 return i * (t /= r) * t * t * t + a
             },
-            easeOutQuart: function(e, t, a, i, r) {
+            easeOutQuart: function (e, t, a, i, r) {
                 return -i * ((t = t / r - 1) * t * t * t - 1) + a
             },
-            easeInOutQuart: function(e, t, a, i, r) {
+            easeInOutQuart: function (e, t, a, i, r) {
                 return (t /= r / 2) < 1 ? i / 2 * t * t * t * t + a : -i / 2 * ((t -= 2) * t * t * t - 2) + a
             },
-            easeInQuint: function(e, t, a, i, r) {
+            easeInQuint: function (e, t, a, i, r) {
                 return i * (t /= r) * t * t * t * t + a
             },
-            easeOutQuint: function(e, t, a, i, r) {
+            easeOutQuint: function (e, t, a, i, r) {
                 return i * ((t = t / r - 1) * t * t * t * t + 1) + a
             },
-            easeInOutQuint: function(e, t, a, i, r) {
+            easeInOutQuint: function (e, t, a, i, r) {
                 return (t /= r / 2) < 1 ? i / 2 * t * t * t * t * t + a : i / 2 * ((t -= 2) * t * t * t * t + 2) + a
             },
-            easeInSine: function(e, t, a, i, r) {
+            easeInSine: function (e, t, a, i, r) {
                 return -i * Math.cos(t / r * (Math.PI / 2)) + i + a
             },
-            easeOutSine: function(e, t, a, i, r) {
+            easeOutSine: function (e, t, a, i, r) {
                 return i * Math.sin(t / r * (Math.PI / 2)) + a
             },
-            easeInOutSine: function(e, t, a, i, r) {
+            easeInOutSine: function (e, t, a, i, r) {
                 return -i / 2 * (Math.cos(Math.PI * t / r) - 1) + a
             },
-            easeInExpo: function(e, t, a, i, r) {
+            easeInExpo: function (e, t, a, i, r) {
                 return 0 == t ? a : i * Math.pow(2, 10 * (t / r - 1)) + a
             },
-            easeOutExpo: function(e, t, a, i, r) {
+            easeOutExpo: function (e, t, a, i, r) {
                 return t == r ? a + i : i * (1 - Math.pow(2, -10 * t / r)) + a
             },
-            easeInOutExpo: function(e, t, a, i, r) {
+            easeInOutExpo: function (e, t, a, i, r) {
                 return 0 == t ? a : t == r ? a + i : (t /= r / 2) < 1 ? i / 2 * Math.pow(2, 10 * (t - 1)) + a : i / 2 * (2 - Math.pow(2, -10 * --t)) + a
             },
-            easeInCirc: function(e, t, a, i, r) {
+            easeInCirc: function (e, t, a, i, r) {
                 return -i * (Math.sqrt(1 - (t /= r) * t) - 1) + a
             },
-            easeOutCirc: function(e, t, a, i, r) {
+            easeOutCirc: function (e, t, a, i, r) {
                 return i * Math.sqrt(1 - (t = t / r - 1) * t) + a
             },
-            easeInOutCirc: function(e, t, a, i, r) {
+            easeInOutCirc: function (e, t, a, i, r) {
                 return (t /= r / 2) < 1 ? -i / 2 * (Math.sqrt(1 - t * t) - 1) + a : i / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + a
             },
-            easeInElastic: function(e, t, a, i, r) {
+            easeInElastic: function (e, t, a, i, r) {
                 var n = 1.70158,
                     o = 0,
                     s = i;
@@ -1061,7 +1071,7 @@ define("g/g-header", ["jquery"], function(e) {
                 } else var n = o / (2 * Math.PI) * Math.asin(i / s);
                 return -s * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * r - n) * (2 * Math.PI) / o) + a
             },
-            easeOutElastic: function(e, t, a, i, r) {
+            easeOutElastic: function (e, t, a, i, r) {
                 var n = 1.70158,
                     o = 0,
                     s = i;
@@ -1073,7 +1083,7 @@ define("g/g-header", ["jquery"], function(e) {
                 } else var n = o / (2 * Math.PI) * Math.asin(i / s);
                 return s * Math.pow(2, -10 * t) * Math.sin((t * r - n) * (2 * Math.PI) / o) + i + a
             },
-            easeInOutElastic: function(e, t, a, i, r) {
+            easeInOutElastic: function (e, t, a, i, r) {
                 var n = 1.70158,
                     o = 0,
                     s = i;
@@ -1085,41 +1095,41 @@ define("g/g-header", ["jquery"], function(e) {
                 } else var n = o / (2 * Math.PI) * Math.asin(i / s);
                 return t < 1 ? s * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * r - n) * (2 * Math.PI) / o) * -.5 + a : s * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * r - n) * (2 * Math.PI) / o) * .5 + i + a
             },
-            easeInBack: function(e, t, a, i, r, n) {
+            easeInBack: function (e, t, a, i, r, n) {
                 return void 0 == n && (n = 1.70158), i * (t /= r) * t * ((n + 1) * t - n) + a
             },
-            easeOutBack: function(e, t, a, i, r, n) {
+            easeOutBack: function (e, t, a, i, r, n) {
                 return void 0 == n && (n = 1.70158), i * ((t = t / r - 1) * t * ((n + 1) * t + n) + 1) + a
             },
-            easeInOutBack: function(e, t, a, i, r, n) {
+            easeInOutBack: function (e, t, a, i, r, n) {
                 return void 0 == n && (n = 1.70158), (t /= r / 2) < 1 ? i / 2 * (t * t * ((1 + (n *= 1.525)) * t - n)) + a : i / 2 * ((t -= 2) * t * ((1 + (n *= 1.525)) * t + n) + 2) + a
             },
-            easeInBounce: function(e, t, a, i, r) {
+            easeInBounce: function (e, t, a, i, r) {
                 return i - jQuery.easing.easeOutBounce(e, r - t, 0, i, r) + a
             },
-            easeOutBounce: function(e, t, a, i, r) {
+            easeOutBounce: function (e, t, a, i, r) {
                 return (t /= r) < 1 / 2.75 ? i * (7.5625 * t * t) + a : t < 2 / 2.75 ? i * (7.5625 * (t -= 1.5 / 2.75) * t + .75) + a : t < 2.5 / 2.75 ? i * (7.5625 * (t -= 2.25 / 2.75) * t + .9375) + a : i * (7.5625 * (t -= 2.625 / 2.75) * t + .984375) + a
             },
-            easeInOutBounce: function(e, t, a, i, r) {
+            easeInOutBounce: function (e, t, a, i, r) {
                 return t < r / 2 ? .5 * jQuery.easing.easeInBounce(e, 2 * t, 0, i, r) + a : .5 * jQuery.easing.easeOutBounce(e, 2 * t - r, 0, i, r) + .5 * i + a
             }
         })
     });
-var formatDate = function(e) {
+var formatDate = function (e) {
     var t = e.getFullYear(),
         a = e.getMonth() + 1;
     a = a < 10 ? "0" + a : a;
     var i = e.getDate();
     return i = i < 10 ? "0" + i : i, t + "-" + a + "-" + i
 };
-Array.prototype.distinct = function() {
+Array.prototype.distinct = function () {
     var e, t, a = this,
         i = a.length;
     for (e = 0; e < i; e++)
         for (t = e + 1; t < i; t++) a[e] == a[t] && (a.splice(t, 1), i--, t--);
     return a
 };
-var formatDateNextMonth = function(e) {
+var formatDateNextMonth = function (e) {
         var t = new Date,
             a = new Date(t);
         return a.setDate(t.getDate() + 29), a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate()
@@ -1156,166 +1166,167 @@ var formatDateNextMonth = function(e) {
         "userinfo_student.school_system_error": "请选择学制！",
         "userinfo_student.enter_year_error": "请选择入学年份！"
     };
-define("core/common/mUtils", function() {}),
-    function(e) {
+define("core/common/mUtils", function () {
+}),
+    function (e) {
         "function" == typeof define && define.amd ? define("core/common/common", ["jquery"], e) : e(jQuery)
-    }(function(e) {
-        var t = function() {
-                e(".js-gotop").on("click", function(t) {
+    }(function (e) {
+        var t = function () {
+                e(".js-gotop").on("click", function (t) {
                     return t.preventDefault(), e("html, body").animate({
                         scrollTop: e("html").offset().top
                     }, 500, "easeInOutExpo"), !1
-                }), e(window).scroll(function() {
+                }), e(window).scroll(function () {
                     e(window).scrollTop() > 200 ? e(".js-top").addClass("active") : e(".js-top").removeClass("active")
                 })
             },
-            a = function() {
+            a = function () {
                 var t = e(window).height() - e(".header").outerHeight(!0) - e(".footer").outerHeight(!0);
                 e(".content").css("min-height", t)
             };
-        e(function() {
+        e(function () {
             t(), a()
-        }), e(window).on("resize", function() {
+        }), e(window).on("resize", function () {
             a()
         });
-        e(".center-menu .icon-switch").on("click", function() {
+        e(".center-menu .icon-switch").on("click", function () {
             var t = e(this),
                 a = t.parent().next();
-            if (a.is(".menu-sub") && a.is(":visible")) a.slideUp(300, function() {
+            if (a.is(".menu-sub") && a.is(":visible")) a.slideUp(300, function () {
                 a.parent("li").addClass("menu-less")
             });
             else if (a.is(".menu-sub") && !a.is(":visible")) {
                 var i = t.parents(".menu-item");
-                a.slideDown(300, function() {
+                a.slideDown(300, function () {
                     i.removeClass("menu-less")
                 })
             }
-        }), e("body").on("click", ".order-panel .icon-fold", function() {
+        }), e("body").on("click", ".order-panel .icon-fold", function () {
             var t = e(this),
                 a = t.parent().next();
-            if (a.is(".order-item-bd") && a.is(":visible")) a.slideUp(300, function() {
+            if (a.is(".order-item-bd") && a.is(":visible")) a.slideUp(300, function () {
                 a.parents(".order-item").addClass("show-less")
             });
             else if (a.is(".order-item-bd") && !a.is(":visible")) {
                 var i = t.parents(".order-item");
-                a.slideDown(300, function() {
+                a.slideDown(300, function () {
                     i.removeClass("show-less")
                 })
             }
-        }), e("#js-minHeight").css("minHeight", e(".center-menu").outerHeight()), e(".center-main .tab-item").css("minHeight", e(".center-menu").outerHeight() - 42), e("body").on("click", function(t) {
+        }), e("#js-minHeight").css("minHeight", e(".center-menu").outerHeight()), e(".center-main .tab-item").css("minHeight", e(".center-menu").outerHeight() - 42), e("body").on("click", function (t) {
             e(".sel").removeClass("active")
-        }), e("body").on("click", ".sel .sel-hd", function(t) {
+        }), e("body").on("click", ".sel .sel-hd", function (t) {
             t.stopPropagation(), e(".sel").removeClass("active"), e(this).parent().addClass("active")
-        }), e("body").on("click", '.sel .sel-list li:not(".disabled")', function(t) {
+        }), e("body").on("click", '.sel .sel-list li:not(".disabled")', function (t) {
             t.stopPropagation();
             var a = e(this).html(),
                 i = e(this).parents(".sel");
             e(this).addClass("selected").siblings().removeClass("selected"), i.find(".sel-inner").html(a), i.removeClass("active")
         })
     }),
-    function(e) {
+    function (e) {
         "function" == typeof define && define.amd ? define("core/common/data.jcokies", ["jquery"], e) : e(jQuery)
-    }(function(e) {
+    }(function (e) {
         jQuery.extend({
-            jc_getFromStation: function() {
+            jc_getFromStation: function () {
                 return e.jc_getcookie("_jc_save_fromStation")
             },
-            jc_setFromStation: function(t, a) {
+            jc_setFromStation: function (t, a) {
                 if (void 0 === t || void 0 === a || "" == t || "" == a) throw "参数错误";
                 var i = t + "," + a;
                 e.jc_setcookie("_jc_save_fromStation", i, 10)
             },
-            jc_getToStation: function() {
+            jc_getToStation: function () {
                 return e.jc_getcookie("_jc_save_toStation")
             },
-            jc_setToStation: function(t, a) {
+            jc_setToStation: function (t, a) {
                 if (void 0 === t || void 0 === a || "" == t || "" == a) throw "参数错误";
                 var i = t + "," + a;
                 e.jc_setcookie("_jc_save_toStation", i, 10)
             },
-            jc_getFromDate: function() {
+            jc_getFromDate: function () {
                 return e.jc_getcookie("_jc_save_fromDate")
             },
-            jc_setFromDate: function(t) {
+            jc_setFromDate: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_fromDate", a, 10)
             },
-            jc_getTrainNumber: function() {
+            jc_getTrainNumber: function () {
                 return e.jc_getcookie("_jc_save_trainNumber")
             },
-            jc_setTrainNumber: function(t) {
+            jc_setTrainNumber: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_trainNumber", a, 10)
             },
-            jc_zGetTrainStition: function() {
+            jc_zGetTrainStition: function () {
                 return e.jc_getcookie("_jc_save_zwdch_fromStation")
             },
-            jc_zSetTrainStition: function(t, a) {
+            jc_zSetTrainStition: function (t, a) {
                 if (void 0 === t || void 0 === a || "" == t || "" == a) throw "参数错误";
                 var i = t + "," + a;
                 e.jc_setcookie("_jc_save_zwdch_fromStation", i, 10)
             },
-            jc_zGetTrainNumber: function() {
+            jc_zGetTrainNumber: function () {
                 return e.jc_getcookie("_jc_save_zwdch_cc")
             },
-            jc_zSetTrainNumber: function(t) {
+            jc_zSetTrainNumber: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_zwdch_cc", a, 10)
             },
-            jc_getIsStudent: function() {
+            jc_getIsStudent: function () {
                 return e.jc_getcookie("_jc_save_stuFlag_flag")
             },
-            jc_setIsStudent: function(t) {
+            jc_setIsStudent: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_stuFlag_flag", a, 10)
             },
-            jc_setIsGD: function() {
+            jc_setIsGD: function () {
                 return e.jc_getcookie("_jc_save_gdFlag_flag")
             },
-            jc_setIsGD: function(t) {
+            jc_setIsGD: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_gdFlag_flag", a, 10)
             },
-            jc_setPageFrom: function() {
+            jc_setPageFrom: function () {
                 return e.jc_getcookie("jc_setPageFrom")
             },
-            jc_setPageFrom: function(t) {
+            jc_setPageFrom: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("jc_setPageFrom", a, 10)
             },
-            jc_saveZzwdch: function(t) {
+            jc_saveZzwdch: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_zwdch_cxlx", a, 10)
             },
-            jc_getToDate: function() {
+            jc_getToDate: function () {
                 return e.jc_getcookie("_jc_save_toDate")
             },
-            jc_setToDate: function(t) {
+            jc_setToDate: function (t) {
                 void 0 === t && (t = "");
                 var a = t;
                 e.jc_setcookie("_jc_save_toDate", a, 10)
             },
-            jc_getWfOrDc: function() {
+            jc_getWfOrDc: function () {
                 return e.jc_getcookie("_jc_save_wfdc_flag")
             },
-            jc_setWfOrDc: function(t) {
+            jc_setWfOrDc: function (t) {
                 if (void 0 === t) throw "参数错误";
                 var a = t;
                 e.jc_setcookie("_jc_save_wfdc_flag", a, 10)
             },
-            jc_getcookie: function(e) {
+            jc_getcookie: function (e) {
                 var t = document.cookie.indexOf(e),
                     a = document.cookie.indexOf(";", t);
                 return -1 == t ? "" : unescape(document.cookie.substring(t + e.length + 1, a > t ? a : document.cookie.length))
             },
-            jc_setcookie: function(e, t, a, i, r, n) {
+            jc_setcookie: function (e, t, a, i, r, n) {
                 var o = document.domain;
                 o = o.substring(o.indexOf(".") + 1, o.length);
                 var s = new Date;
@@ -1467,10 +1478,11 @@ var static_url = "https://kyfw.12306.cn",
     getconfirmPassengerReport = static_url_path + "/confirmPassenger/report",
     getinitNoComplete = static_url_path + "/view/train_order.html",
     getcancelQueueNoCompleteMyOrder = static_url_path + "/queryOrder/cancelQueueNoCompleteMyOrder";
-define("core/common/url_config", function() {}),
-    function(e) {
+define("core/common/url_config", function () {
+}),
+    function (e) {
         "function" == typeof define && define.amd ? define("core/common/data.jcalendar", ["jquery"], e) : e(jQuery)
-    }(function(e) {
+    }(function (e) {
         var t = !0,
             a = e('<div class="cal-wrap" style="z-index:30000;display:none;position: absolute;left: 23px;top: 23px; "><div class="cal"><div class="cal-top"><a href="javascript:void(0);" class="first"></a><a href="javascript:void(0);" class="prev"></a><div class="month"><input type="text" value="" readonly="readonly" disabled="disabled"/><ul class="time-list"><li>一月</li><li>二月</li><li>三月</li><li>四月</li><li>五月</li><li>六月</li><li>七月</li><li>八月</li><li>九月</li><li>十月</li><li>十一月</li><li>十二月</li></ul></div><div class="year"><input type="text" value="" readonly="readonly" disabled="disabled"/><div class="time-list"><ul class="clearfix"><li>2016</li></ul><div class="time-list-ft"><a href="javascript:void(0);" class="fl">←</a><a href="javascript:void(0);" class="fr">→</a><a href="javascript:void(0);" class="close">×</a></div></div></div><a href="javascript:void(0);" class="last"></a><a href="javascript:void(0);" class="next"></a></div><ul class="cal-week"><li><b>日</b></li><li>一</li><li>二</li><li>三</li><li>四</li><li>五</li><li><b>六</b></li></ul><div class="cal-cm"></div></div><div class="cal cal-right"><div class="cal-top"><a href="javascript:void(0);" class="last"></a><a href="javascript:void(0);" class="next"></a><div class="year"><input type="text" value="" readonly="readonly" disabled="disabled"/><div class="time-list"><ul class="clearfix"><li>2016</li></ul><div class="time-list-ft"><a href="javascript:void(0);" class="fl">←</a><a href="javascript:void(0);" class="fr">→</a><a href="javascript:void(0);" class="close">×</a></div></div></div><div class="month"><input type="text" value="" readonly="readonly" disabled="disabled"/><ul class="time-list"><li>一月</li><li>二月</li><li>三月</li><li>四月</li><li>五月</li><li>六月</li><li>七月</li><li>八月</li><li>九月</li><li>十月</li><li>十一月</li><li>十二月</li></ul></div></div><ul class="cal-week"><li><b>日</b></li><li>一</li><li>二</li><li>三</li><li>四</li><li>五</li><li><b>六</b></li></ul><div class="cal-cm"></div></div><div class="cal-ft"><a href="javascript:void(0);" class="cal-btn">今天</a></div></div>'),
             i = e(a);
@@ -1479,7 +1491,7 @@ define("core/common/url_config", function() {}),
             n = i.find("a"),
             o = i.find("input"),
             s = i.find("ul");
-        e.jcalendar = function(a, l) {
+        e.jcalendar = function (a, l) {
             function c(e) {
                 return document.createElement(e)
             }
@@ -1579,9 +1591,9 @@ define("core/common/url_config", function() {}),
                 var n = 1 == e ? r[5] : r[11];
                 if (Number(s[e].children[0].innerHTML) - 1 < S.substring(0, 4) ? (n.children[0].style.color = q, n.children[0].style.cursor = "auto") : (n.children[0].style.color = F, n.children[0].style.cursor = "pointer"), Number(s[e].children[9].innerHTML) + 1 > j.substring(0, 4) ? (n.children[1].style.color = q, n.children[1].style.cursor = "auto") : (n.children[1].style.color = F, n.children[1].style.cursor = "pointer"), 3 == e) var l = s[3].parentElement.getElementsByTagName("li");
                 else if (1 == e) var l = r[4].getElementsByTagName("li");
-                for (var c = 0; c < l.length; c++) l[c].innerHTML < S.substring(0, 4) || l[c].innerHTML > j.substring(0, 4) ? l[c].onclick = function() {
+                for (var c = 0; c < l.length; c++) l[c].innerHTML < S.substring(0, 4) || l[c].innerHTML > j.substring(0, 4) ? l[c].onclick = function () {
                     r[4].style.display = "none", r[10].style.display = "none"
-                } : l[c].onclick = function() {
+                } : l[c].onclick = function () {
                     var t = this.innerHTML,
                         a = 3 == e ? _(o[3].value) + "" : _(o[0].value) + "";
                     a = 1 == a.length ? "0" + a : a, 3 == e ? (u(t, a - 2, t, a - 1), s[3].parentElement.style.display = "none") : 1 == e && (u(t, a - 1, t, a), r[4].style.display = "none"), h()
@@ -1627,7 +1639,7 @@ define("core/common/url_config", function() {}),
 
                 function l(e, t) {
                     var a = e;
-                    return t.replace(/dd?d?d?|MM?M?M?|yy?y?y?/g, function(e) {
+                    return t.replace(/dd?d?d?|MM?M?M?|yy?y?y?/g, function (e) {
                         switch (e) {
                             case "yyyy":
                                 var t = "000" + a.getFullYear();
@@ -1643,9 +1655,10 @@ define("core/common/url_config", function() {}),
                         }
                     })
                 }
+
                 this.date = e, this.isToday = !1, this.isRestDay = !1, this.solarYear = l(e, "yyyy"), this.solarMonth = l(e, "MM"), this.solarDate = l(e, "dd"), this.calendarDate = new Date(this.solarYear, this.solarMonth - 1, this.solarDate), this.solarWeekDay = e.getDay(), this.solarWeekDayInChinese = "星期" + W.charAt(this.solarWeekDay);
                 var c = new o(e);
-                this.lunarYear = c.year, this.lunarMonth = c.month, this.lunarIsLeapMonth = c.isLeap, this.lunarMonthInChinese = this.lunarIsLeapMonth ? "闰" + J[c.month - 1] : J[c.month - 1], this.lunarDate = c.day, this.showInLunar = this.lunarDateInChinese = function(e, t) {
+                this.lunarYear = c.year, this.lunarMonth = c.month, this.lunarIsLeapMonth = c.isLeap, this.lunarMonthInChinese = this.lunarIsLeapMonth ? "闰" + J[c.month - 1] : J[c.month - 1], this.lunarDate = c.day, this.showInLunar = this.lunarDateInChinese = function (e, t) {
                     var a;
                     switch (t) {
                         case 10:
@@ -1663,6 +1676,7 @@ define("core/common/url_config", function() {}),
                     return a
                 }(this.lunarMonth, this.lunarDate), 1 == this.lunarDate && (this.showInLunar = this.lunarMonthInChinese + "月"), this.jieqi = "", this.restDays = 0, t(this.solarYear, 2 * (this.solarMonth - 1)) == l(e, "d") && (this.showInLunar = this.jieqi = z[2 * (this.solarMonth - 1)]), t(this.solarYear, 2 * (this.solarMonth - 1) + 1) == l(e, "d") && (this.showInLunar = this.jieqi = z[2 * (this.solarMonth - 1) + 1]), "清明" == this.showInLunar && (this.showInLunar = "清明", this.restDays = 1), this.solarFestival = G[l(e, "MM") + l(e, "dd")], void 0 === this.solarFestival ? this.solarFestival = "" : /\*(\d)/.test(this.solarFestival) && (this.restDays = parseInt(RegExp.$1), this.solarFestival = this.solarFestival.replace(/\*\d/, "")), this.showInLunar = "" == this.solarFestival ? this.showInLunar : this.solarFestival, this.lunarFestival = V[this.lunarIsLeapMonth ? "00" : s(this.lunarMonth) + s(this.lunarDate)], void 0 === this.lunarFestival ? this.lunarFestival = "" : /\*(\d)/.test(this.lunarFestival) && (this.restDays = this.restDays > parseInt(RegExp.$1) ? this.restDays : parseInt(RegExp.$1), this.lunarFestival = this.lunarFestival.replace(/\*\d/, "")), 12 == this.lunarMonth && this.lunarDate == n(this.lunarYear, 12) && (this.lunarFestival = V["0100"], this.restDays = 1), this.showInLunar = "" == this.lunarFestival ? this.showInLunar : this.lunarFestival, this.showInLunar = this.showInLunar.length > 4 ? this.showInLunar.substr(0, 2) + "..." : this.showInLunar, "清明" == this.showInLunar && (this.solarFestival = "清明")
             }
+
             var w = this;
             w.$el = e(a), w.el = a, w.options = e.extend({}, e.jcalendar.defaultOptions, l);
             var b = w.el.selector,
@@ -1705,21 +1719,21 @@ define("core/common/url_config", function() {}),
                     "2018-10-06": "休",
                     "2018-10-07": "休"
                 };
-            document.onclick = function(e) {
+            document.onclick = function (e) {
                 t || (i.hide(), D.closeView())
-            }, e(b).mouseout(function() {
+            }, e(b).mouseout(function () {
                 t = !1
-            }), e(b).mouseover(function() {
+            }), e(b).mouseover(function () {
                 t = !0
-            }), i.mouseover(function() {
+            }), i.mouseover(function () {
                 e(b).unbind("blur")
-            }), i.click(function(e) {
+            }), i.click(function (e) {
                 e.stopPropagation(), t = !1
-            }), i.mouseout(function() {
-                e(b).bind("blur", function() {
+            }), i.mouseout(function () {
+                e(b).bind("blur", function () {
                     i.hide()
                 })
-            }), r[14].onclick = function() {
+            }), r[14].onclick = function () {
                 if (!f()) {
                     var t = new Date,
                         a = t.getFullYear(),
@@ -1731,7 +1745,7 @@ define("core/common/url_config", function() {}),
                         s = M ? o : o + " " + B[t.getDay()];
                     s = x ? x + s : s, s = T ? s + T : s, e(b).val(s), e(b).change(), i.hide()
                 }
-            }, n[0].onclick = function() {
+            }, n[0].onclick = function () {
                 var e = o[1].value,
                     t = _(o[0].value),
                     a = new Date(e - 1, t, 1),
@@ -1742,17 +1756,17 @@ define("core/common/url_config", function() {}),
                     u(a.getFullYear(), a.getMonth(), a.getFullYear(), a.getMonth() + 1)
                 }
                 h()
-            }, n[1].onclick = function() {
+            }, n[1].onclick = function () {
                 var e = o[1].value,
                     t = _(o[0].value),
                     a = new Date(e, t - 1, 1),
                     i = new Date(a.getTime() - 864e5);
                 new Date(i.getFullYear(), Number(i.getMonth()), i.getDate()) >= new Date(S) && u(e, t - 2, e, t - 1), h()
-            }, n[6].onclick = function() {
+            }, n[6].onclick = function () {
                 var e = o[1].value,
                     t = _(o[0].value);
                 e == j.substring(0, 4) && t == j.substring(5, 7) || u(e, t, e, Number(t) + 1), h()
-            }, n[5].onclick = function() {
+            }, n[5].onclick = function () {
                 var e = o[1].value,
                     t = _(o[0].value);
                 if (e < j.substring(0, 4)) u(Number(e) + 1, t - 1, Number(e) + 1, t);
@@ -1761,11 +1775,11 @@ define("core/common/url_config", function() {}),
                     u(a.getFullYear(), a.getMonth(), a.getFullYear(), a.getMonth() + 1)
                 }
                 h()
-            }, n[8].onclick = function() {
+            }, n[8].onclick = function () {
                 var e = o[2].value,
                     t = _(o[3].value);
                 new Date(e, t - 1, 1) <= new Date(j) && u(e, t - 1, e, t), h()
-            }, n[7].onclick = function() {
+            }, n[7].onclick = function () {
                 var e = o[1].value,
                     t = _(o[0].value);
                 if (e < j.substring(0, 4)) u(Number(e) + 1, t - 1, Number(e) + 1, t);
@@ -1795,9 +1809,10 @@ define("core/common/url_config", function() {}),
                     "0815": "*1中秋",
                     "0100": "除夕"
                 },
-                K = function() {
+                K = function () {
                     function e(e) {
-                        return e % 4 == 0 && e 0 != 0 || e @0 == 0
+                        return e % 4 == 0 && e
+                        0 != 0 || e @0 == 0
                     }
 
                     function t(t, a) {
@@ -1835,17 +1850,18 @@ define("core/common/url_config", function() {}),
                                 d.solarYear == i.solarYear && d.solarMonth == i.solarMonth && d.solarDate == i.solarDate && (d.isToday = !0), r.dateArray[v] = d, d = new y(a(d.date, 1)), u--
                             }
                     }
+
                     var r = {};
                     return r.lines = 0, r.dateArray = new Array(42), {
-                        init: function(e, t) {
+                        init: function (e, t) {
                             i(e, t)
                         },
-                        getJson: function() {
+                        getJson: function () {
                             return r
                         }
                     }
                 }(),
-                X = function() {
+                X = function () {
                     function t(t) {
                         var a = 1 == t ? r[6] : r[13],
                             n = K.getJson(),
@@ -1858,8 +1874,8 @@ define("core/common/url_config", function() {}),
                                     d = M ? u : u + " " + o[l].solarWeekDayInChinese;
                                 d = x ? x + d : d, d = T ? d + T : d;
                                 var h = c("DIV");
-                                o[l].isToday && (h.style.border = "1px solid #a5b9da", h.style.background = O), h.className = "cell", "2" == E && (h.style.height = "36px"), h.style.left = l % 7 == 0 ? "0px" : l % 7 * 42 + 3 + "px", h.style.top = Math.floor(l / 7) * s + 5 + "px", o[l].calendarDate >= new Date(S) && o[l].calendarDate <= new Date(j) && (h.onclick = function(t) {
-                                    return function() {
+                                o[l].isToday && (h.style.border = "1px solid #a5b9da", h.style.background = O), h.className = "cell", "2" == E && (h.style.height = "36px"), h.style.left = l % 7 == 0 ? "0px" : l % 7 * 42 + 3 + "px", h.style.top = Math.floor(l / 7) * s + 5 + "px", o[l].calendarDate >= new Date(S) && o[l].calendarDate <= new Date(j) && (h.onclick = function (t) {
+                                    return function () {
                                         e(b).val(t), i.hide(), e(b).change()
                                     }
                                 }(d), h.style.cursor = "pointer");
@@ -1873,11 +1889,12 @@ define("core/common/url_config", function() {}),
                                 a.appendChild(h)
                             }
                     }
+
                     return {
-                        draw: function(e) {
+                        draw: function (e) {
                             0 == e ? t(e) : 1 == e ? t(1) : (t(e), t(1))
                         },
-                        resetYM: function(e, t) {
+                        resetYM: function (e, t) {
                             o[0].value = Q[Number(e.solarMonth)], o[1].value = e.solarYear, o[2].value = t.solarYear, o[3].value = Q[Number(t.solarMonth)]
                         }
                     }
@@ -1891,74 +1908,78 @@ define("core/common/url_config", function() {}),
                 K.init(ae, 1), X.draw(0)
             }
             if (I || (r[14].style.display = "none"), U) {
-                n[2].onclick = function() {
+                n[2].onclick = function () {
                     if (s[1].getElementsByTagName("li")[0].innerHTML < 1902 || "auto" == this.style.cursor) return void(r[4].style.display = "none");
                     g(1, s[1].getElementsByTagName("li")[0].innerHTML - 5)
-                }, n[3].onclick = function() {
+                }, n[3].onclick = function () {
                     if (s[1].getElementsByTagName("li")[0].innerHTML > 2040 || "auto" == this.style.cursor) return void(r[4].style.display = "none");
                     g(1, Number(s[1].getElementsByTagName("li")[0].innerHTML) + 15)
-                }, n[4].onclick = function() {
+                }, n[4].onclick = function () {
                     s[1].parentElement.style.display = "none"
-                }, n[9].onclick = function() {
+                }, n[9].onclick = function () {
                     if (s[3].getElementsByTagName("li")[0].innerHTML < 1902 || "auto" == this.style.cursor) return void(r[10].style.display = "none");
                     g(3, s[3].getElementsByTagName("li")[0].innerHTML - 5)
-                }, n[10].onclick = function() {
+                }, n[10].onclick = function () {
                     if (s[3].getElementsByTagName("li")[0].innerHTML > 2040 || "auto" == this.style.cursor) return void(r[10].style.display = "none");
                     g(3, Number(s[3].getElementsByTagName("li")[0].innerHTML) + 15)
-                }, n[11].onclick = function() {
+                }, n[11].onclick = function () {
                     s[3].parentElement.style.display = "none"
-                }, o[0].onfocus = function() {
+                }, o[0].onfocus = function () {
                     s[0].style.display = "block", m(0), r[4].style.display = "none"
-                }, o[0].onblur = function() {
+                }, o[0].onblur = function () {
                     s[0].style.display = "none"
                 };
-                for (var ie = s[0].getElementsByTagName("li"), re = 0; re < ie.length; re++) ie[re].onclick = function() {
+                for (var ie = s[0].getElementsByTagName("li"), re = 0; re < ie.length; re++) ie[re].onclick = function () {
                     if ("auto" == this.style.cursor) return s[0].style.display = "none", void(s[4].style.display = "none");
                     var e = o[1].value,
                         t = _(this.innerHTML) + "";
                     t = 1 == t.length ? "0" + t : t, u(e, t - 1, e, t), s[0].style.display = "none", h()
                 };
-                m(0), o[1].onfocus = function() {
+                m(0), o[1].onfocus = function () {
                     g(1, Number(o[1].value)), r[4].style.display = "block"
-                }, o[1].onblur = function() {
+                }, o[1].onblur = function () {
                     r[4].style.display = "none"
-                }, r[4].onmouseover = function() {
-                    o[1].onblur = function() {}
-                }, r[4].onmouseout = function() {
-                    o[1].onblur = function() {
+                }, r[4].onmouseover = function () {
+                    o[1].onblur = function () {
+                    }
+                }, r[4].onmouseout = function () {
+                    o[1].onblur = function () {
                         r[4].style.display = "none"
                     }
-                }, s[0].onmouseover = function() {
-                    o[0].onblur = function() {}
-                }, s[0].onmouseout = function() {
-                    o[0].onblur = function() {
+                }, s[0].onmouseover = function () {
+                    o[0].onblur = function () {
+                    }
+                }, s[0].onmouseout = function () {
+                    o[0].onblur = function () {
                         s[0].style.display = "none"
                     }
-                }, o[3].onfocus = function() {
+                }, o[3].onfocus = function () {
                     m(4), s[4].style.display = "block", r[10].style.display = "none"
-                }, o[3].onblur = function() {
+                }, o[3].onblur = function () {
                     s[4].style.display = "none"
                 };
-                for (var ne = s[4].getElementsByTagName("li"), re = 0; re < ne.length; re++) ne[re].onclick = function() {
+                for (var ne = s[4].getElementsByTagName("li"), re = 0; re < ne.length; re++) ne[re].onclick = function () {
                     if ("auto" == this.style.cursor) return s[0].style.display = "none", void(s[4].style.display = "none");
                     var e = o[2].value,
                         t = _(this.innerHTML) + "";
                     t = 1 == t.length ? "0" + t : t, u(e, t - 2, e, t - 1), s[4].style.display = "none", h()
                 };
-                m(4), o[2].onfocus = function() {
+                m(4), o[2].onfocus = function () {
                     g(3, Number(o[2].value)), r[10].style.display = "block"
-                }, o[2].onblur = function() {
+                }, o[2].onblur = function () {
                     r[10].style.display = "none"
-                }, r[10].onmouseover = function() {
-                    o[2].onblur = function() {}
-                }, r[10].onmouseout = function() {
-                    o[2].onblur = function() {
+                }, r[10].onmouseover = function () {
+                    o[2].onblur = function () {
+                    }
+                }, r[10].onmouseout = function () {
+                    o[2].onblur = function () {
                         r[10].style.display = "none"
                     }
-                }, s[4].onmouseover = function() {
-                    o[3].onblur = function() {}
-                }, s[4].onmouseout = function() {
-                    o[3].onblur = function() {
+                }, s[4].onmouseover = function () {
+                    o[3].onblur = function () {
+                    }
+                }, s[4].onmouseout = function () {
+                    o[3].onblur = function () {
                         s[4].style.display = "none"
                     }
                 };
@@ -1966,7 +1987,7 @@ define("core/common/url_config", function() {}),
             }
             var oe = new Date;
             o[0].value = Q[oe.getMonth() + 1], o[1].value = oe.getFullYear(), o[2].value = 11 == oe.getMonth() ? oe.getFullYear() + 1 : oe.getFullYear(), o[3].value = Q[oe.getMonth() + 2],
-                function() {
+                function () {
                     r[4].style.display = "none", t = !0;
                     var a = C ? 261 : 522,
                         n = document.body.clientWidth - a - 10,
@@ -1995,146 +2016,149 @@ define("core/common/url_config", function() {}),
             noClickColor: "#aaa",
             clickByYearMonth: "#003784",
             lunarColor: "#666",
-            closeCalendar: function() {},
-            onpicked: function() {}
-        }, e.fn.jcalendar = function() {
+            closeCalendar: function () {
+            },
+            onpicked: function () {
+            }
+        }, e.fn.jcalendar = function () {
             var t = Array.prototype.slice.call(arguments);
             return new e.jcalendar(this, t[0])
         }
     }),
-    function(e) {
+    function (e) {
         "function" == typeof define && define.amd ? define("core/common/date", ["jquery"], e) : e(jQuery)
-    }(function(e) {
-        e(".icon-date").each(function(t, a) {
-            e(this).click(function(t) {
+    }(function (e) {
+        e(".icon-date").each(function (t, a) {
+            e(this).click(function (t) {
                 e("#" + e(this).attr("data-click")).focus()
             })
         }), jQuery.extend({
-            datepicker: function(t, a, i) {
-                e(t).focus(function() {
+            datepicker: function (t, a, i) {
+                e(t).focus(function () {
                     e(t).jcalendar({
                         isSingle: !0,
                         startDate: a,
                         endDate: i,
-                        onpicked: function() {
+                        onpicked: function () {
                             e(t).blur(), e(t).hasClass("inp-txt_select") || e(t).addClass("inp-txt_select"), e(t).hasClass("error") && e(t).removeClass("error")
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dateTrain: function(t, a, i, r) {
-                e(t).focus(function() {
+            dateTrain: function (t, a, i, r) {
+                e(t).focus(function () {
                     e(t).jcalendar({
                         isSingle: !1,
                         startDate: a,
                         endDate: i,
-                        onpicked: function() {
+                        onpicked: function () {
                             "#go_date" == t && e("#from_date").val(e("#go_date").val()), e(t).blur(), e(t).hasClass("inp-txt_select") || e(t).addClass("inp-txt_select"), e(t).hasClass("error") && e(t).removeClass("error")
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            GetDateStr: function(e) {
+            GetDateStr: function (e) {
                 var t = new Date;
                 return t.setDate(t.getDate() + e),
                 t.getFullYear() + "-" + (t.getMonth() + 1 < 10 ? "0" + (t.getMonth() + 1) : t.getMonth() + 1) + "-" + (t.getDate() < 10 ? "0" + t.getDate() : t.getDate())
             },
-            dianzifromStr: function(t, a, i) {
-                e(t).focus(function() {
+            dianzifromStr: function (t, a, i) {
+                e(t).focus(function () {
                     e(t).jcalendar({
                         isSingle: !1,
                         startDate: null,
                         endDate: null,
-                        onpicked: function() {
+                        onpicked: function () {
                             timeChangetype(e("#travelFromDate").val().replace(/-/g, "/")) > timeChangetype(e("#travelToDate").val().replace(/-/g, "/")) && e("#travelToDate").val(e("#travelFromDate").val()), e(t).blur()
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dianzitoStr: function(t, a, i) {
-                e(t).focus(function() {
+            dianzitoStr: function (t, a, i) {
+                e(t).focus(function () {
                     e(t).jcalendar({
                         isSingle: !1,
                         startDate: e("#travelFromDate").val() || GetDateStr(0),
                         endDate: null,
-                        onpicked: function() {
+                        onpicked: function () {
                             e(t).blur()
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dateRefundDingStr: function(a, i) {
-                e(a).focus(function() {
+            dateRefundDingStr: function (a, i) {
+                e(a).focus(function () {
                     t = !0, e(a).jcalendar({
                         isSingle: !1,
                         startDate: formatDate(new Date),
-                        onpicked: function() {
+                        onpicked: function () {
                             if (e("#noTripFromDate").val()) {
                                 timeChangetype(e("#noTripFromDate").val().replace(/-/g, "/")) > timeChangetype(e("#noTripToDate").val().replace(/-/g, "/")) && e("#noTripToDate").val(e("#noTripFromDate").val())
                             }
                             e(a).blur(), e(a).hasClass("inp-txt_select") || e(a).addClass("inp-txt_select"), e(a).hasClass("error") && e(a).removeClass("error")
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dateRefundDingEnd: function(a, i) {
-                e(a).focus(function() {
+            dateRefundDingEnd: function (a, i) {
+                e(a).focus(function () {
                     t = !0, e(a).jcalendar({
                         isSingle: !1,
                         startDate: formatDate(new Date),
-                        onpicked: function() {
+                        onpicked: function () {
                             e(a).blur(), e(a).hasClass("inp-txt_select") || e(a).addClass("inp-txt_select"), e(a).hasClass("error") && e(a).removeClass("error"), timeChangetype(e("#noTripFromDate").val().replace(/-/g, "/")) > timeChangetype(e("#noTripToDate").val().replace(/-/g, "/")) && e("#noTripFromDate").val(e("#noTripToDate").val())
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dateHistoryStr: function(a, i) {
-                e(a).focus(function() {
+            dateHistoryStr: function (a, i) {
+                e(a).focus(function () {
                     t = !0, e(a).jcalendar({
                         isSingle: !1,
                         startDate: GetDateStr(i ? -29 : -1),
                         endDate: GetDateStr(i ? -1 : 29),
-                        onpicked: function() {
+                        onpicked: function () {
                             if (e("#historyFromDate").val()) {
                                 timeChangetype(e("#historyFromDate").val().replace(/-/g, "/")) > timeChangetype(e("#historyToDate").val().replace(/-/g, "/")) && e("#historyToDate").val(e("#historyFromDate").val())
                             }
                             e(a).blur(), e(a).hasClass("inp-txt_select") || e(a).addClass("inp-txt_select"), e(a).hasClass("error") && e(a).removeClass("error")
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            dateHistoryEnd: function(a, i) {
-                e(a).focus(function() {
+            dateHistoryEnd: function (a, i) {
+                e(a).focus(function () {
                     t = !0, e(a).jcalendar({
                         isSingle: !1,
                         startDate: i ? e("#historyFromDate").val() || GetDateStr(-29) : e("#historyFromDate").val() || GetDateStr(-1),
                         endDate: GetDateStr(i ? -1 : 29),
-                        onpicked: function() {}
+                        onpicked: function () {
+                        }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             },
-            noTripDPStr: function(t, a, i) {
-                e(t).focus(function() {
+            noTripDPStr: function (t, a, i) {
+                e(t).focus(function () {
                     e(t).jcalendar({
                         isSingle: !1,
                         endDate: GetDateStr(0),
-                        onpicked: function() {
+                        onpicked: function () {
                             if ("#noTripToDate" == t) {
                                 var a = timeChangetype(e("#noTripFromDate").val().replace(/-/g, "/")),
                                     i = timeChangetype(e("#noTripToDate").val().replace(/-/g, "/"));
@@ -2148,17 +2172,17 @@ define("core/common/url_config", function() {}),
                             e(t).blur(), e(t).hasClass("inp-txt_select") || e(t).addClass("inp-txt_select"), e(t).hasClass("error") && e(t).removeClass("error")
                         }
                     })
-                }).blur(function() {
+                }).blur(function () {
                     e(".cal-wrap").hide()
                 })
             }
         });
         var t = !1
     }),
-    function(e) {
+    function (e) {
         "function" == typeof define && define.amd ? define("core/plugin/confirm", ["jquery"], e) : e(jQuery)
-    }(function(e) {
-        window.DZP = window.DZP || {}, window.DZP.confirm = function(t, a, i) {
+    }(function (e) {
+        window.DZP = window.DZP || {}, window.DZP.confirm = function (t, a, i) {
             function r() {
                 M.append(E.append(U)).append(x.append(m)).append(T.append(_)).append(c(b)).append(N), k.attr("id", D).append(C).append(M), e("body").append(k);
                 var t = navigator.appName,
@@ -2171,13 +2195,13 @@ define("core/common/url_config", function() {}),
                         "margin-top": -M.outerHeight() / 2 + "px"
                     })
                 }
-                "系统繁忙，请稍后重试！" == v.msg.tit && P.click(function() {
+                "系统繁忙，请稍后重试！" == v.msg.tit && P.click(function () {
                     window.location.href = htmlHref.index
                 })
             }
 
             function n() {
-                P.click(o), e(window).bind("keydown", function(t) {
+                P.click(o), e(window).bind("keydown", function (t) {
                     13 == t.keyCode && 1 == e("#" + D).length && o()
                 }), F.click(s), E.click(l)
             }
@@ -2198,7 +2222,7 @@ define("core/common/url_config", function() {}),
 
             function c(t) {
                 var a = S;
-                return e.each(A, function(e, i) {
+                return e.each(A, function (e, i) {
                     d[e] == (t & d[e]) && a.append(i)
                 }), a
             }
@@ -2207,6 +2231,7 @@ define("core/common/url_config", function() {}),
                 var t = "pop_" + (new Date).getTime() + parseInt(1e5 * Math.random());
                 return e("#" + t).length > 0 ? u() : t
             }
+
             var d = window.DZP.confirm.btnEnum,
                 h = window.DZP.confirm.eventEnum,
                 f = {
@@ -2296,7 +2321,7 @@ define("core/common/url_config", function() {}),
                 cancel: F,
                 ok: P
             };
-            ! function() {
+            !function () {
                 e(".dzp-confirm").remove(), r(), n()
             }()
         }, window.DZP.confirm.btnEnum = {
@@ -2315,7 +2340,7 @@ define("core/common/url_config", function() {}),
             warning: "warning",
             custom: "custom"
         }
-    }), define("index/index_init", ["jquery"], function(e) {
+    }), define("index/index_init", ["jquery"], function (e) {
     function t() {
         var t = navigator.appName,
             i = navigator.appVersion,
@@ -2324,7 +2349,7 @@ define("core/common/url_config", function() {}),
             var n = r[1].replace(/[ ]/g, "");
             "Microsoft Internet Explorer" == t && "MSIE7.0" == n ? window.location.href = htmlHref.browserForie : "Microsoft Internet Explorer" == t && "MSIE6.0" == n && (window.location.href = htmlHref.browserForie)
         }
-        jQuery.support.cors = !0, a(), e(".index_notice").on("click", function() {
+        jQuery.support.cors = !0, a(), e(".index_notice").on("click", function () {
             e(".index_notice").attr("href", noticeUrl)
         })
     }
@@ -2334,7 +2359,7 @@ define("core/common/url_config", function() {}),
             url: personal_welcome_url,
             type: "POST",
             timeout: 1e4,
-            success: function(t) {
+            success: function (t) {
                 if (loadingHide(), t.data) {
                     var a = JSON.parse(JSON.stringify(t.data));
                     if (a.user_name && a.user_regard) {
@@ -2361,11 +2386,11 @@ define("core/common/url_config", function() {}),
                         e("#aliImg").html('<div class="code-pic"><img src=' + n + '></div><div class="code-txt">使用支付宝扫一扫，可通过<br>支付宝通知提醒接收12306行程通知</div>')
                     }
                 }
-                e("#link_for_reSendEmail").on("click", function() {
+                e("#link_for_reSendEmail").on("click", function () {
                     e.ajax({
                         url: static_url_path + "/index/reSendEmail",
                         type: "post",
-                        success: function(e) {
+                        success: function (e) {
                             if (e.data) {
                                 var t = e.data._email ? e.data._email : "";
                                 window.DZP.confirm("", window.DZP.confirm.typeEnum.confirm, {
@@ -2374,7 +2399,7 @@ define("core/common/url_config", function() {}),
                                     msg: {
                                         tit: "验证邮件已发送，请您登录邮箱<br>" + t + "完成验证！"
                                     },
-                                    onOk: function() {
+                                    onOk: function () {
                                         window.location.href = static_url_path + "/view/information.html"
                                     }
                                 })
@@ -2383,21 +2408,22 @@ define("core/common/url_config", function() {}),
                                     title: "验证邮箱",
                                     width: "400",
                                     height: "150",
-                                    onOk: function() {
+                                    onOk: function () {
                                         window.location.href = static_url_path + "/view/information.html"
                                     }
                                 })
                             }
                         },
-                        error: function() {}
+                        error: function () {
+                        }
                     })
-                }), e("#link_for_changePassword").on("click", function() {
+                }), e("#link_for_changePassword").on("click", function () {
                     window.location.href = static_url_path + "/userSecurity/loginPwd?req_flag=init"
-                }), e("#isStationMember").click(function() {
+                }), e("#isStationMember").click(function () {
                     e.ajax({
                         url: static_url_path + "/index/isStationMember",
                         type: "post",
-                        success: function(t) {
+                        success: function (t) {
                             var a = t.data;
                             a ? "1" == a.flag ? (e("#isStationMember").attr("target", "_blank"), window.location.href = "https://cx.12306.cn/tlcx/register.html?id=1") : (e("#isStationMember").attr("target", "_blank"), window.location.href = "https://cx.12306.cn/tlcx/register.html?id=0") : window.DZP.confirm("", window.DZP.confirm.typeEnum.confirm, {
                                 title: "提示",
@@ -2407,7 +2433,7 @@ define("core/common/url_config", function() {}),
                                 btn: 1
                             })
                         },
-                        error: function() {
+                        error: function () {
                             window.DZP.confirm("", window.DZP.confirm.typeEnum.confirm, {
                                 title: "提示",
                                 msg: {
@@ -2417,13 +2443,13 @@ define("core/common/url_config", function() {}),
                             })
                         }
                     })
-                }), e("#link_for_ticket").on("click", function() {
+                }), e("#link_for_ticket").on("click", function () {
                     window.location.href = static_url_path + "/leftTicket/init"
-                }), e("#link_for_needKnow").on("click", function() {
+                }), e("#link_for_needKnow").on("click", function () {
                     e.ajax({
                         url: static_url_path + "/index/checkIsOrNotMember",
                         type: "post",
-                        success: function(e) {
+                        success: function (e) {
                             if (e.data.flag) window.location.href = static_url_path + "/index/preAddMember";
                             else {
                                 var t = e.data.message;
@@ -2434,7 +2460,7 @@ define("core/common/url_config", function() {}),
                                 })
                             }
                         },
-                        error: function() {
+                        error: function () {
                             window.DZP.confirm("积分兑换失败！", window.DZP.confirm.typeEnum.confirm, {
                                 title: "积分兑换",
                                 width: "400",
@@ -2442,11 +2468,11 @@ define("core/common/url_config", function() {}),
                             })
                         }
                     })
-                }), e("#resetMemberPwd").on("click", function() {
+                }), e("#resetMemberPwd").on("click", function () {
                     window.location.href = static_url_path + "/userIntegration/gotoResetMemPwd"
                 })
             },
-            error: function(e) {
+            error: function (e) {
                 loadingHide(), window.DZP.confirm("", window.DZP.confirm.typeEnum.confirm, {
                     title: "提示",
                     msg: {
@@ -2457,15 +2483,17 @@ define("core/common/url_config", function() {}),
             }
         })
     }
+
     return {
-        initialize: function() {
+        initialize: function () {
             t()
         }
     }
-}), define("index/app", ["jquery", "g/g-header", "g/g-footer", "g/g-href", "core/common/jquery.SuperSlide", "core/common/mUtils", "core/common/common", "core/common/data.jcokies", "core/common/url_config", "core/common/data.jcalendar", "core/common/date", "core/plugin/confirm", "underscore", "index/index_init"], function(e, t, a, i, r, n, o, s, l, c, u, d, h, f) {
+}), define("index/app", ["jquery", "g/g-header", "g/g-footer", "g/g-href", "core/common/jquery.SuperSlide", "core/common/mUtils", "core/common/common", "core/common/data.jcokies", "core/common/url_config", "core/common/data.jcalendar", "core/common/date", "core/plugin/confirm", "underscore", "index/index_init"], function (e, t, a, i, r, n, o, s, l, c, u, d, h, f) {
     function p() {
         t.initialize(), e("#J-index").removeClass("active"), e("#J-chepiao").addClass("active"), e("#gerenzhongxin h2").addClass("active"), isOver && (f.initialize(), a.initialize(), i.initialize())
     }
+
     return {
         initialize: p
     }
@@ -2484,6 +2512,7 @@ define("core/common/url_config", function() {}),
         underscore: "core/lib/underscore"
     },
     waitSeconds: 0
-}), require(["index/app"], function(e) {
+}), require(["index/app"], function (e) {
     new e.initialize
-}), define("index/main", function() {});
+}), define("index/main", function () {
+});

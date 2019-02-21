@@ -3,7 +3,7 @@ package com.duriamuk.robartifact.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.duriamuk.robartifact.common.constant.TableName;
+import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
@@ -69,14 +69,14 @@ public class RobServiceImpl implements RobService {
     }
 
     private int countGoingRobTask(List<RobParamsDTO> robParamsDTOList) {
-        int connt = 0;
-        for (RobParamsDTO rob: robParamsDTOList) {
-            Object redisObj = RedisUtils.get(TableName.ROB_RECORD + rob.getId());
+        int count = 0;
+        for (RobParamsDTO rob : robParamsDTOList) {
+            Object redisObj = RedisUtils.get(PrefixName.TABLE_ROB_RECORD + rob.getId());
             if (!ObjectUtils.isEmpty(redisObj)) {
-                connt ++;
+                count++;
             }
         }
-        return connt;
+        return count;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class RobServiceImpl implements RobService {
         robMapper.updateRobRecord(robParamsDTO);
     }
 
-    public Boolean doRob(String payload){
+    public Boolean doRob(String payload) {
         logger.info("尝试抢票，入参：{}", payload);
         boolean isLogin = loginService.keepLogin();
         if (isLogin) {
@@ -112,7 +112,7 @@ public class RobServiceImpl implements RobService {
             boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
             if (isAllSeatType) {
                 List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
-                for (String seatType: seatTypeList) {
+                for (String seatType : seatTypeList) {
                     // 席别轮询太快会被12306拒绝，要间隔一秒以上
                     changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
                     boolean isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
@@ -134,10 +134,10 @@ public class RobServiceImpl implements RobService {
     /*---------------------------------------------------START: 抢票流程------------------------------------------------------*/
     private Boolean checkAllDateSecretStr(RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
                                           QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
-        for (String trainDate: robParamsDTO.getTrainDate().split(",")) {
+        for (String trainDate : robParamsDTO.getTrainDate().split(",")) {
             List<String> secretStrList = getSecretStrListInOneDay(robParamsDTO, trainDate);
             if (!ListUtils.isEmpty(secretStrList)) {
-                for (String secretStr: secretStrList) {
+                for (String secretStr : secretStrList) {
                     boolean isReserve = doReserve(secretStr, checkOrderDTO, queueCountDTO, robParamsDTO, doOrderDTO);
                     if (isReserve) {
                         return true;
@@ -181,7 +181,7 @@ public class RobServiceImpl implements RobService {
         return false;
     }
 
-    private Boolean submitOrderRequest(String data){
+    private Boolean submitOrderRequest(String data) {
         String result = ticketService.submitOrderRequest(data);
         if (result.startsWith("{") && "[]".equals(JSON.parseObject(result).getString("messages"))) {
             return true;
@@ -202,7 +202,7 @@ public class RobServiceImpl implements RobService {
     }
 
     private Boolean submitOrder(CheckOrderDTO checkOrderDTO, QueueCountDTO queueCountDTO,
-                               RobParamsDTO robParamsDTO, DoOrderDTO doOrderDTO,
+                                RobParamsDTO robParamsDTO, DoOrderDTO doOrderDTO,
                                 Map<String, String> orderParamsMap) {
         OrderRequestDTO orderRequestDTO = JSON.parseObject(orderParamsMap.get("orderRequestDTO"), OrderRequestDTO.class);
         TicketInfoDTO ticketInfoDTO = JSON.parseObject(orderParamsMap.get("ticketInfoForPassengerForm"), TicketInfoDTO.class);
@@ -212,7 +212,7 @@ public class RobServiceImpl implements RobService {
         if (isCheck) {
             boolean robNoSeat = robParamsDTO.getRobNoSeat();
             if (!robNoSeat) {
-                boolean isSeatAvailable =  checkSeatAvailable(buildQueueCountData(queueCountDTO, orderRequestDTO, ticketInfoDTO, globalRepeatSubmitToken));
+                boolean isSeatAvailable = checkSeatAvailable(buildQueueCountData(queueCountDTO, orderRequestDTO, ticketInfoDTO, globalRepeatSubmitToken));
                 if (!isSeatAvailable) {
                     return false;
                 }
@@ -262,7 +262,7 @@ public class RobServiceImpl implements RobService {
     private List<String> buildSecretStrList(RobParamsDTO robParamsDTO, JSONArray tickets) {
         // 根据有无指定车次来初始化List大小，加快算法速度
         List<String> secretStrList = null;
-        if(!StringUtils.isEmpty(robParamsDTO.getTrainNumber())) {
+        if (!StringUtils.isEmpty(robParamsDTO.getTrainNumber())) {
             secretStrList = new ArrayList<>();
         } else {
             secretStrList = new ArrayList<>(tickets.size());
@@ -273,7 +273,7 @@ public class RobServiceImpl implements RobService {
 
     private void filterQueryResult(RobParamsDTO robParamsDTO, JSONArray tickets, List<String> secretStrList) {
         String[] trainNumbers = robParamsDTO.getTrainNumber().split(",");
-        for (Object ticket: tickets) {
+        for (Object ticket : tickets) {
             String[] attrs = ticket.toString().split("\\|");
             filterQueryResultBytrainDate(robParamsDTO, trainNumbers, attrs, secretStrList);
         }
@@ -288,10 +288,10 @@ public class RobServiceImpl implements RobService {
         }
     }
 
-    private void filterQueryResultBytrainNumbers(String []trainNumbers, String []attrs, List<String> secretStrList) {
+    private void filterQueryResultBytrainNumbers(String[] trainNumbers, String[] attrs, List<String> secretStrList) {
         String shortNum = attrs[SHORT_TRAIN_NUM_INDEX];
         String longNum = attrs[LONG_TRAIN_NUM_INDEX];
-        for (String no: trainNumbers) {
+        for (String no : trainNumbers) {
             if (shortNum.equals(no) || longNum.equals(no)) {
                 String secretStr = attrs[SECRET_INDEX];
                 if (!StringUtils.isEmpty(secretStr)) {
@@ -304,8 +304,8 @@ public class RobServiceImpl implements RobService {
     }
 
     private Boolean compareTime(String first, String second) {
-        String []firsts = first.split(":");
-        String []seconds = second.split(":");
+        String[] firsts = first.split(":");
+        String[] seconds = second.split(":");
         if (Integer.parseInt(firsts[0]) > Integer.parseInt(seconds[0]) ||
                 (Integer.parseInt(firsts[0]) == Integer.parseInt(seconds[0]) &&
                         Integer.parseInt(firsts[1]) >= Integer.parseInt(seconds[1]))) {
@@ -316,7 +316,7 @@ public class RobServiceImpl implements RobService {
 
     private Boolean checkAllSeatType(CheckOrderDTO checkOrderDTO) {
         String[] passengers = checkOrderDTO.getPassengerTicketStr().split("_");
-        for (String str: passengers) {
+        for (String str : passengers) {
             if (str.startsWith("all")) {
                 return true;
             }
@@ -347,10 +347,10 @@ public class RobServiceImpl implements RobService {
         logger.info("已改变席别，编号：{}", seatType);
     }
 
-    private String getNewPassengerTicketStr(String seatType,String oldPassengerTicketStr) {
+    private String getNewPassengerTicketStr(String seatType, String oldPassengerTicketStr) {
         String[] passengers = oldPassengerTicketStr.split("_");
         String newPassengerTicketStr = "";
-        for (String str: passengers) {
+        for (String str : passengers) {
             String[] strs = str.split(",");
             newPassengerTicketStr += "_" + str.replaceFirst(strs[0], seatType);
         }
@@ -415,7 +415,7 @@ public class RobServiceImpl implements RobService {
         String value = StrUtils.findVlaue(name, afterName, interval, endStr, result);
         logger.info("已获得订单参数{}:{}", name, value);
         map.put(name, value);
-        return value != null? true: false;
+        return value != null ? true : false;
     }
 
     private String buildCheckOrderData(CheckOrderDTO checkOrderDTO, TicketInfoDTO ticketInfoDTO, String globalRepeatSubmitToken) {
