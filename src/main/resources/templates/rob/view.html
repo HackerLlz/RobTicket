@@ -1115,7 +1115,7 @@
     <!--乘客信息 开始-->
     <div class="layout person">
         <div class="lay-hd">
-            乘客信息<span class="small" id="psInfo">（填写说明）</span>
+            乘客信息<span class="small" id="psInfo">（填写说明）</span> <button id="syncPassenger" style="cursor: pointer">同步12306乘客信息</button>
             <div class="s-box"><input id="quickQueryPassenger_id" type="text" value="输入乘客姓名" class="txt">
                 <input id="submit_quickQueryPassenger" type="submit" class="sub">
             </div>
@@ -1782,6 +1782,11 @@
  var robParamsDTO = [[${robParamsDTO}]];
  console.log("robParamsDTO: ", robParamsDTO);
 
+ // 同步12306乘客信息
+ $("#syncPassenger").click(function(){
+     window.location.href = "/passenger/sync";
+ });
+
  function choose_seats() {
      var v = "";
      $.each($("div#id-seat-sel div.seat-sel-bd a"), function () {
@@ -1838,7 +1843,7 @@
          // 席别全部根据这个来
          passengerTicketStr: passengerTicketStr(),
          oldPassengerStr: oldPassengerStr(),
-         randCode: $("#randCode").val(),
+         randCode: $("#randCode").val(),  // 一般为""
          whatsSelect: $.whatsSelect(true) ? "1" : "0",
          // _json_att: "",
 
@@ -1913,7 +1918,7 @@
                  dhtmlx.alert({
                      title: "提示",
                      ok: "确定",
-                     text: "已成功开始抢票，抢到票后会以邮件形式通知！\n可以直接关闭网页，但请不要在电脑端退出或重新输入账号密码登陆账号！",
+                     text: "已成功开始抢票，抢到票后会以邮件形式通知！",
                      type: "alert-error",
                      callback: function (data) {
                          window.location.href = "/ticket/view";

@@ -1,6 +1,7 @@
 package com.duriamuk.robartifact.service;
 
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
+import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsOtherDTO;
 
 import java.util.List;
 
@@ -12,9 +13,11 @@ import java.util.List;
 public interface RobService {
     Boolean doRob(String payload) throws Exception;
 
-    Boolean insertRobRecord(RobParamsDTO robParamsDTO);
+    Boolean insertRobRecord(RobParamsDTO robParamsDTO, RobParamsOtherDTO robParamsOtherDTO);
 
     List<RobParamsDTO> listRobRecordByUserId(Long userId);
+
+    List<RobParamsDTO> listRobRecordWithOther(RobParamsDTO robParamsDTO);
 
     RobParamsDTO getRobRecordById(Long id);
 

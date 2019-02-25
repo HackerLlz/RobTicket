@@ -14,11 +14,11 @@
 
     <select id="countCodeImage" parameterType="com.duriamuk.robartifact.entity.DTO.code.CodeImage" resultType="integer">
         SELECT
-        COUNT (0)
+        COUNT(0)
         FROM
         code_image
         WHERE
-        text = #{ocrResult} and md5 = #{hash}
+        text = #{ocrResult} and hash = #{hash}
     </select>
 
     <insert id="insertCodeImage" parameterType="com.duriamuk.robartifact.entity.DTO.code.CodeImage">

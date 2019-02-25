@@ -1,5 +1,6 @@
 package com.duriamuk.robartifact.entity.DTO.robProcess;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotBlank;
  * @JsonFormat(pattern="yyyy-MM-dd")
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RobParamsDTO {
     private Long id;
 
@@ -54,4 +56,6 @@ public class RobParamsDTO {
     private String tourFlag;
 
     private Integer status;
+
+    private RobParamsOtherDTO robParamsOtherDTO;
 }

@@ -1,6 +1,9 @@
 package com.duriamuk.robartifact.service;
 
+import com.duriamuk.robartifact.entity.PO.passenger.PassengerPO;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * @author: DuriaMuk
@@ -16,5 +19,9 @@ public interface PassengerService {
 
     String getQueueCount(String payload);
 
+    Boolean updatePassenger();
 
+    List<PassengerPO> listPassengerByUsername(String username);
+
+    Boolean sync12306Passenger(String payload);
 }

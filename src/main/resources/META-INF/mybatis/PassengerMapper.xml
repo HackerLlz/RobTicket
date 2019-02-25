@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duriamuk.robartifact.mapper.PassengerMapper">
+
+    <resultMap id="passengerPOMap" type="com.duriamuk.robartifact.entity.PO.passenger.PassengerPO">
+        <result column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="passenger_name" property="passengerName"/>
+        <result column="passenger_id_type_code" property="passengerIdTypeCode"/>
+        <result column="passenger_id_type_name" property="passengerIdTypeName"/>
+        <result column="passenger_id_no" property="passengerIdNo"/>
+        <result column="passenger_type" property="passengerType"/>
+        <result column="passenger_flag" property="passengerFlag"/>
+        <result column="mobile_no" property="mobileNo"/>
+        <result column="first_letter" property="firstLetter"/>
+        <result column="index_id" property="indexId"/>
+        <result column="total_times" property="totalTimes"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        passenger_name, passenger_id_type_code, passenger_id_type_name, passenger_id_no, passenger_type,
+        passenger_flag, mobile_no, first_letter, index_id, total_times
+    </sql>
+
+    <insert id="insertPassengerList" parameterType="list">
+        INSERT INTO
+        passenger(username, <include refid="baseColumn"></include>)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.username}, #{item.passengerName}, #{item.passengerIdTypeCode}, #{item.passengerIdTypeName}, #{item.passengerIdNo},
+            #{item.passengerType}, #{item.passengerFlag}, #{item.mobileNo}, #{item.firstLetter}, #{item.indexId}, #{item.totalTimes})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        passenger_name = values(passenger_name),
+        passenger_id_type_code = values(passenger_id_type_code),
+        passenger_id_type_name = values(passenger_id_type_name),
+        passenger_type = values(passenger_type),
+        passenger_flag = values(passenger_flag),
+        mobile_no = values(mobile_no),
+        first_letter = values(first_letter),
+        index_id = values(index_id),
+        total_times = values(total_times)
+    </insert>
+
+    <select id="listPassengerByUsername" parameterType="string" resultMap="passengerPOMap">
+        SELECT
+        <include refid="baseColumn"></include>
+        FROM
+        passenger
+        WHERE
+        username = #{username}
+    </select>
+
+</mapper>

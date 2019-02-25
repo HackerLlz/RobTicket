@@ -5,6 +5,7 @@
     <resultMap id="loginPOMap" type="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
         <result column="id" property="id"/>
         <result column="username" property="username"/>
+        <result column="password" property="password"/>
         <result column="send_mail" property="sendMail"/>
     </resultMap>
 
@@ -18,5 +19,14 @@
         VALUES
         (#{username})
     </insert>
+
+    <select id="getLoginInfoByUsername" parameterType="string" resultType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
+        SELECT
+        username, password
+        FROM
+        user_info
+        WHERE
+        username = #{username}
+    </select>
 
 </mapper>

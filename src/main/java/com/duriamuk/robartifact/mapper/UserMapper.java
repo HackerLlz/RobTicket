@@ -10,5 +10,15 @@ import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 public interface UserMapper {
     Integer updateUserInfoByUsername(UserInfoPO loginPO);
 
-    UserInfoPO getUserInfoByUsername(String username);
+    UserInfoPO getUserInfo(UserInfoPO userInfoPO);
+
+    Integer insertUserOnUpdate(UserInfoPO userInfoPO);
+
+    Integer insertUserDetailOnUpdate(UserInfoPO userInfoPO);
+
+    Integer countUserByUsernameAndPassword(UserInfoPO userInfoPO);
+
+    String getUsernameByAlias(String alias);
+
+    Integer getPasswordCountByUsername(String username);
 }

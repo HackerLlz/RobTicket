@@ -1,9 +1,17 @@
 package com.duriamuk.robartifact.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
+import com.duriamuk.robartifact.common.constant.SessionConstant;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
+import com.duriamuk.robartifact.common.messageQueue.MessageConsumerThreadPool;
+import com.duriamuk.robartifact.common.messageQueue.MessageTask;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
+import com.duriamuk.robartifact.common.tool.SessionUtils;
+import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
+import com.duriamuk.robartifact.service.AuthImageService;
 import com.duriamuk.robartifact.service.LoginService;
+import com.duriamuk.robartifact.service.impl.LoginServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +52,10 @@ public class LoginController {
     public String checkCode(String answer) {
         logger.info("开始验证验证码, 入参 ：{}", answer);
         String result = loginService.checkCode(answer);
+        if (result.startsWith("{") &&
+                JSON.parseObject(result).getInteger("result_code") == 4) {
+            SessionUtils.set(SessionConstant.AUTH_CODE, true);
+        }
         return result;
     }
 
@@ -102,5 +114,13 @@ public class LoginController {
         logger.info("开始验证二维码登陆情况，入参 ：{}", payload);
         String result = loginService.loginByQr(payload);
         return result;
+    }
+
+    @RequestMapping(value = "testAutoLogin", method = RequestMethod.GET)
+    @ResponseBody
+    public String testAutoLogin() {
+        logger.info("开始测试自动登陆");
+        MessageConsumerThreadPool.message(new MessageTask(LoginService.class, "testAutoLogin", ""));
+        return AjaxMessage.SUCCESS;
     }
 }

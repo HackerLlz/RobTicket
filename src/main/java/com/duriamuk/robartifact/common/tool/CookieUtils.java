@@ -25,7 +25,7 @@ public class CookieUtils {
      * @param value
      * @return
      */
-    public static String updateCookie(String cookie, String name, String value) {
+    public static String updateCookieStr(String cookie, String name, String value) {
         if (cookie == null) {
             cookie = "";
         }
@@ -41,6 +41,16 @@ public class CookieUtils {
         cookie += setCookie;
         logger.info("更新Cookie已添加：{}={}", name, value);
         return cookie;
+    }
+
+    /**
+     * 获取cookie字符串中的值
+     * @param cookie
+     * @param name
+     * @return
+     */
+    public static String getFromCookieStr(String cookie, String name) {
+        return StrUtils.findVlaue(" " + name, "=", 0, ";", cookie);
     }
 
     /**
@@ -73,7 +83,7 @@ public class CookieUtils {
     }
 
     /**
-     * 获取request中的cookiew
+     * 获取request中的cookie
      *
      * @param name
      * @return

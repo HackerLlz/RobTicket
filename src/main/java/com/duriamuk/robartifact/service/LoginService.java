@@ -1,5 +1,7 @@
 package com.duriamuk.robartifact.service;
 
+import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
+
 /**
  * @author: DuriaMuk
  * @description:
@@ -24,7 +26,15 @@ public interface LoginService {
 
     Boolean isLogin();
 
+    Boolean isUser();
+
     Boolean keepLogin();
 
     String checkQr(String payload);
+
+    Boolean autoLogin(UserInfoPO userInfoPO);
+
+    String getLoginInfo(String username);
+
+    void testAutoLogin(String message);
 }

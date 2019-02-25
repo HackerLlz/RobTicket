@@ -1,5 +1,6 @@
 package com.duriamuk.robartifact.mapper;
 
+import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,4 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface LoginMapper {
     Integer insertUsername(String username);
+
+    UserInfoPO getLoginInfoByUsername(String username);
 }

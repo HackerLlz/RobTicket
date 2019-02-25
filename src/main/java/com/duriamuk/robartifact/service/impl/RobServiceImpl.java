@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
+import com.duriamuk.robartifact.common.exception.RobException;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.OrderRequestDTO;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.TicketInfoDTO;
 import com.duriamuk.robartifact.entity.DTO.robProcess.*;
+import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.mapper.RobMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.PassengerService;
@@ -26,6 +28,8 @@ import org.thymeleaf.util.ListUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -44,6 +48,7 @@ public class RobServiceImpl implements RobService {
     private static final int LONG_TRAIN_NUM_INDEX = 2;
     private static final int SECRET_INDEX = 0;
     private static final int MAX_ROB_TASK = 2;
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd");
 
     @Autowired
     private TicketService ticketService;
@@ -58,13 +63,19 @@ public class RobServiceImpl implements RobService {
     private RobMapper robMapper;
 
     @Override
-    public Boolean insertRobRecord(RobParamsDTO robParamsDTO) {
+    public Boolean insertRobRecord(RobParamsDTO robParamsDTO, RobParamsOtherDTO robParamsOtherDTO) {
+        logger.info("插入抢票任务信息");
         List<RobParamsDTO> robParamsDTOList = listRobRecordByUserId(robParamsDTO.getUserId());
         int goingRobTaskCount = countGoingRobTask(robParamsDTOList);
         if (goingRobTaskCount <= MAX_ROB_TASK) {
+            robParamsDTO.setStatus(1);
             robMapper.insertRobRecord(robParamsDTO);
+            robParamsOtherDTO.setRobId(robParamsDTO.getId());
+            robMapper.insertRobRecordOther(robParamsOtherDTO);
+            logger.info("插入抢票任务成功");
             return true;
         }
+        logger.info("插入抢票任务失败");
         return false;
     }
 
@@ -85,6 +96,11 @@ public class RobServiceImpl implements RobService {
     }
 
     @Override
+    public List<RobParamsDTO> listRobRecordWithOther(RobParamsDTO robParamsDTO) {
+        return robMapper.listRobRecordWithOther(robParamsDTO);
+    }
+
+    @Override
     public RobParamsDTO getRobRecordById(Long id) {
         return robMapper.getRobRecordById(id);
     }
@@ -101,40 +117,69 @@ public class RobServiceImpl implements RobService {
 
     public Boolean doRob(String payload) {
         logger.info("尝试抢票，入参：{}", payload);
+        JSONObject jsonObject = JSON.parseObject(payload);
         boolean isLogin = loginService.keepLogin();
+        boolean isSuccess = false;
         if (isLogin) {
-            JSONObject jsonObject = JSON.parseObject(payload);
-            CheckOrderDTO checkOrderDTO = JSON.parseObject(jsonObject.getString("checkOrderData"), CheckOrderDTO.class);
-            QueueCountDTO queueCountDTO = JSON.parseObject(jsonObject.getString("queueCountData"), QueueCountDTO.class);
-            DoOrderDTO doOrderDTO = JSON.parseObject(jsonObject.getString("doOrderData"), DoOrderDTO.class);
-            RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
-
-            boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
-            if (isAllSeatType) {
-                List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
-                for (String seatType : seatTypeList) {
-                    // 席别轮询太快会被12306拒绝，要间隔一秒以上
-                    changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
-                    boolean isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
-                    if (isSuccess) {
-                        return true;
-                    }
-                }
-            } else {
-                boolean isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
-                if (isSuccess) {
-                    return true;
+            isSuccess = doRobBySeatType(jsonObject);
+        } else {
+            UserInfoPO userInfoPO = JSON.parseObject(jsonObject.getString("userInfoPO"), UserInfoPO.class);
+            Boolean isAutoLogin = loginService.autoLogin(userInfoPO);
+            if (isAutoLogin == null) {
+                // 密码或账号错误
+                throw new RobException();
+            }
+            if (isAutoLogin) {
+                isAutoLogin = loginService.keepLogin();
+                if (isAutoLogin) {
+                    isSuccess = doRobBySeatType(jsonObject);
                 }
             }
         }
-        logger.info("抢票失败");
-        return false;
+        if (!isSuccess) {
+            logger.info("抢票失败");
+        }
+        return isSuccess;
     }
 
     /*---------------------------------------------------START: 抢票流程------------------------------------------------------*/
+    private Boolean doRobBySeatType(JSONObject jsonObject) {
+        CheckOrderDTO checkOrderDTO = JSON.parseObject(jsonObject.getString("checkOrderData"), CheckOrderDTO.class);
+        QueueCountDTO queueCountDTO = JSON.parseObject(jsonObject.getString("queueCountData"), QueueCountDTO.class);
+        DoOrderDTO doOrderDTO = JSON.parseObject(jsonObject.getString("doOrderData"), DoOrderDTO.class);
+        RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
+        boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
+        boolean isSuccess = false;
+        if (isAllSeatType) {
+            List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
+            for (String seatType : seatTypeList) {
+                // 席别轮询太快会被12306拒绝，要间隔一秒以上
+                changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
+                isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
+            }
+        } else {
+            isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
+        }
+        return isSuccess;
+    }
+
     private Boolean checkAllDateSecretStr(RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
                                           QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
-        for (String trainDate : robParamsDTO.getTrainDate().split(",")) {
+        Date limitDate = getlimitDate();
+        boolean beContinue = false;
+        int dateCount = 0;
+        String[] trainDates = robParamsDTO.getTrainDate().split(",");
+        for (String trainDate : trainDates) {
+            // 若出发日期全部过期则终止任务
+            if (!beContinue) {
+                beContinue = checkTaskDate(trainDate, limitDate);
+                if (!beContinue) {
+                    if (++ dateCount == trainDates.length) {
+                        throw new RobException();
+                    }
+                    continue;
+                }
+            }
             List<String> secretStrList = getSecretStrListInOneDay(robParamsDTO, trainDate);
             if (!ListUtils.isEmpty(secretStrList)) {
                 for (String secretStr : secretStrList) {
@@ -144,6 +189,27 @@ public class RobServiceImpl implements RobService {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    private Date getlimitDate() {
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,-1); // 正负代表往后往前
+        return calendar.getTime();
+    }
+
+    private boolean checkTaskDate(String trainDate, Date limitDate) {
+        Date queryDate = null;
+        try {
+            queryDate = formatter.parse(trainDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (limitDate.before(queryDate)) {
+            return true;
         }
         return false;
     }
@@ -217,11 +283,11 @@ public class RobServiceImpl implements RobService {
                     return false;
                 }
             }
-//            boolean isOrder = doOrder(buildDoOrderData(doOrderDTO, ticketInfoDTO));
-//            if (isOrder) {
-//                logger.info("抢票成功");
-//                return true;
-//            }
+            boolean isOrder = doOrder(buildDoOrderData(doOrderDTO, ticketInfoDTO));
+            if (isOrder) {
+                logger.info("抢票成功");
+                return true;
+            }
         }
         return false;
     }

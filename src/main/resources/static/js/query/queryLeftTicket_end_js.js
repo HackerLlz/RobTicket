@@ -9806,6 +9806,27 @@ jQuery.extend({
     },
 
     popup_uamIsLogin: function () {
+        var staticUrl = '/user/staticInfo';
+        $.ajax({
+            type: "get",
+            url: staticUrl,
+            async: false,
+            contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
+            // dataType: "json",    // 加了data就不用再转json对象了
+            success: function (data) {
+                if (data == 'nologin') {
+                    return;
+                }
+                var logoutUrl = "/user/logout?appid=otn";
+                $("#login_user").html(data).attr("href", "/user/view")
+                // .attr("target", "_blank")
+                    .attr("style", "color:#fb7403;");
+                $("#regist_out").html("退出").attr("href", logoutUrl).attr("target", "");
+            }
+        });
+        return;
+
+        // 以下内容废弃
         var uamtkStaticUrl = '/login/uamtkStatic';
         var uamtkStaticData = {"appid": popup_passport_appId};
         $.ajax({

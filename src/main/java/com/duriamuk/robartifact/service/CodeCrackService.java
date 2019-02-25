@@ -11,4 +11,6 @@ public interface CodeCrackService {
     CodeImage getOCRCode();
 
     Integer addCodeImage(CodeImage codeImage);
+
+    Boolean crackCode();
 }

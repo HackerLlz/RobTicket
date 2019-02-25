@@ -226,7 +226,7 @@ public class HttpUtils {
             for (String setCookie : response.getHeaders(SET_COOKIE)) {
                 String name = StrUtils.reverseFindVlaue("=", "", 0, null, setCookie);
                 String value = StrUtils.findVlaue("=", "", 0, ";", setCookie);
-                cookie = CookieUtils.updateCookie(cookie, name, value);
+                cookie = CookieUtils.updateCookieStr(cookie, name, value);
             }
             request.setAttribute(COOKIE, cookie);
             logger.info("已完成添加Set-Cookie到Cookie：{}", request.getAttribute(COOKIE));
@@ -245,7 +245,7 @@ public class HttpUtils {
         if (!ObjectUtils.isEmpty(request)) {
             String cookie = (String) request.getAttribute(COOKIE);
             cookie = !StringUtils.isEmpty(cookie) ? cookie : request.getHeader(COOKIE);
-            cookie = CookieUtils.updateCookie(cookie, name, value);
+            cookie = CookieUtils.updateCookieStr(cookie, name, value);
             request.setAttribute(COOKIE, cookie);
             logger.info("已完成添加cookie：{}", request.getAttribute(COOKIE));
         }
@@ -484,7 +484,7 @@ public class HttpUtils {
     private static void setCookieInThreadLocal(CookieStore cookieStore) {
         String cookie = ThreadLocalUtils.get();
         for (Cookie c : cookieStore.getCookies()) {
-            cookie = CookieUtils.updateCookie(cookie, c.getName(), c.getValue());
+            cookie = CookieUtils.updateCookieStr(cookie, c.getName(), c.getValue());
         }
         ThreadLocalUtils.set(cookie);
     }

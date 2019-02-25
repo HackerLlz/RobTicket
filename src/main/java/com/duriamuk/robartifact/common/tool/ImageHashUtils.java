@@ -3,7 +3,7 @@ package com.duriamuk.robartifact.common.tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -25,20 +25,21 @@ public class ImageHashUtils {
 
     private static void initCoefficients() {
         c = new double[size];
-        for (int i=1;i<size;i++) {
-            c[i]=1;
+        for (int i = 1; i < size; i++) {
+            c[i] = 1;
         }
-        c[0]=1/Math.sqrt(2.0);
+        c[0] = 1 / Math.sqrt(2.0);
     }
 
     /**
      * 根据给定不相同的阈值判断两个图片是否相似
+     *
      * @param img1
      * @param img2
      * @param tv
      * @return boolean
      */
-    public static boolean isSimilarImage(BufferedImage img1, BufferedImage img2, int tv){
+    public static boolean isSimilarImage(BufferedImage img1, BufferedImage img2, int tv) {
         int dt = 0;
         try {
             String hash1 = getHash(img1);
@@ -48,13 +49,13 @@ public class ImageHashUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dt <= tv? true : false;
+        return dt <= tv ? true : false;
     }
 
     /**
      * 获得平均灰度hash值 类似 000111110000001101100
-      */
-    public static String getHash(BufferedImage img){
+     */
+    public static String getHash(BufferedImage img) {
         /* 1. Reduce size(缩小尺寸).
         Like Average Hash, pHash starts with a small image.
         However, the image is larger than 8x8; 32x32 is a good size.This is really done to simplify the DCT computation and not because it is needed to reduce the high frequencies.
@@ -100,7 +101,7 @@ public class ImageHashUtils {
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
                 if (x != 0 && y != 0) {
-                    hash += (dctVals[x][y] > avg?"1":"0");
+                    hash += (dctVals[x][y] > avg ? "1" : "0");
                 }
             }
         }
@@ -110,8 +111,8 @@ public class ImageHashUtils {
 
     private static int distance(String s1, String s2) {
         int counter = 0;
-        for (int k = 0; k < s1.length();k++) {
-            if(s1.charAt(k) != s2.charAt(k)) {
+        for (int k = 0; k < s1.length(); k++) {
+            if (s1.charAt(k) != s2.charAt(k)) {
                 counter++;
             }
         }
@@ -140,15 +141,15 @@ public class ImageHashUtils {
     private static double[][] applyDCT(double[][] f) {
         int N = size;
         double[][] F = new double[N][N];
-        for (int u=0;u<N;u++) {
-            for (int v=0;v<N;v++) {
+        for (int u = 0; u < N; u++) {
+            for (int v = 0; v < N; v++) {
                 double sum = 0.0;
-                for (int i=0;i<N;i++) {
-                    for (int j=0;j<N;j++) {
-                        sum+=Math.cos(((2*i+1)/(2.0*N))*u*Math.PI)*Math.cos(((2*j+1)/(2.0*N))*v*Math.PI)*(f[i][j]);
+                for (int i = 0; i < N; i++) {
+                    for (int j = 0; j < N; j++) {
+                        sum += Math.cos(((2 * i + 1) / (2.0 * N)) * u * Math.PI) * Math.cos(((2 * j + 1) / (2.0 * N)) * v * Math.PI) * (f[i][j]);
                     }
                 }
-                sum*=((c[u]*c[v])/4.0);
+                sum *= ((c[u] * c[v]) / 4.0);
                 F[u][v] = sum;
             }
         }

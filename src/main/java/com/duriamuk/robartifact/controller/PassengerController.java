@@ -1,10 +1,17 @@
 package com.duriamuk.robartifact.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.duriamuk.robartifact.common.constant.AjaxMessage;
+import com.duriamuk.robartifact.common.constant.SessionConstant;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
+import com.duriamuk.robartifact.common.tool.SessionUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
+import com.duriamuk.robartifact.entity.PO.passenger.PassengerPO;
 import com.duriamuk.robartifact.service.PassengerService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +20,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author: DuriaMuk
@@ -25,6 +36,8 @@ import java.net.URLDecoder;
 public class PassengerController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
     private static final String PATH = "passenger/";
+    private static final List<String> TWO_ISOPENCLICK = Arrays.asList("93", "95", "97", "99");
+    private static final List<String> OTHER_ISOPENCLICK = Arrays.asList("91", "93", "98", "99", "95", "97");
 
     @Autowired
     private PassengerService passengerService;
@@ -52,8 +65,21 @@ public class PassengerController {
     @ResponseBody
     public String passengerInfo() {
         logger.info("开始获得乘客信息");
-        String result = passengerService.passengerInfo();
-        return result;
+        List<PassengerPO> passengerPOList = passengerService.listPassengerByUsername(SessionUtils.getString(SessionConstant.USERNAME));
+        return buildPassengerResult(passengerPOList);
+    }
+
+    @RequestMapping(value = "syncPassenger", method = RequestMethod.POST)
+    @ResponseBody
+    public String syncPassenger(@RequestBody String payload) {
+        logger.info("开始同步12306乘客信息，入参：{}", payload);
+        boolean isSync = passengerService.sync12306Passenger(payload);
+        return isSync ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
+    }
+
+    @RequestMapping(value = "sync", method = RequestMethod.GET)
+    public String sync() {
+        return PATH + "sync";
     }
 
     @RequestMapping(value = "checkOrderInfo", method = RequestMethod.POST)
@@ -108,5 +134,20 @@ public class PassengerController {
         String value = StrUtils.findVlaue(name, afterName, interval, endStr, result);
         model.addAttribute(name, value);
         logger.info("已添加属性到Model, {}: {}", name, value);
+    }
+
+    private String buildPassengerResult(List<PassengerPO> passengerPOList) {
+        JSONObject dataJson = new JSONObject();
+        dataJson.put("normal_passengers", passengerPOList);
+        dataJson.put("isExist", true);
+        dataJson.put("two_isOpenClick", TWO_ISOPENCLICK);
+        dataJson.put("other_isOpenClick", OTHER_ISOPENCLICK);
+        dataJson.put("dj_passengers", new ArrayList<>());
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("data", dataJson);
+        resultJson.put("status", true);
+        String result = resultJson.toJSONString();
+        logger.info("建立乘客信息json：{}", result);
+        return result;
     }
 }

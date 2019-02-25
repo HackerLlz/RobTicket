@@ -3,14 +3,19 @@ package com.duriamuk.robartifact.controller;
 import com.alibaba.fastjson.JSON;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
 import com.duriamuk.robartifact.common.constant.PrefixName;
+import com.duriamuk.robartifact.common.constant.SessionConstant;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
+import com.duriamuk.robartifact.common.messageQueue.MessageConsumerThreadPool;
+import com.duriamuk.robartifact.common.messageQueue.MessageTask;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
+import com.duriamuk.robartifact.common.tool.SessionUtils;
 import com.duriamuk.robartifact.common.validate.EntityValidator;
 import com.duriamuk.robartifact.common.validate.ValidateResult;
 import com.duriamuk.robartifact.common.validate.group.Update;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
+import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.RobService;
 import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
@@ -47,11 +52,7 @@ public class UserController {
     public String view(Model model) {
         logger.info("开始跳转到用户信息界面");
         UserInfoPO userInfoPO = userService.getUserInfo();
-        if (ObjectUtils.isEmpty(userInfoPO)) {
-            return "ticket/view";
-        }
         List<RobParamsDTO> robParamsList = robService.listRobRecordByUserId(userInfoPO.getId());
-        setRobStatus(robParamsList);
         model.addAttribute("userInfoPO", userInfoPO);
         model.addAttribute("robParamsList", robParamsList);
         return PATH + "view";
@@ -60,8 +61,9 @@ public class UserController {
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public String logout() {
         logger.info("开始注销用户，入参：{}");
-        String url = UrlConstant.OTN_URL + "login/loginOut";
-        String result = HttpUtils.doPostForm(url, null, true);
+//        userService.logout();
+        SessionUtils.remove(SessionConstant.LOGIN_STAT);
+        SessionUtils.remove(SessionConstant.USERNAME);
         return "redirect:/login/view";
     }
 
@@ -74,14 +76,15 @@ public class UserController {
         if (validateResult.hasError()) {
             return validateResult.getErrorMessages();
         }
-        boolean isUpdate = userService.updateUserInfo(userInfoPO);
+        boolean isUpdate = userService.updateUserInfoByUsername(userInfoPO);
         return isUpdate ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
     }
 
-    private void setRobStatus(List<RobParamsDTO> robParamsList) {
-        for (RobParamsDTO robParamsDTO : robParamsList) {
-            Object value = RedisUtils.get(PrefixName.TABLE_ROB_RECORD + robParamsDTO.getId());
-            robParamsDTO.setStatus(!ObjectUtils.isEmpty(value) ? 1 : 0);
-        }
+    @RequestMapping(value = "staticInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public String getStaticInfo() {
+        logger.info("开始获得用户静态信息");
+        UserInfoPO userInfoPO = userService.getUserInfo();
+        return userInfoPO.getName();
     }
 }

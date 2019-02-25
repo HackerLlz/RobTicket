@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>同步12306乘客信息</title>
+    <style>
+        .lgcode-active {
+            position: absolute;
+            z-index: 3;
+            background-position: 0 -96px;
+            background: url(../images/login/captcha.png);
+            background-repeat: no-repeat;
+            width: 27px;
+            height: 27px;
+            font-size: 0;
+        }
+    </style>
+
+    <link th:href="@{/css/common/global.css}" rel="stylesheet">
+    <link th:href="@{/css/common/public.css}" rel="stylesheet">
+    <link th:href="@{/css/login/login.css}" rel="stylesheet">
+    <link th:href="@{/css/login/iconfont.css}" rel="stylesheet">
+</head>
+<div class="login-panel" style="height: 400px">
+    <!-- 账号登录 -->
+    <div class="login-box" style="left: auto; top: 500px;">
+        <div class="login-account" style="display: block;padding-top: 0px;">
+            <div style="">
+                为避免冲突，同步乘客信息成功与否都将会停止所有正在进行的抢票任务（任务可手动重新开启），输入正确的验证码来进行同步
+            </div>
+            <div class="login-pwd-code">
+                <!-- 验证码区域 -->
+                <div class="touclick-wrapper lgcode-2018">
+                    <div class="lgcode-error" style="display: none;"></div>
+                    <div class="lgcode-success" style="display: none;"></div>
+                    <div id="refresh_code" class="lgcode-refresh"></div>
+                    <div id="J-loginImgArea" class="loginImg"><img id="J-loginImg" class="imgCode" alt="" src="">
+                    </div>
+                    <div class="lgcode-loading" style="display: none;"><img th:src="@{/images/query/loading.gif}"
+                                                                            alt="" style="display: none;">
+                    </div>
+                    <div id="J-passCodeCoin"></div>
+                </div>
+            </div>
+            <div class="login-btn">
+                <a id="J-login" href="javascript:;" class="btn btn-primary form-block">验证并同步</a>
+            </div>
+            <div>
+                <span id="message" style="color: red">结果</span>
+            </div>
+            <input type="hidden" id="imageCode" value="">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/common/jquery-1.9.1.js}"></script>
+<!--<script type="text/javascript" th:src="@{/js/common/jquery-3.3.1.min.js}"></script>-->
+<!--<script type="text/javascript" th:src="@{/js/common/jquery.cookie.js}"></script>-->
+
+<script type="text/javascript" th:src="@{/js/common/jquery.SuperSlide.js}"></script>
+<script type="text/javascript">
+    (function ($) {
+        // 刷新验证码
+        $('.lgcode-refresh').unbind('click').click(function () {
+            $('.lgcode-refresh').addClass('lgcode-refresh-click')
+
+            getCode();
+
+            setTimeout(function () {
+                $('.lgcode-refresh').removeClass('lgcode-refresh-click')
+            }, 100)
+        })
+        $('.lgcode-refresh').click();
+
+        // 验证按钮
+        $('#J-login').click(function () {
+            $("#massage").text("");
+            var b = "";
+            var d = $("#J-passCodeCoin div");
+            for (var c = 0; c < d.length; c++) {
+                b += $(d[c]).attr("randcode") + ","
+            }
+            b = b.substring(0, b.length - 1);
+
+            var syncPassengerUrl = '/passenger/syncPassenger';
+            $.ajax({
+                url: syncPassengerUrl,
+                data: b,
+                contentType:'application/json',    // 不加传过去的json后面有个= 会出问题
+                // dataType: 'json',
+                type: 'POST',
+                timeout: 10000,
+                success: function (e) {
+                    if (e == "fail") {
+                        $("#message").text("验证或同步错误");
+                        $("#J-passCodeCoin").html("");
+                        getCode();
+                    } else {
+                        $("#message").text("验证成功");
+                        window.location.href = "/ticket/view";
+                    }
+                },
+                error: function (e) {
+                }
+            })
+        });
+
+        // 选中验证码
+        $('#J-loginImgArea').unbind('click').click(function (event) {
+            popup_getClickPos(event)
+        })
+
+        function getCode() {
+            $("#ocrResult").text("");
+            var getCode_url = '/login/code';
+            $.ajax({
+                url: getCode_url + "?" + new Date().getTime(),
+                // xhrFields : {
+                //     withCredentials : true
+                // },
+                // dataType:'jsonp',
+                dataType: 'json',    // 就不用把response转json对象了
+                type: 'GET',
+                timeout: 10000,
+                success: function (response) {
+                    if (response.image) {
+                        $('#J-loginImg').attr('src', 'data:image/jpg;base64,' + response.image);
+                        $("#imageCode").val(response.image);
+                        popup_showLoginType(0); // show code img
+                    }
+                },
+                error: function (err) {
+                }
+            })
+        }
+
+        var identifyImage;
+        var img_x;
+        var img_y;
+        var offsetTotal;
+        var scrollTotal;
+        var popup_defaultPasscodeHeight = 30;
+        function popup_getClickPos(e) {
+            var xPage = (navigator.appName == 'Netscape') ? e.pageX : e.clientX + (document.documentElement.scrollLeft || window.pageXOffset || document.body.scrollLeft);
+            var yPage = (navigator.appName == 'Netscape') ? e.pageY : e.clientY + (document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop);
+            identifyImage = document.getElementById('J-loginImg');
+            img_x = popup_locationLeft(identifyImage);
+            img_y = popup_locationTop(identifyImage);
+
+            var xPos = xPage - img_x;
+            var yPos = yPage - img_y - popup_defaultPasscodeHeight;
+            if (xPos > 0 && yPos > 0) {
+                var html = '<div randCode="' + xPos + ',' + yPos + '" class="lgcode-active" style="top: ' + (yPos + 16) + 'px; left: ' + (xPos - 13) + 'px;"></div>';
+                $('#J-passCodeCoin').append(html);
+            }
+            $('.lgcode-active').click(function (e) {
+                $(this).remove();
+                e.stopPropagation();
+            });
+        }
+        function  popup_locationLeft(element) {
+            offsetTotal = element.offsetLeft;
+            scrollTotal = 0;
+            if (element.tagName != 'BODY') {
+                if (element.offsetParent != null) {
+                    return offsetTotal + scrollTotal + popup_locationLeft(element.offsetParent);
+                }
+            }
+            return offsetTotal + scrollTotal;
+        }
+        function popup_locationTop(element) {
+            offsetTotal = element.offsetTop;
+            scrollTotal = 0;
+            if (element.tagName != 'BODY') {
+                if (element.offsetParent != null) {
+                    return offsetTotal + scrollTotal + popup_locationTop(element.offsetParent);
+                }
+            }
+            return offsetTotal + scrollTotal;
+        }
+        function popup_showLoginType(index) {
+            $('#J-loginImg').hide();
+            $('.lgcode-error').hide();
+            $('.lgcode-loading').hide();
+            $('.lgcode-loading img').hide();
+            $('.lgcode-success').hide();
+            if (0 == index) {
+                $('#J-loginImg').show();    //show code
+            } else if (1 == index) {
+                $('.lgcode-error').show();  // code error
+            } else if (2 == index) {
+                $('.lgcode-success').show(); // code success
+            } else if (3 == index) {
+                $('.lgcode-loading').show();    // loading code
+                $('.lgcode-loading img').show();
+            }
+        }
+    })(jQuery);
+</script>
+</body>
+</html>

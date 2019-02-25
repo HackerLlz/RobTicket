@@ -157,49 +157,38 @@
      var updateData = {
          "sendMail": $("#sendMail").val()
      };
-     dhtmlx.confirm({
-         title: "提示",
-         ok: "确定",
-         text: "确定要提交修改吗",
-         type: "alert-error",
-         okCallBack: function (data) {
-             $.ajax({
-                 type: "POST",
-                 url: updateUrl,
-                 async: false,
-                 data: JSON.stringify(updateData),
-                 contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
-                 // dataType: "json",    // 加了data就不用再转json对象了
-                 // xhrFields: {
-                 //     withCredentials: true
-                 // },
-                 success: function (data) {
-                     if (data == "success") {
-                         dhtmlx.alert({
-                             title: "提示",
-                             ok: "确定",
-                             text: "提交成功",
-                             type: "alert-error",
-                             callback: function (data) {
-                                 // window.location.href = "/ticket/view";
-                             }
-                         });
-                     } else {
-                         dhtmlx.alert({
-                             title: "提示",
-                             ok: "确定",
-                             text: data == "fail" ? "提交失败" : data,
-                             type: "alert-error",
-                             callback: function (data) {
-                                 return;
-                             }
-                         });
+     $.ajax({
+         type: "POST",
+         url: updateUrl,
+         async: false,
+         data: JSON.stringify(updateData),
+         contentType: 'application/json',    // 不加传过去的json后面有个= 会出问题
+         // dataType: "json",    // 加了data就不用再转json对象了
+         // xhrFields: {
+         //     withCredentials: true
+         // },
+         success: function (data) {
+             if (data == "success") {
+                 dhtmlx.alert({
+                     title: "提示",
+                     ok: "确定",
+                     text: "提交成功",
+                     type: "alert-error",
+                     callback: function (data) {
+                         // window.location.href = "/ticket/view";
                      }
-                 }
-             });
-         },
-         callback: function (data) {
-             return;
+                 });
+             } else {
+                 dhtmlx.alert({
+                     title: "提示",
+                     ok: "确定",
+                     text: data == "fail" ? "提交失败" : data,
+                     type: "alert-error",
+                     callback: function (data) {
+                         return;
+                     }
+                 });
+             }
          }
      });
  });
@@ -209,52 +198,55 @@
 
  function deleteTask(id) {
      if (robParamsList) {
-         dhtmlx.confirm({
-             title: "提示",
-             ok: "确定",
-             text: "确定要删除抢票任务吗",
-             type: "alert-error",
-             okCallBack: function (data) {
-                 window.location.href = '/rob/deleteRobTask?id=' + id;
-             },
-             callback: function (data) {
-                 return;
-             }
-         });
+         window.location.href = '/rob/deleteRobTask?id=' + id;
+         // dhtmlx.confirm({
+         //     title: "提示",
+         //     ok: "确定",
+         //     text: "确定要删除抢票任务吗",
+         //     type: "alert-error",
+         //     okCallBack: function (data) {
+         //         window.location.href = '/rob/deleteRobTask?id=' + id;
+         //     },
+         //     callback: function (data) {
+         //         return;
+         //     }
+         // });
      }
  }
 
  function restartTask(id) {
      if (robParamsList) {
-         dhtmlx.confirm({
-             title: "提示",
-             ok: "确定",
-             text: "确定要重新开始抢票任务吗",
-             type: "alert-error",
-             okCallBack: function (data) {
-                 window.location.href = '/rob/restartRobTask?id=' + id;
-             },
-             callback: function (data) {
-                 return;
-             }
-         });
+         window.location.href = '/rob/restartRobTask?id=' + id;
+         // dhtmlx.confirm({
+         //     title: "提示",
+         //     ok: "确定",
+         //     text: "确定要重新开始抢票任务吗",
+         //     type: "alert-error",
+         //     okCallBack: function (data) {
+         //         window.location.href = '/rob/restartRobTask?id=' + id;
+         //     },
+         //     callback: function (data) {
+         //         return;
+         //     }
+         // });
      }
  }
 
  function stopTask(id) {
      if (robParamsList) {
-         dhtmlx.confirm({
-             title: "提示",
-             ok: "确定",
-             text: "确定要停止抢票任务吗",
-             type: "alert-error",
-             okCallBack: function (data) {
-                 window.location.href = '/rob/stopRobTask?id=' + id;
-             },
-             callback: function (data) {
-                 return;
-             }
-         });
+         window.location.href = '/rob/stopRobTask?id=' + id;
+         // dhtmlx.confirm({
+         //     title: "提示",
+         //     ok: "确定",
+         //     text: "确定要停止抢票任务吗",
+         //     type: "alert-error",
+         //     okCallBack: function (data) {
+         //         window.location.href = '/rob/stopRobTask?id=' + id;
+         //     },
+         //     callback: function (data) {
+         //         return;
+         //     }
+         // });
      }
  }
 

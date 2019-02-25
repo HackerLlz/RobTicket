@@ -530,6 +530,35 @@ jQuery.extend({
     },
     // 是否已登录，仅限统一认证登录
     popup_uamIsLogin: function () {
+        var isLoginUrl = '/login/isLogin';
+        $.ajax({
+            // type: "post",
+            // url: ctx + "login/checkUser",
+            type: "get",
+            url: isLoginUrl,
+            // data: {},
+            // dataType: "json",    // 加了data就不用再转json对象了
+            // beforeSend: function (ct) {
+            //     ct.setRequestHeader("If-Modified-Since", "0");
+            //     ct.setRequestHeader("Cache-Control", "no-cache")
+            // },
+            success: function (ct) {
+                if (ct == 'success') {
+                    $('.mask').fadeOut();
+                    $(".modal-login").hide();
+                    if ($.pop_secretStr && $.pop_start_time) {
+                        $.todo_submitOrderRe($.pop_secretStr, $.pop_start_time);
+                    }
+                    // 跳转到查票界面
+                    window.location.href = login_success_url;
+                } else {
+                    $.popup_uamIsShowQr();
+                }
+            }
+        });
+        return;
+
+        // 以下内容废弃
         var uamtkStatic_data = {"appid": popup_passport_appId};
         $.ajax({
             url: uamtkStatic_url,

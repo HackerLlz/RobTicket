@@ -4,6 +4,7 @@
 
     <resultMap id="robParamsDTOMap" type="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
         <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
         <result column="rob_no_seat" property="robNoSeat"/>
         <result column="from_station" property="fromStation"/>
         <result column="from_station_name" property="fromStationName"/>
@@ -15,11 +16,62 @@
         <result column="train_number" property="trainNumber"/>
         <result column="purpose_codes" property="purposeCodes"/>
         <result column="tour_flag" property="tourFlag"/>
+        <result column="tour_flag" property="tourFlag"/>
+        <result column="status" property="status"/>
     </resultMap>
 
+    <resultMap id="robParamsOtherDTOMap" type="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsOtherDTO">
+        <result column="id" property="id"/>
+        <result column="rob_id" property="robId"/>
+        <result column="passenger_ticket_str" property="passengerTicketStr"/>
+        <result column="old_passenger_str" property="oldPassengerStr"/>
+        <result column="rand_code" property="randCode"/>
+        <result column="whats_select" property="whatsSelect"/>
+        <result column="seat_type" property="seatType"/>
+        <result column="seat_detail_type" property="seatDetailType"/>
+    </resultMap>
+
+    <resultMap id="robParamsWithOtherMap" type="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="rob_no_seat" property="robNoSeat"/>
+        <result column="from_station" property="fromStation"/>
+        <result column="from_station_name" property="fromStationName"/>
+        <result column="to_station" property="toStation"/>
+        <result column="to_station_name" property="toStationName"/>
+        <result column="train_date" property="trainDate"/>
+        <result column="left_time_begin" property="leftTimeBegin"/>
+        <result column="left_time_end" property="leftTimeEnd"/>
+        <result column="train_number" property="trainNumber"/>
+        <result column="purpose_codes" property="purposeCodes"/>
+        <result column="tour_flag" property="tourFlag"/>
+        <result column="tour_flag" property="tourFlag"/>
+        <result column="status" property="status"/>
+
+        <collection property="robParamsOtherDTO" resultMap="robParamsOtherDTOMap"></collection>
+        <!--<result column="passenger_ticket_str" property="robParamsOtherDTO.passengerTicketStr"/>-->
+        <!--<result column="old_passenger_str" property="robParamsOtherDTO.oldPassengerStr"/>-->
+        <!--<result column="rand_code" property="robParamsOtherDTO.randCode"/>-->
+        <!--<result column="whats_select" property="robParamsOtherDTO.whatsSelect"/>-->
+        <!--<result column="seat_type" property="robParamsOtherDTO.seatType"/>-->
+        <!--<result column="seat_detail_type" property="robParamsOtherDTO.seatDetailType"/>-->
+    </resultMap>
+
+
     <sql id="baseColumn">
-        id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
-        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag
+        id, user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
+        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag, status
+    </sql>
+
+    <sql id="other">
+        id, rob_id, passenger_ticket_str, old_passenger_str, rand_code, whats_select, seat_type, seat_detail_type
+    </sql>
+
+    <sql id="withOther">
+        rob_record.id, user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
+        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag, status,
+
+        passenger_ticket_str, old_passenger_str, rand_code, whats_select, seat_type, seat_detail_type
     </sql>
 
     <insert id="insertRobRecord" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">
@@ -29,10 +81,17 @@
         </selectKey>
         INSERT INTO
         rob_record(user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
-        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag)
+        left_time_begin, left_time_end, train_number, purpose_codes, tour_flag, status)
         VALUES
         (#{userId}, #{robNoSeat}, #{fromStation}, #{fromStationName}, #{toStation}, #{toStationName}, #{trainDate},
-        #{leftTimeBegin}, #{leftTimeEnd}, #{trainNumber}, #{purposeCodes}, #{tourFlag})
+        #{leftTimeBegin}, #{leftTimeEnd}, #{trainNumber}, #{purposeCodes}, #{tourFlag}, #{status})
+    </insert>
+
+    <insert id="insertRobRecordOther" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsOtherDTO">
+        INSERT INTO
+        rob_record_other(rob_id, passenger_ticket_str, old_passenger_str, rand_code, whats_select, seat_type, seat_detail_type)
+        VALUES
+        (#{robId}, #{passengerTicketStr}, #{oldPassengerStr}, #{randCode}, #{whatsSelect}, #{seatType}, #{seatDetailType})
     </insert>
 
     <select id="listRobRecordByUserId" parameterType="long" resultMap="robParamsDTOMap">
@@ -42,6 +101,23 @@
         rob_record
         WHERE
         user_id = #{userId}
+    </select>
+
+    <select id="listRobRecordWithOther" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO" resultMap="robParamsWithOtherMap">
+        SELECT
+        <include refid="withOther"></include>
+        FROM
+        rob_record
+        INNER JOIN rob_record_other
+        ON rob_record.id = rob_record_other.rob_id
+        <where>
+            <if test="userId != null">
+                and rob_record.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and rob_record.status = #{status}
+            </if>
+        </where>
     </select>
 
     <select id="getRobRecordById" parameterType="long" resultMap="robParamsDTOMap">
@@ -99,6 +175,9 @@
             </if>
             <if test="tourFlag != null">
                 tour_flag = #{tourFlag},
+            </if>
+            <if test="status != null">
+                status = #{status},
             </if>
         </set>
         WHERE

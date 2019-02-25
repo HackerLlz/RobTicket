@@ -6,10 +6,11 @@
         <result column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="send_mail" property="sendMail"/>
+        <result column="name" property="name"/>
     </resultMap>
 
     <sql id="baseColumn">
-        id, username, send_mail
+        id, username, send_mail, name
     </sql>
 
     <update id="updateUserInfoByUsername" parameterType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
@@ -21,13 +22,69 @@
         username = #{username}
     </update>
 
-    <select id="getUserInfoByUsername" parameterType="string" resultMap="loginPOMap">
+    <select id="getUserInfo" parameterType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO" resultMap="loginPOMap">
         SELECT
         <include refid="baseColumn"></include>
         FROM
         user_info
-        WHERE
-        username = #{username}
+        <where>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
     </select>
 
+    <insert id="insertUserOnUpdate" parameterType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
+        INSERT INTO
+        user_info(username, password, send_mail, name)
+        VALUES
+        (#{username}, #{password}, #{sendMail}, #{name})
+        ON DUPLICATE KEY UPDATE
+        <if test="password != null">
+            password = #{password},
+        </if>
+        send_mail = #{sendMail},
+        name = #{name}
+    </insert>
+
+    <insert id="insertUserDetailOnUpdate" parameterType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO">
+        INSERT INTO
+        user_info_detail(username, alias)
+        VALUES
+        (#{username}, #{phoneNumber}),
+        (#{username}, #{sendMail}),
+        (#{username}, #{username})
+        ON DUPLICATE KEY UPDATE
+        username = #{username}
+    </insert>
+
+    <select id="countUserByUsernameAndPassword" parameterType="com.duriamuk.robartifact.entity.PO.user.UserInfoPO" resultType="integer">
+        SELECT
+        COUNT(0)
+        FROM
+        user_info
+        WHERE
+        username = #{username} and password = #{password}
+    </select>
+
+    <select id="getUsernameByAlias" parameterType="string" resultType="string">
+        SELECT
+        username
+        FROM
+        user_info_detail
+        WHERE
+        alias = #{username}
+    </select>
+
+    <select id="getPasswordCountByUsername" parameterType="string" resultType="integer">
+        SELECT
+        COUNT(0)
+        FROM
+        user_info
+        WHERE
+        username = #{username} and password != ''
+    </select>
 </mapper>

@@ -12,7 +12,17 @@ public interface UserService {
 
     UserInfoPO getUserInfo();
 
-    Boolean updateUserInfo(UserInfoPO loginPO);
+    Boolean updateUserInfoByUsername(UserInfoPO loginPO);
 
-    String getUserNameFrom12306();
+    Integer insertUserOnUpdate(UserInfoPO userInfoPO);
+
+    Integer insertUserDetailOnUpdate(UserInfoPO userInfoPO);
+
+    UserInfoPO getUserInfoPOFrom12306();
+
+    Boolean existUserByUsernameAndPassword(UserInfoPO userInfoPO);
+
+    String getUsernameByAlias(String alias);
+
+    Boolean existPasswordByUsername(String username);
 }
