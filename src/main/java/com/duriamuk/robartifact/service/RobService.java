@@ -11,7 +11,7 @@ import java.util.List;
  * @create: 2019-01-02 17:55
  */
 public interface RobService {
-    Boolean doRob(String payload) throws Exception;
+    Boolean doRob(String payload);
 
     Boolean insertRobRecord(RobParamsDTO robParamsDTO, RobParamsOtherDTO robParamsOtherDTO);
 
@@ -24,4 +24,8 @@ public interface RobService {
     void deleteRobRecordById(Long id);
 
     void updateRobRecord(RobParamsDTO robParamsDTO);
+
+    void restartTask(RobParamsDTO robParamsDTO);
+
+    void stopTaskByUserId(Long userId);
 }

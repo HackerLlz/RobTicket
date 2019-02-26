@@ -28,5 +28,7 @@ mybatis:
   mapper-locations: classpath:META-INF/mybatis/*.xml
 
 constant:
+  # 抢票任务重启开关
+  taskRunnerEnable: false
   # 人工验证图片训练库路径
   codeImagePath: "O:\\图片\\12306\\图库\\"

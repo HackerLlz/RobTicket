@@ -114,6 +114,7 @@ public class PassengerServiceImpl implements PassengerService {
             if (StringUtils.isEmpty(dataJson.getString("exMsg"))) {
                 List<PassengerPO> passengerPOList = buildPassengerList(dataJson);
                 if (!ListUtils.isEmpty(passengerPOList)) {
+                    int deleteCount = passengerMapper.deletePassengerByUsername(passengerPOList.get(0).getUsername());
                     int insertCount = passengerMapper.insertPassengerList(passengerPOList);
                     logger.info("更新乘客信息成功");
                     return true;
@@ -136,7 +137,8 @@ public class PassengerServiceImpl implements PassengerService {
         String result = loginService.checkCode(payload);
         if (result.startsWith("{") &&
                 JSON.parseObject(result).getInteger("result_code") == 4) {
-            stopAllRobTask();
+            UserInfoPO userInfoPO = userService.getUserInfo();
+            robService.stopTaskByUserId(userInfoPO.getId());
             result = loginService.login(loginService.getLoginInfo(SessionUtils.getString(SessionConstant.USERNAME)));
             if (result.startsWith("{")) {
                 JSONObject jsonObject = JSON.parseObject(result);
@@ -146,6 +148,7 @@ public class PassengerServiceImpl implements PassengerService {
                     if (keepLogin) {
                         boolean isUpdate = updatePassenger();
                         if (isUpdate) {
+                            robService.restartTask(buildRobParamsDTO(userInfoPO.getId()));
                             logger.info("同步12306乘客信息成功");
                             return true;
                         }
@@ -187,11 +190,10 @@ public class PassengerServiceImpl implements PassengerService {
         return username;
     }
 
-    private void stopAllRobTask(){
-        UserInfoPO userInfoPO = userService.getUserInfo();
-        List<RobParamsDTO> robParamsDTOList = robService.listRobRecordByUserId(userInfoPO.getId());
-        for (RobParamsDTO robParamsDTO : robParamsDTOList) {
-            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + robParamsDTO.getId(), null, 0);
-        }
+    private RobParamsDTO buildRobParamsDTO(Long userId) {
+        RobParamsDTO robParamsDTO = new RobParamsDTO();
+        robParamsDTO.setUserId(userId);
+        robParamsDTO.setStatus(1);
+        return robParamsDTO;
     }
 }

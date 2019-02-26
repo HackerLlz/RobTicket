@@ -2,10 +2,7 @@ package com.duriamuk.robartifact.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.common.constant.CookieContant;
-import com.duriamuk.robartifact.common.constant.PrefixName;
-import com.duriamuk.robartifact.common.constant.SessionConstant;
+import com.duriamuk.robartifact.common.constant.*;
 import com.duriamuk.robartifact.common.schedule.RobScheduledThreadPool;
 import com.duriamuk.robartifact.common.schedule.RobTask;
 import com.duriamuk.robartifact.common.tool.CookieUtils;
@@ -85,7 +82,7 @@ public class RobController {
         boolean isInsert = robService.insertRobRecord(robParamsDTO, buildRobParamsOtherDTO(jsonObject));
         if (isInsert) {
             long id = robParamsDTO.getId();
-            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, true, 30, TimeUnit.DAYS);
+            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, true, ValueConstant.ROB_TASK_EXPIRE_TIME, TimeUnit.DAYS);
             payload = buildRobPayload(jsonObject, userInfoPO);
             RobScheduledThreadPool.schedule(new RobTask(payload, 1, id, userId));
             return AjaxMessage.SUCCESS;

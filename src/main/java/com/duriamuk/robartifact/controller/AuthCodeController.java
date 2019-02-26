@@ -23,7 +23,7 @@ import java.util.Calendar;
  * @create: 2019-01-12 21:53
  */
 @Deprecated
-@Controller
+//@Controller
 @RequestMapping("/codeTest")
 public class AuthCodeController {
     private static final Logger logger = LoggerFactory.getLogger(AuthCodeController.class);

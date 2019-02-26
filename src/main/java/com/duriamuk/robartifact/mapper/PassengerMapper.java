@@ -12,6 +12,8 @@ import java.util.List;
  */
 @Mapper
 public interface PassengerMapper {
+    Integer deletePassengerByUsername(String username);
+
     Integer insertPassengerList(List<PassengerPO> list);
 
     List<PassengerPO> listPassengerByUsername(String username);

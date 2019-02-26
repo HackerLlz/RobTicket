@@ -22,6 +22,13 @@
         passenger_flag, mobile_no, first_letter, index_id, total_times
     </sql>
 
+    <delete id="deletePassengerByUsername" parameterType="string">
+        DELETE FROM
+        passenger
+        WHERE
+        username = #{username}
+    </delete>
+
     <insert id="insertPassengerList" parameterType="list">
         INSERT INTO
         passenger(username, <include refid="baseColumn"></include>)

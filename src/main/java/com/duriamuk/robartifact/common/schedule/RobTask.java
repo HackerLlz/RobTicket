@@ -98,7 +98,10 @@ public class RobTask implements Runnable {
     private void doRob() {
         Boolean isRob = false;
         try {
+            long startTime = System.currentTimeMillis();
             isRob = robService.doRob(payload);
+            long endTime = System.currentTimeMillis();
+            logger.info("抢票耗时：{}s", (endTime - startTime) / 1000.0);
         } catch (Exception e) {
             // 如空指针等错误会被Future截取，在这里捕获错误，并重置任务
             e.printStackTrace();
@@ -110,15 +113,7 @@ public class RobTask implements Runnable {
         if (isRob) {
             // 完成任务到取消任务之间尽量不能有别的操作，避免出错无法取消
             cancelTask();
-            try {
-                RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, null, 0);
-                RobParamsDTO robParamsDTO = new RobParamsDTO();
-                robParamsDTO.setId(id);
-                robParamsDTO.setStatus(0);
-                robService.updateRobRecord(robParamsDTO);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            setStatus();
             MessageConsumerThreadPool.message(new MessageTask(MailSendService.class, "sendMail", ""));
         }
     }
@@ -145,5 +140,17 @@ public class RobTask implements Runnable {
             }
         }
         logger.info("取消抢票任务成功");
+    }
+
+    private void setStatus(){
+        try {
+            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, null, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        RobParamsDTO robParamsDTO = new RobParamsDTO();
+        robParamsDTO.setId(id);
+        robParamsDTO.setStatus(0);
+        robService.updateRobRecord(robParamsDTO);
     }
 }

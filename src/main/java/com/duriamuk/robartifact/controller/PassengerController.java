@@ -10,12 +10,14 @@ import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.SessionUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
 import com.duriamuk.robartifact.entity.PO.passenger.PassengerPO;
+import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.PassengerService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +43,9 @@ public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+
+    @Autowired
+    private LoginService loginService;
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view2() {
@@ -69,10 +74,14 @@ public class PassengerController {
         return buildPassengerResult(passengerPOList);
     }
 
+    @Transactional
     @RequestMapping(value = "syncPassenger", method = RequestMethod.POST)
     @ResponseBody
     public String syncPassenger(@RequestBody String payload) {
         logger.info("开始同步12306乘客信息，入参：{}", payload);
+        if (!loginService.isUser()) {
+            return AjaxMessage.FAIL;
+        }
         boolean isSync = passengerService.sync12306Passenger(payload);
         return isSync ? AjaxMessage.SUCCESS : AjaxMessage.FAIL;
     }

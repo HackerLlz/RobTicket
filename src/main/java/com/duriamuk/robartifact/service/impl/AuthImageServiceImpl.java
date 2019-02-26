@@ -55,7 +55,7 @@ public class AuthImageServiceImpl implements AuthImageService {
         tesseract.setLanguage("chi");
         tesseract.setPageSegMode(8);
 
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
     @Autowired

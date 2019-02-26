@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
+import com.duriamuk.robartifact.common.constant.ValueConstant;
 import com.duriamuk.robartifact.common.exception.RobException;
+import com.duriamuk.robartifact.common.schedule.RobScheduledThreadPool;
+import com.duriamuk.robartifact.common.schedule.RobTask;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
@@ -14,6 +17,7 @@ import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.TicketInfoDTO;
 import com.duriamuk.robartifact.entity.DTO.robProcess.*;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 import com.duriamuk.robartifact.mapper.RobMapper;
+import com.duriamuk.robartifact.mapper.UserMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.PassengerService;
 import com.duriamuk.robartifact.service.TicketService;
@@ -31,6 +35,7 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: DuriaMuk
@@ -61,6 +66,9 @@ public class RobServiceImpl implements RobService {
 
     @Autowired
     private RobMapper robMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public Boolean insertRobRecord(RobParamsDTO robParamsDTO, RobParamsOtherDTO robParamsOtherDTO) {
@@ -115,6 +123,79 @@ public class RobServiceImpl implements RobService {
         robMapper.updateRobRecord(robParamsDTO);
     }
 
+    @Override
+    public void restartTask(RobParamsDTO robParamsDTO) {
+        logger.info("重启抢票任务，入参：{}", robParamsDTO.toString());
+        List<RobParamsDTO> robParamsDTOList = listRobRecordWithOther(robParamsDTO);
+        for (RobParamsDTO rob : robParamsDTOList) {
+            long id = rob.getId();
+            long userId = rob.getUserId();
+            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, true, ValueConstant.ROB_TASK_EXPIRE_TIME, TimeUnit.DAYS);
+            RobScheduledThreadPool.schedule(new RobTask(buildPayload(rob), 1, id, userId));
+            logger.info("重启抢票任务userId:{};id:{}", userId, id);
+        }
+    }
+
+    @Override
+    public void stopTaskByUserId(Long userId){
+        logger.info("停止抢票任务，入参：{}", userId);
+        List<RobParamsDTO> robParamsDTOList = listRobRecordByUserId(userId);
+        for (RobParamsDTO robParamsDTO : robParamsDTOList) {
+            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + robParamsDTO.getId(), null, 0);
+        }
+    }
+
+    private String buildPayload(RobParamsDTO robParamsDTO) {
+        JSONObject jsonObject = new JSONObject();
+        RobParamsOtherDTO robParamsOtherDTO = robParamsDTO.getRobParamsOtherDTO();
+        jsonObject.put("userInfoPO", buildUserInfoPO(robParamsDTO));
+        jsonObject.put("checkOrderData", buildCheckOrderDTO(robParamsOtherDTO));
+        jsonObject.put("queueCountData", buildQueueCountDTO(robParamsOtherDTO));
+        jsonObject.put("doOrderData", buildDoOrderDTO(robParamsOtherDTO));
+        jsonObject.put("robParamsData", robParamsDTO);
+        return jsonObject.toJSONString();
+    }
+
+    private UserInfoPO buildUserInfoPO(RobParamsDTO robParamsDTO) {
+        // 密码因为比较重要，每次在service里用username去获取
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setId(robParamsDTO.getUserId());
+        UserInfoPO userInfo = userMapper.getUserInfo(userInfoPO);
+        userInfoPO.setUsername(userInfo.getUsername());
+        return userInfoPO;
+    }
+
+    private CheckOrderDTO buildCheckOrderDTO(RobParamsOtherDTO robParamsOtherDTO) {
+        CheckOrderDTO checkOrderDTO = new CheckOrderDTO();
+        checkOrderDTO.setCancelFlag("2");
+        checkOrderDTO.setBedLevelOrderNum("000000000000000000000000000000");
+        checkOrderDTO.setPassengerTicketStr(robParamsOtherDTO.getPassengerTicketStr());
+        checkOrderDTO.setOldPassengerStr(robParamsOtherDTO.getOldPassengerStr());
+        checkOrderDTO.setRandCode(robParamsOtherDTO.getRandCode());
+        checkOrderDTO.setWhatsSelect(robParamsOtherDTO.getWhatsSelect());
+        return checkOrderDTO;
+    }
+
+    private QueueCountDTO buildQueueCountDTO(RobParamsOtherDTO robParamsOtherDTO) {
+        QueueCountDTO queueCountDTO = new QueueCountDTO();
+        queueCountDTO.setSeatType(robParamsOtherDTO.getSeatType());
+        return queueCountDTO;
+    }
+
+    private DoOrderDTO buildDoOrderDTO(RobParamsOtherDTO robParamsOtherDTO) {
+        DoOrderDTO doOrderDTO = new DoOrderDTO();
+        doOrderDTO.setPassengerTicketStr(robParamsOtherDTO.getPassengerTicketStr());
+        doOrderDTO.setOldPassengerStr(robParamsOtherDTO.getOldPassengerStr());
+        doOrderDTO.setRandCode(robParamsOtherDTO.getRandCode());
+        doOrderDTO.setSeatDetailType(robParamsOtherDTO.getSeatDetailType());
+        doOrderDTO.setWhatsSelect(robParamsOtherDTO.getWhatsSelect());
+        doOrderDTO.setRoomType("00");
+        doOrderDTO.setDwAll("N");
+        doOrderDTO.setChooseSeats("1F");
+        return doOrderDTO;
+    }
+
+    @Override
     public Boolean doRob(String payload) {
         logger.info("尝试抢票，入参：{}", payload);
         JSONObject jsonObject = JSON.parseObject(payload);
@@ -150,37 +231,58 @@ public class RobServiceImpl implements RobService {
         RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
         boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
         boolean isSuccess = false;
-        if (isAllSeatType) {
-            List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
-            for (String seatType : seatTypeList) {
-                // 席别轮询太快会被12306拒绝，要间隔一秒以上
-                changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
-                isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
+        // 先获得所有日期的secretStrList于内存中，再轮询席别
+        List<SecretStrDTO> secretStrDTOList = getTrainDateSecretStrList(robParamsDTO);
+        if (!ListUtils.isEmpty(secretStrDTOList)) {
+            if (isAllSeatType) {
+                List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
+                for (String seatType : seatTypeList) {
+                    // 验证订单太快会被12306拒绝，要间隔一秒以上
+                    changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
+                    isSuccess = checkAllDateSecretStr(secretStrDTOList, robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
+                    if (isSuccess) {
+                        return true;
+                    }
+                }
+            } else {
+                isSuccess = checkAllDateSecretStr(secretStrDTOList, robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
             }
-        } else {
-            isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
         }
         return isSuccess;
     }
 
-    private Boolean checkAllDateSecretStr(RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
-                                          QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
-        Date limitDate = getlimitDate();
-        boolean beContinue = false;
+    private List<SecretStrDTO> getTrainDateSecretStrList(RobParamsDTO robParamsDTO) {
+        Date limitDate = getSpecifiedDate(-1);
+        boolean isValid = false;
         int dateCount = 0;
         String[] trainDates = robParamsDTO.getTrainDate().split(",");
+        List<SecretStrDTO> secretStrDTOList = new ArrayList<>(trainDates.length);
         for (String trainDate : trainDates) {
+            Date queryDate = formatStringToDate(trainDate);
             // 若出发日期全部过期则终止任务
-            if (!beContinue) {
-                beContinue = checkTaskDate(trainDate, limitDate);
-                if (!beContinue) {
+            if (!isValid) {
+                isValid = limitDate.before(queryDate);
+                if (!isValid) {
                     if (++ dateCount == trainDates.length) {
                         throw new RobException();
                     }
                     continue;
                 }
+                isValid = false;
             }
             List<String> secretStrList = getSecretStrListInOneDay(robParamsDTO, trainDate);
+            if (!ListUtils.isEmpty(secretStrList)) {
+                SecretStrDTO secretStrDTO = new SecretStrDTO(trainDate, secretStrList);
+                secretStrDTOList.add(secretStrDTO);
+            }
+        }
+        return secretStrDTOList;
+    }
+
+    private Boolean checkAllDateSecretStr(List<SecretStrDTO> secretStrDTOList, RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
+                                          QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
+        for (SecretStrDTO secretStrDTO : secretStrDTOList) {
+            List<String> secretStrList = secretStrDTO.getSecretStrList();
             if (!ListUtils.isEmpty(secretStrList)) {
                 for (String secretStr : secretStrList) {
                     boolean isReserve = doReserve(secretStr, checkOrderDTO, queueCountDTO, robParamsDTO, doOrderDTO);
@@ -193,25 +295,22 @@ public class RobServiceImpl implements RobService {
         return false;
     }
 
-    private Date getlimitDate() {
-        Date today = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(today);
-        calendar.add(calendar.DATE,-1); // 正负代表往后往前
-        return calendar.getTime();
-    }
-
-    private boolean checkTaskDate(String trainDate, Date limitDate) {
+    private Date formatStringToDate(String trainDate) {
         Date queryDate = null;
         try {
             queryDate = formatter.parse(trainDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (limitDate.before(queryDate)) {
-            return true;
-        }
-        return false;
+        return queryDate;
+    }
+
+    private Date getSpecifiedDate(int amount) {
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,amount); // 正负代表往后往前
+        return calendar.getTime();
     }
 
     private List<String> getSecretStrListInOneDay(RobParamsDTO robParamsDTO, String trainDate) {
@@ -338,10 +437,14 @@ public class RobServiceImpl implements RobService {
     }
 
     private void filterQueryResult(RobParamsDTO robParamsDTO, JSONArray tickets, List<String> secretStrList) {
-        String[] trainNumbers = robParamsDTO.getTrainNumber().split(",");
+        String trainNumber = robParamsDTO.getTrainNumber();
+        String[] trainNumbers = !StringUtils.isEmpty(trainNumber) ? trainNumber.split(",") : null;
         for (Object ticket : tickets) {
             String[] attrs = ticket.toString().split("\\|");
-            filterQueryResultBytrainDate(robParamsDTO, trainNumbers, attrs, secretStrList);
+            String secretStr = attrs[SECRET_INDEX];
+            if (!StringUtils.isEmpty(secretStr)) {
+                filterQueryResultBytrainDate(robParamsDTO, trainNumbers, attrs, secretStrList);
+            }
         }
     }
 
@@ -356,16 +459,19 @@ public class RobServiceImpl implements RobService {
 
     private void filterQueryResultBytrainNumbers(String[] trainNumbers, String[] attrs, List<String> secretStrList) {
         String shortNum = attrs[SHORT_TRAIN_NUM_INDEX];
-        String longNum = attrs[LONG_TRAIN_NUM_INDEX];
-        for (String no : trainNumbers) {
-            if (shortNum.equals(no) || longNum.equals(no)) {
-                String secretStr = attrs[SECRET_INDEX];
-                if (!StringUtils.isEmpty(secretStr)) {
+        String secretStr = attrs[SECRET_INDEX];
+        if (!ObjectUtils.isEmpty(trainNumbers)) {
+            String longNum = attrs[LONG_TRAIN_NUM_INDEX];
+            for (String no : trainNumbers) {
+                if (shortNum.equals(no) || longNum.equals(no)) {
                     secretStrList.add(secretStr);
                     logger.info("添加secretStr成功，车次：{}", no);
                     return;
                 }
             }
+        } else {
+            secretStrList.add(secretStr);
+            logger.info("添加secretStr成功，车次：{}", shortNum);
         }
     }
 
