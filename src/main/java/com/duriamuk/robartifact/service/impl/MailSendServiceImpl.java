@@ -25,12 +25,15 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public Boolean sendMail(String message) {
         logger.info("开始发送邮件");
-        UserInfoPO userInfoPO = userService.getUserInfo();
-        String username = userInfoPO.getUsername();
-        String mail = userInfoPO.getSendMail();
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setId(Long.valueOf(message));
+        UserInfoPO userInfo = userService.getUserInfoPO(userInfoPO);
+        String username = userInfo.getUsername();
+        String mail = userInfo.getSendMail();
+        String subject = "抢票成功";
         String content = "恭喜" + username + "用户！抢票成功";
         for (int i = 0; i < RETRY_TIMES; i++) {
-            boolean isSend = retrySendMail(username, mail, content);
+            boolean isSend = retrySendMail(mail, subject, content);
             if (isSend) {
                 logger.info("邮件最终发送成功：{}", content);
                 return true;
@@ -40,9 +43,9 @@ public class MailSendServiceImpl implements MailSendService {
         return false;
     }
 
-    private Boolean retrySendMail(String username, String mail, String content) {
+    private Boolean retrySendMail(String mail, String subject, String content) {
         try {
-            MailSendUtils.sendHtmlMessage(username, mail, content);
+            MailSendUtils.sendHtmlMessage(mail, subject, content);
         } catch (Exception e) {
             logger.info("邮件发送失败：{}", e.getMessage());
             e.printStackTrace();

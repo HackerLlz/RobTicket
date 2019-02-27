@@ -26,4 +26,7 @@ public class TicketInfoDTO {
 
     @JSONField(name = "key_check_isChange")
     private String keyCheckIsChange;
+
+    @JSONField(name = "queryLeftNewDetailDTO")
+    private QueryLeftNewDetailDTO queryLeftNewDetailDTO;
 }

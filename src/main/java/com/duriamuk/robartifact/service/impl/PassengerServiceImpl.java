@@ -3,17 +3,13 @@ package com.duriamuk.robartifact.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.SessionConstant;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
 import com.duriamuk.robartifact.common.tool.HttpUtils;
-import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.SessionUtils;
-import com.duriamuk.robartifact.controller.TicketController;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.passenger.PassengerPO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
-import com.duriamuk.robartifact.mapper.LoginMapper;
 import com.duriamuk.robartifact.mapper.PassengerMapper;
 import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.PassengerService;
@@ -22,14 +18,11 @@ import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.util.ListUtils;
 
 import java.util.List;
-import java.util.logging.LogManager;
 
 /**
  * @author: DuriaMuk
@@ -137,7 +130,7 @@ public class PassengerServiceImpl implements PassengerService {
         String result = loginService.checkCode(payload);
         if (result.startsWith("{") &&
                 JSON.parseObject(result).getInteger("result_code") == 4) {
-            UserInfoPO userInfoPO = userService.getUserInfo();
+            UserInfoPO userInfoPO = userService.getUserInfoBySessionUsername();
             robService.stopTaskByUserId(userInfoPO.getId());
             result = loginService.login(loginService.getLoginInfo(SessionUtils.getString(SessionConstant.USERNAME)));
             if (result.startsWith("{")) {

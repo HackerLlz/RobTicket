@@ -36,11 +36,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoPO getUserInfo() {
+    public UserInfoPO getUserInfoBySessionUsername() {
         logger.info("获取用户信息");
         String username = SessionUtils.getString(SessionConstant.USERNAME);
         UserInfoPO userInfoPO = new UserInfoPO();
         userInfoPO.setUsername(username);
+        return userMapper.getUserInfo(userInfoPO);
+    }
+
+    @Override
+    public UserInfoPO getUserInfoPO(UserInfoPO userInfoPO) {
         return userMapper.getUserInfo(userInfoPO);
     }
 

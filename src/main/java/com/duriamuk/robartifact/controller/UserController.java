@@ -2,20 +2,13 @@ package com.duriamuk.robartifact.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
-import com.duriamuk.robartifact.common.constant.PrefixName;
 import com.duriamuk.robartifact.common.constant.SessionConstant;
-import com.duriamuk.robartifact.common.constant.UrlConstant;
-import com.duriamuk.robartifact.common.messageQueue.MessageConsumerThreadPool;
-import com.duriamuk.robartifact.common.messageQueue.MessageTask;
-import com.duriamuk.robartifact.common.tool.HttpUtils;
-import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.SessionUtils;
 import com.duriamuk.robartifact.common.validate.EntityValidator;
 import com.duriamuk.robartifact.common.validate.ValidateResult;
 import com.duriamuk.robartifact.common.validate.group.Update;
 import com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
-import com.duriamuk.robartifact.service.LoginService;
 import com.duriamuk.robartifact.service.RobService;
 import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
@@ -23,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +43,7 @@ public class UserController {
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public String view(Model model) {
         logger.info("开始跳转到用户信息界面");
-        UserInfoPO userInfoPO = userService.getUserInfo();
+        UserInfoPO userInfoPO = userService.getUserInfoBySessionUsername();
         List<RobParamsDTO> robParamsList = robService.listRobRecordByUserId(userInfoPO.getId());
         model.addAttribute("userInfoPO", userInfoPO);
         model.addAttribute("robParamsList", robParamsList);
@@ -84,7 +76,7 @@ public class UserController {
     @ResponseBody
     public String getStaticInfo() {
         logger.info("开始获得用户静态信息");
-        UserInfoPO userInfoPO = userService.getUserInfo();
+        UserInfoPO userInfoPO = userService.getUserInfoBySessionUsername();
         return userInfoPO.getName();
     }
 }

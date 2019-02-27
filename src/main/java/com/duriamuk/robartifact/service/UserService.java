@@ -10,7 +10,9 @@ import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
 public interface UserService {
     String logout();
 
-    UserInfoPO getUserInfo();
+    UserInfoPO getUserInfoBySessionUsername();
+
+    UserInfoPO getUserInfoPO(UserInfoPO userInfoPO);
 
     Boolean updateUserInfoByUsername(UserInfoPO loginPO);
 

@@ -114,7 +114,7 @@ public class RobTask implements Runnable {
             // 完成任务到取消任务之间尽量不能有别的操作，避免出错无法取消
             cancelTask();
             setStatus();
-            MessageConsumerThreadPool.message(new MessageTask(MailSendService.class, "sendMail", ""));
+            MessageConsumerThreadPool.message(new MessageTask(MailSendService.class, "sendMail", String.valueOf(userId)));
         }
     }
 

@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.*;
 import com.duriamuk.robartifact.common.schedule.RobScheduledThreadPool;
 import com.duriamuk.robartifact.common.schedule.RobTask;
-import com.duriamuk.robartifact.common.tool.CookieUtils;
-import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
-import com.duriamuk.robartifact.common.tool.SessionUtils;
 import com.duriamuk.robartifact.common.validate.EntityValidator;
 import com.duriamuk.robartifact.common.validate.ValidateResult;
 import com.duriamuk.robartifact.entity.DTO.robProcess.*;
@@ -22,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,7 +72,7 @@ public class RobController {
         if (validateResult.hasError()) {
             return validateResult.getErrorMessages();
         }
-        UserInfoPO userInfoPO = userService.getUserInfo();
+        UserInfoPO userInfoPO = userService.getUserInfoBySessionUsername();
         Long userId = userInfoPO.getId();
         robParamsDTO.setUserId(userId);
         boolean isInsert = robService.insertRobRecord(robParamsDTO, buildRobParamsOtherDTO(jsonObject));

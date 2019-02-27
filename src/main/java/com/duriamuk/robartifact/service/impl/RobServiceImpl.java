@@ -13,6 +13,7 @@ import com.duriamuk.robartifact.common.tool.HttpUtils;
 import com.duriamuk.robartifact.common.tool.RedisUtils;
 import com.duriamuk.robartifact.common.tool.StrUtils;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.OrderRequestDTO;
+import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.QueryLeftNewDetailDTO;
 import com.duriamuk.robartifact.entity.DTO.orderSubmitParams.TicketInfoDTO;
 import com.duriamuk.robartifact.entity.DTO.robProcess.*;
 import com.duriamuk.robartifact.entity.PO.user.UserInfoPO;
@@ -229,34 +230,16 @@ public class RobServiceImpl implements RobService {
         QueueCountDTO queueCountDTO = JSON.parseObject(jsonObject.getString("queueCountData"), QueueCountDTO.class);
         DoOrderDTO doOrderDTO = JSON.parseObject(jsonObject.getString("doOrderData"), DoOrderDTO.class);
         RobParamsDTO robParamsDTO = JSON.parseObject(jsonObject.getString("robParamsData"), RobParamsDTO.class);
-        boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
-        boolean isSuccess = false;
-        // 先获得所有日期的secretStrList于内存中，再轮询席别
-        List<SecretStrDTO> secretStrDTOList = getTrainDateSecretStrList(robParamsDTO);
-        if (!ListUtils.isEmpty(secretStrDTOList)) {
-            if (isAllSeatType) {
-                List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
-                for (String seatType : seatTypeList) {
-                    // 验证订单太快会被12306拒绝，要间隔一秒以上
-                    changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
-                    isSuccess = checkAllDateSecretStr(secretStrDTOList, robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
-                    if (isSuccess) {
-                        return true;
-                    }
-                }
-            } else {
-                isSuccess = checkAllDateSecretStr(secretStrDTOList, robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
-            }
-        }
+        boolean isSuccess = checkAllDateSecretStr(robParamsDTO, checkOrderDTO, queueCountDTO, doOrderDTO);
         return isSuccess;
     }
 
-    private List<SecretStrDTO> getTrainDateSecretStrList(RobParamsDTO robParamsDTO) {
+    private Boolean checkAllDateSecretStr(RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
+                                          QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
         Date limitDate = getSpecifiedDate(-1);
         boolean isValid = false;
         int dateCount = 0;
         String[] trainDates = robParamsDTO.getTrainDate().split(",");
-        List<SecretStrDTO> secretStrDTOList = new ArrayList<>(trainDates.length);
         for (String trainDate : trainDates) {
             Date queryDate = formatStringToDate(trainDate);
             // 若出发日期全部过期则终止任务
@@ -271,18 +254,6 @@ public class RobServiceImpl implements RobService {
                 isValid = false;
             }
             List<String> secretStrList = getSecretStrListInOneDay(robParamsDTO, trainDate);
-            if (!ListUtils.isEmpty(secretStrList)) {
-                SecretStrDTO secretStrDTO = new SecretStrDTO(trainDate, secretStrList);
-                secretStrDTOList.add(secretStrDTO);
-            }
-        }
-        return secretStrDTOList;
-    }
-
-    private Boolean checkAllDateSecretStr(List<SecretStrDTO> secretStrDTOList, RobParamsDTO robParamsDTO, CheckOrderDTO checkOrderDTO,
-                                          QueueCountDTO queueCountDTO, DoOrderDTO doOrderDTO) {
-        for (SecretStrDTO secretStrDTO : secretStrDTOList) {
-            List<String> secretStrList = secretStrDTO.getSecretStrList();
             if (!ListUtils.isEmpty(secretStrList)) {
                 for (String secretStr : secretStrList) {
                     boolean isReserve = doReserve(secretStr, checkOrderDTO, queueCountDTO, robParamsDTO, doOrderDTO);
@@ -373,15 +344,41 @@ public class RobServiceImpl implements RobService {
         TicketInfoDTO ticketInfoDTO = JSON.parseObject(orderParamsMap.get("ticketInfoForPassengerForm"), TicketInfoDTO.class);
         String globalRepeatSubmitToken = orderParamsMap.get("globalRepeatSubmitToken");
 
-        boolean isCheck = checkOrder(buildCheckOrderData(checkOrderDTO, ticketInfoDTO, globalRepeatSubmitToken));
-        if (isCheck) {
-            boolean robNoSeat = robParamsDTO.getRobNoSeat();
-            if (!robNoSeat) {
-                boolean isSeatAvailable = checkSeatAvailable(buildQueueCountData(queueCountDTO, orderRequestDTO, ticketInfoDTO, globalRepeatSubmitToken));
-                if (!isSeatAvailable) {
-                    return false;
+        boolean isSuccess = false;
+        boolean isAllSeatType = checkAllSeatType(checkOrderDTO);
+        if (isAllSeatType) {
+            List<String> seatTypeList = chooseSeatTypeList(robParamsDTO);
+            for (String seatType : seatTypeList) {
+                changeSeatType(seatType, checkOrderDTO, queueCountDTO, doOrderDTO);
+                isSuccess = submitOrderByRobNoSeat(checkOrderDTO, queueCountDTO, robParamsDTO,
+                        doOrderDTO, orderParamsMap, ticketInfoDTO, globalRepeatSubmitToken);
+                if (isSuccess) {
+                    return true;
                 }
             }
+            changeSeatType("all", checkOrderDTO, queueCountDTO, doOrderDTO);
+        } else {
+           isSuccess = submitOrderByRobNoSeat(checkOrderDTO, queueCountDTO, robParamsDTO,
+                    doOrderDTO, orderParamsMap, ticketInfoDTO, globalRepeatSubmitToken);
+        }
+        return isSuccess;
+    }
+
+    private Boolean submitOrderByRobNoSeat(CheckOrderDTO checkOrderDTO, QueueCountDTO queueCountDTO,
+                                RobParamsDTO robParamsDTO, DoOrderDTO doOrderDTO,
+                                Map<String, String> orderParamsMap,
+                                TicketInfoDTO ticketInfoDTO, String globalRepeatSubmitToken) {
+        boolean robNoSeat = robParamsDTO.getRobNoSeat();
+        if (!robNoSeat) {
+            // // 验证订单太快会被12306拒绝，要间隔一秒以上；用页面获取到的参数判断余票；获取队列计数就不需要了，也不影响下单
+            QueryLeftNewDetailDTO queryLeftNewDetailDTO = ticketInfoDTO.getQueryLeftNewDetailDTO();
+            boolean isSeatAvailable = checkSeatAvailable(queryLeftNewDetailDTO, queueCountDTO);
+            if (!isSeatAvailable) {
+                return false;
+            }
+        }
+        boolean isCheck = checkOrder(buildCheckOrderData(checkOrderDTO, ticketInfoDTO, globalRepeatSubmitToken));
+        if (isCheck) {
             boolean isOrder = doOrder(buildDoOrderData(doOrderDTO, ticketInfoDTO));
             if (isOrder) {
                 logger.info("抢票成功");
@@ -390,6 +387,7 @@ public class RobServiceImpl implements RobService {
         }
         return false;
     }
+
 
     private boolean checkOrder(String checkOrderData) {
         String result = passengerService.checkOrderInfo(checkOrderData);
@@ -529,16 +527,12 @@ public class RobServiceImpl implements RobService {
         return newPassengerTicketStr.replaceFirst("_", "");
     }
 
-    private boolean checkSeatAvailable(String queueCountData) {
-        String result = passengerService.getQueueCount(queueCountData);
-        if (result.startsWith("{")) {
-            JSONObject resultJson = JSON.parseObject(result);
-            if ("[]".equals(resultJson.getString("messages"))) {
-                String ticket = resultJson.getJSONObject("data").getString("ticket");
-                if (!"0".equals(ticket.split(",")[0])) {
-                    return true;
-                }
-            }
+    private boolean checkSeatAvailable(QueryLeftNewDetailDTO queryLeftNewDetailDTO, QueueCountDTO queueCountDTO) {
+        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(queryLeftNewDetailDTO));
+        int ticketNum = Integer.valueOf(jsonObject.getString(queueCountDTO.getSeatType()));
+        if (ticketNum > 0) {
+            logger.info("余票剩余：{} 张", ticketNum);
+            return true;
         }
         logger.info("余票不足（不包括无座）");
         return false;
