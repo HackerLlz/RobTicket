@@ -1,5 +1,6 @@
 server:
-  port: 9999
+#  port: 9999
+  port: 9898
 
 spring:
   # 热部署
@@ -8,7 +9,8 @@ spring:
 #      enabled: true
   # 模板引擎缓存
   thymeleaf:
-    cache: false
+#    cache: false
+    cache: true
   # DB configuration
   datasource:
     url: jdbc:mysql://localhost:3306/rob_artifact?autoCommit=false&useUnicode=true&characterEncoding=utf-8&useAffectedRows=true&allowMultiQueries=true&useSSL=false
@@ -28,7 +30,14 @@ mybatis:
   mapper-locations: classpath:META-INF/mybatis/*.xml
 
 constant:
+  # 本地系统验证码开关
+  authCodeEnable: false
+#  authCodeEnable: true
   # 抢票任务重启开关
-  taskRunnerEnable: false
+#  taskRunnerEnable: false
+  taskRunnerEnable: true
+  # ocr语言训练库路径
+#  tessdataPath: "tessdata"
+  tessdataPath: "/home/llz/web/robArtifact/tessdata/"
   # 人工验证图片训练库路径
   codeImagePath: "O:\\图片\\12306\\图库\\"

@@ -1,6 +1,7 @@
 package com.duriamuk.robartifact.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.duriamuk.robartifact.common.constant.AjaxMessage;
 import com.duriamuk.robartifact.common.constant.SessionConstant;
 import com.duriamuk.robartifact.common.constant.UrlConstant;
@@ -15,6 +16,7 @@ import com.duriamuk.robartifact.service.impl.LoginServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/login")
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+
+    @Value("${constant.authCodeEnable}")
+    private Boolean authCodeEnable;
+
 
     @Autowired
     private LoginService loginService;
@@ -51,6 +57,9 @@ public class LoginController {
     @ResponseBody
     public String checkCode(String answer) {
         logger.info("开始验证验证码, 入参 ：{}", answer);
+        if (!authCodeEnable) {
+            return buildCheckCodeSuccessResult();
+        }
         String result = loginService.checkCode(answer);
         if (result.startsWith("{") &&
                 JSON.parseObject(result).getInteger("result_code") == 4) {
@@ -122,5 +131,11 @@ public class LoginController {
         logger.info("开始测试自动登陆");
         MessageConsumerThreadPool.message(new MessageTask(LoginService.class, "testAutoLogin", ""));
         return AjaxMessage.SUCCESS;
+    }
+
+    private String buildCheckCodeSuccessResult() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("result_code", 4);
+        return jsonObject.toJSONString();
     }
 }

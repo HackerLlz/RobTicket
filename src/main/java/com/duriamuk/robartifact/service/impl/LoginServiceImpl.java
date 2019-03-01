@@ -17,6 +17,7 @@ import com.duriamuk.robartifact.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -32,6 +33,9 @@ public class LoginServiceImpl implements LoginService {
     private static final int RETRY_TIMES = 5;
     private static final int AUTO_LOGIN_RETRY_TIMES = 10;
     private static final int LOGIN_RETRY_TIMES = 10;
+
+    @Value("${constant.authCodeEnable}")
+    private Boolean authCodeEnable;
 
     @Autowired
     private LoginMapper loginMapper;
@@ -149,6 +153,9 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private boolean isCheckCode() {
+        if (!authCodeEnable) {
+            return true;
+        }
         Boolean authCodeStat = SessionUtils.getBoolean(SessionConstant.AUTH_CODE);
         if (!ObjectUtils.isEmpty(authCodeStat) && authCodeStat) {
             SessionUtils.set(SessionConstant.AUTH_CODE, null);
@@ -167,11 +174,11 @@ public class LoginServiceImpl implements LoginService {
                 if (!ObjectUtils.isEmpty(userInfoPOFrom12306)) {
                     boolean isUpdate = passengerService.updatePassenger();
                     if (isUpdate) {
-                        String passengerPayload = passengerService.passengerInfo();
                         UserInfoPO newUserInfoPO = buildInsertUserInfoPO(userInfoPOFrom12306);
                         newUserInfoPO.setPassword(userInfoPO.getPassword());
                         int insertCount = userService.insertUserOnUpdate(newUserInfoPO);
                         int insertDetailCount = userService.insertUserDetailOnUpdate(userInfoPOFrom12306);
+                        userInfoPO.setUsername(userInfoPOFrom12306.getUsername());
                         logger.info("登陆成功，是{}用户", insertCount == 0 ? "老" : "新");
                         return true;
                     }

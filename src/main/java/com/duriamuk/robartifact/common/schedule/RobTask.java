@@ -126,7 +126,7 @@ public class RobTask implements Runnable {
             RobScheduledThreadPool.schedule(this);
         } else {
             logger.info("达到终止任务条件");
-            RedisUtils.setWithExpire(PrefixName.TABLE_ROB_RECORD + id, null, 0);
+            setStatus();
         }
     }
 

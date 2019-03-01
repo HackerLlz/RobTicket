@@ -11,11 +11,10 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.opencv.core.*;
-import org.opencv.features2d.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -23,7 +22,6 @@ import org.thymeleaf.util.ListUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,14 +45,14 @@ public class AuthImageServiceImpl implements AuthImageService {
     private static final float NNDR_RATIO = 0.3f;  // 越大相似越严格
     private static final int TEST_TIMES = 5;
 
-
     private static final ITesseract tesseract = new Tesseract();
 
+    @Value("${constant.tessdataPath}")
+    private String tessdataPath;
+
     static {
-        tesseract.setDatapath("tessdata");  // src同级
         tesseract.setLanguage("chi");
         tesseract.setPageSegMode(8);
-
 //        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
@@ -152,63 +150,64 @@ public class AuthImageServiceImpl implements AuthImageService {
 
     @Override
     public Boolean similarImage(BufferedImage template, BufferedImage original) {
-//        logger.info("判断图片是否相似");
-        Mat templateMat = buildImageMat(template);
-        Mat originalMat = buildImageMat(original);
-        return matchImageMat(templateMat, originalMat);
-    }
-
-    private Mat buildImageMat(BufferedImage bufferedImage) {
-        byte[] pixels = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
-        Mat mat = Mat.eye(bufferedImage.getHeight(), bufferedImage.getWidth(), CvType.CV_8UC3);
-        mat.put(0, 0, pixels);
-        return mat;
-    }
-
-    private boolean matchImageMat(Mat templateImage, Mat originalImage) {
-        // 指定特征点算法
-        FeatureDetector featureDetector = FeatureDetector.create(FeatureDetector.SIFT);
-        DescriptorExtractor descriptorExtractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);
-        // 提取模板图的特征点
-        MatOfKeyPoint templateKeyPoints = new MatOfKeyPoint();
-        MatOfKeyPoint templateDescriptors = new MatOfKeyPoint();
-        featureDetector.detect(templateImage, templateKeyPoints);
-        descriptorExtractor.compute(templateImage, templateKeyPoints, templateDescriptors);
-        // 提取原图的特征点
-        MatOfKeyPoint originalKeyPoints = new MatOfKeyPoint();
-        MatOfKeyPoint originalDescriptors = new MatOfKeyPoint();
-        featureDetector.detect(originalImage, originalKeyPoints);
-        descriptorExtractor.compute(originalImage, originalKeyPoints, originalDescriptors);
-        // 寻找最佳匹配
-        // knnMatch方法的作用就是在给定特征描述集合中寻找最佳匹配
-        // 使用KNN-matching算法，令K，则每个match得到两个最接近的descriptor，
-        // 然后计算最接近距离和次接近距离之间的比值，当比值大于既定值时，才作为最终match
-        List<MatOfDMatch> matches = new LinkedList();
-        DescriptorMatcher descriptorMatcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
-        try {
-            descriptorMatcher.knnMatch(templateDescriptors, originalDescriptors, matches, 2);
-        } catch (Exception e) {
-            logger.warn("匹配出错");
-            return false;
-        }
-        // 计算匹配结果，依据distance进行筛选
-        LinkedList<DMatch> goodMatchesList = new LinkedList();
-        matches.forEach(match -> {
-            DMatch[] dmatcharray = match.toArray();
-            DMatch m1 = dmatcharray[0];
-            DMatch m2 = dmatcharray[1];
-            if (m1.distance <= m2.distance * NNDR_RATIO) {
-                goodMatchesList.addLast(m1);
-            }
-        });
-        int matchCount = goodMatchesList.size();
-        if (matchCount >= MATCH_POINT_COUNT) {
-            logger.info("匹配成功：{}", matchCount);
-            return true;
-        }
-        logger.info("匹配失败：{}", matchCount);
+        logger.info("判断图片是否相似");
+//        Mat templateMat = buildImageMat(template);
+//        Mat originalMat = buildImageMat(original);
+//        return matchImageMat(templateMat, originalMat);
         return false;
     }
+
+//    private Mat buildImageMat(BufferedImage bufferedImage) {
+//        byte[] pixels = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+//        Mat mat = Mat.eye(bufferedImage.getHeight(), bufferedImage.getWidth(), CvType.CV_8UC3);
+//        mat.put(0, 0, pixels);
+//        return mat;
+//    }
+
+//    private boolean matchImageMat(Mat templateImage, Mat originalImage) {
+//        // 指定特征点算法
+//        FeatureDetector featureDetector = FeatureDetector.create(FeatureDetector.SIFT);
+//        DescriptorExtractor descriptorExtractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);
+//        // 提取模板图的特征点
+//        MatOfKeyPoint templateKeyPoints = new MatOfKeyPoint();
+//        MatOfKeyPoint templateDescriptors = new MatOfKeyPoint();
+//        featureDetector.detect(templateImage, templateKeyPoints);
+//        descriptorExtractor.compute(templateImage, templateKeyPoints, templateDescriptors);
+//        // 提取原图的特征点
+//        MatOfKeyPoint originalKeyPoints = new MatOfKeyPoint();
+//        MatOfKeyPoint originalDescriptors = new MatOfKeyPoint();
+//        featureDetector.detect(originalImage, originalKeyPoints);
+//        descriptorExtractor.compute(originalImage, originalKeyPoints, originalDescriptors);
+//        // 寻找最佳匹配
+//        // knnMatch方法的作用就是在给定特征描述集合中寻找最佳匹配
+//        // 使用KNN-matching算法，令K，则每个match得到两个最接近的descriptor，
+//        // 然后计算最接近距离和次接近距离之间的比值，当比值大于既定值时，才作为最终match
+//        List<MatOfDMatch> matches = new LinkedList();
+//        DescriptorMatcher descriptorMatcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+//        try {
+//            descriptorMatcher.knnMatch(templateDescriptors, originalDescriptors, matches, 2);
+//        } catch (Exception e) {
+//            logger.warn("匹配出错");
+//            return false;
+//        }
+//        // 计算匹配结果，依据distance进行筛选
+//        LinkedList<DMatch> goodMatchesList = new LinkedList();
+//        matches.forEach(match -> {
+//            DMatch[] dmatcharray = match.toArray();
+//            DMatch m1 = dmatcharray[0];
+//            DMatch m2 = dmatcharray[1];
+//            if (m1.distance <= m2.distance * NNDR_RATIO) {
+//                goodMatchesList.addLast(m1);
+//            }
+//        });
+//        int matchCount = goodMatchesList.size();
+//        if (matchCount >= MATCH_POINT_COUNT) {
+//            logger.info("匹配成功：{}", matchCount);
+//            return true;
+//        }
+//        logger.info("匹配失败：{}", matchCount);
+//        return false;
+//    }
 
     @Override
     public Boolean identifyAuthImage() {
@@ -264,6 +263,7 @@ public class AuthImageServiceImpl implements AuthImageService {
 
     @Override
     public String doOCR(byte[] bytes){
+        logger.info("进行OCR识别");
         if (!ObjectUtils.isEmpty(bytes)) {
             try {
                 InputStream stream = new ByteArrayInputStream(bytes);  // 一次消费
@@ -271,6 +271,10 @@ public class AuthImageServiceImpl implements AuthImageService {
                         .sourceRegion(117, 0, 60, 30)
                         .scale(1.0)
                         .asBufferedImage();
+                if (ObjectUtils.isEmpty(area)) {
+                    return "";
+                }
+                tesseract.setDatapath(tessdataPath);
                 String ocrResult = tesseract.doOCR(area);
                 logger.info("OCR识别结果：{}", ocrResult);
                 ocrResult = reviseOcrResult(ocrResult);

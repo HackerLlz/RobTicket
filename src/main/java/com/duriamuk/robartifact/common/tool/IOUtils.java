@@ -18,10 +18,10 @@ public class IOUtils {
      * @return
      */
     public static String inputStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
-        String line;
+        String line = null;
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\r\n");
             }

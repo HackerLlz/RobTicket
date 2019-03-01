@@ -80,11 +80,24 @@
             SELECT LAST_INSERT_ID() as id
         </selectKey>
         INSERT INTO
-        rob_record(user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
+        rob_record(id, user_id, rob_no_seat, from_station, from_station_name, to_station, to_station_name, train_date,
         left_time_begin, left_time_end, train_number, purpose_codes, tour_flag, status)
         VALUES
-        (#{userId}, #{robNoSeat}, #{fromStation}, #{fromStationName}, #{toStation}, #{toStationName}, #{trainDate},
+        (#{id}, #{userId}, #{robNoSeat}, #{fromStation}, #{fromStationName}, #{toStation}, #{toStationName}, #{trainDate},
         #{leftTimeBegin}, #{leftTimeEnd}, #{trainNumber}, #{purposeCodes}, #{tourFlag}, #{status})
+        ON DUPLICATE KEY UPDATE
+        rob_no_seat = #{robNoSeat},
+        from_station = #{fromStation},
+        from_station_name = #{fromStationName},
+        to_station = #{toStation},
+        to_station_name = #{toStationName},
+        train_date = #{trainDate},
+        left_time_begin = #{leftTimeBegin},
+        left_time_end = #{leftTimeEnd},
+        train_number = #{trainNumber},
+        purpose_codes =  #{purposeCodes},
+        tour_flag = #{tourFlag},
+        status = #{status}
     </insert>
 
     <insert id="insertRobRecordOther" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsOtherDTO">
@@ -92,6 +105,13 @@
         rob_record_other(rob_id, passenger_ticket_str, old_passenger_str, rand_code, whats_select, seat_type, seat_detail_type)
         VALUES
         (#{robId}, #{passengerTicketStr}, #{oldPassengerStr}, #{randCode}, #{whatsSelect}, #{seatType}, #{seatDetailType})
+        ON DUPLICATE KEY UPDATE
+        passenger_ticket_str = #{passengerTicketStr},
+        old_passenger_str = #{oldPassengerStr},
+        rand_code = #{randCode},
+        whats_select = #{whatsSelect},
+        seat_type = #{seatType},
+        seat_detail_type = #{seatDetailType}
     </insert>
 
     <select id="listRobRecordByUserId" parameterType="long" resultMap="robParamsDTOMap">
@@ -130,10 +150,11 @@
     </select>
 
     <delete id="deleteRobRecordById" parameterType="long">
-        DELETE FROM
-        rob_record
-        WHERE
-        id = #{id}
+        DELETE a, b
+        FROM rob_record a
+        LEFT JOIN rob_record_other b
+        ON a.id = b.rob_id
+        WHERE a.id = #{id}
     </delete>
 
     <update id="updateRobRecord" parameterType="com.duriamuk.robartifact.entity.DTO.robProcess.RobParamsDTO">

@@ -1885,6 +1885,7 @@
          // train_location: ticketInfoForPassengerForm.train_location,
      };
      var robParamsData = {
+         "id": robParamsDTO ? robParamsDTO["id"] : null,
          "robNoSeat": ($("#robNoSeat").get(0).checked) ? true : false,
          "fromStation": $("#fromStation").val(),
          "fromStationName": $("#fromStationText").val(),

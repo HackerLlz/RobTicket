@@ -10039,14 +10039,14 @@ jQuery.extend({
                 $.popup_show_login_error("密码长度不能少于6位！");
                 return false
             }
-            if (popup_is_login_passCode == "Y") {
-                if ($("#J-passCodeCoin div").length == 0) {
-                    $.popup_show_login_error("请选择验证码！");
-                    return false
-                }
-            } else {
-                popup_ifSuccessCode = true
-            }
+            // if (popup_is_login_passCode == "Y") {
+            //     if ($("#J-passCodeCoin div").length == 0) {
+            //         $.popup_show_login_error("请选择验证码！");
+            //         return false
+            //     }
+            // } else {
+            //     popup_ifSuccessCode = true
+            // }
             $.popup_login()
         })
     },

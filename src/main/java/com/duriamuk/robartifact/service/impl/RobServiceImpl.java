@@ -78,7 +78,12 @@ public class RobServiceImpl implements RobService {
         int goingRobTaskCount = countGoingRobTask(robParamsDTOList);
         if (goingRobTaskCount <= MAX_ROB_TASK) {
             robParamsDTO.setStatus(1);
+            Long id = robParamsDTO.getId();
             robMapper.insertRobRecord(robParamsDTO);
+            if (!ObjectUtils.isEmpty(id)) {
+                // 由于id冲突，变为update语句，获得最后插入的id时会获得之前other表插入的id值
+                robParamsDTO.setId(id);
+            }
             robParamsOtherDTO.setRobId(robParamsDTO.getId());
             robMapper.insertRobRecordOther(robParamsOtherDTO);
             logger.info("插入抢票任务成功");

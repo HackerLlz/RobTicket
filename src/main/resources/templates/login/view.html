@@ -198,15 +198,15 @@
                 return false;
             }
 
-            if (popup_is_login_passCode == 'Y') {
-                if ($('#J-passCodeCoin div').length == 0) {
-                    $.popup_show_login_error('请选择验证码！')
-                    return false;
-                }
-            } else {
-                // 不需要验证码，直接返回校验通过
-                popup_ifSuccessCode = true;
-            }
+            // if (popup_is_login_passCode == 'Y') {
+            //     if ($('#J-passCodeCoin div').length == 0) {
+            //         $.popup_show_login_error('请选择验证码！')
+            //         return false;
+            //     }
+            // } else {
+            //     // 不需要验证码，直接返回校验通过
+            //     popup_ifSuccessCode = true;
+            // }
 
             $.popup_login();
         });

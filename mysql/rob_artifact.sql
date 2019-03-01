@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 26/02/2019 17:36:07
+ Date: 27/02/2019 14:58:11
 */
 
 SET NAMES utf8mb4;
@@ -23,12 +23,14 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `auth_code`;
 CREATE TABLE `auth_code`  (
   `id` bigint(255) NOT NULL AUTO_INCREMENT,
-  `md5` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `md5` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   `check_position` int(4) NULL DEFAULT NULL,
   `status` int(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `MD5_index`(`md5`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 763684 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 763684 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for code_image
@@ -36,11 +38,14 @@ CREATE TABLE `auth_code`  (
 DROP TABLE IF EXISTS `code_image`;
 CREATE TABLE `code_image`  (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `text` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `hash` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `text` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `hash` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `text_hash_index`(`text`, `hash`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6213 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8258 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of code_image
@@ -5354,21 +5359,33 @@ INSERT INTO `code_image` VALUES (5132, '龙舟', '111110100100000000101001110000
 DROP TABLE IF EXISTS `passenger`;
 CREATE TABLE `passenger`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_id_type_code` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_id_type_name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_type` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `passenger_flag` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `mobile_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `first_letter` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `index_id` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `total_times` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_id_type_code` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_id_type_name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_type` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `passenger_flag` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `mobile_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `first_letter` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `index_id` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `total_times` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `passenger_id_no_index`(`passenger_id_no`) USING BTREE,
   INDEX `username_index`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 80 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 134 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for rob_record
@@ -5378,21 +5395,32 @@ CREATE TABLE `rob_record`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NULL DEFAULT NULL,
   `rob_no_seat` tinyint(1) NULL DEFAULT NULL,
-  `from_station` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `from_station_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_station` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_station_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `train_date` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `left_time_begin` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `left_time_end` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `train_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `purpose_codes` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tour_flag` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `from_station` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `from_station_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `to_station` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `to_station_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `train_date` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `left_time_begin` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `left_time_end` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `train_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `purpose_codes` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `tour_flag` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   `status` int(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id_ index`(`user_id`) USING BTREE,
   INDEX `status_index`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 68 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for rob_record_other
@@ -5401,15 +5429,22 @@ DROP TABLE IF EXISTS `rob_record_other`;
 CREATE TABLE `rob_record_other`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `rob_id` bigint(255) NULL DEFAULT NULL,
-  `passenger_ticket_str` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `old_passenger_str` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `rand_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `whats_select` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `seat_type` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `seat_detail_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `passenger_ticket_str` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `old_passenger_str` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `rand_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `whats_select` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `seat_type` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `seat_detail_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `rob_id_index`(`rob_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user_info
@@ -5417,13 +5452,18 @@ CREATE TABLE `rob_record_other`  (
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `password` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `send_mail` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `password` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `send_mail` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username_index`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 69 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user_info_detail
@@ -5431,10 +5471,13 @@ CREATE TABLE `user_info`  (
 DROP TABLE IF EXISTS `user_info_detail`;
 CREATE TABLE `user_info_detail`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
+  `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+   NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `alias_index`(`alias`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 94 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 103 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
