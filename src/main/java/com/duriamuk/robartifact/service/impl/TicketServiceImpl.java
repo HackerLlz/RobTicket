@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketServiceImpl implements TicketService {
     private static final Logger logger = LoggerFactory.getLogger(TicketServiceImpl.class);
-    private static String QUERY_URL = "leftTicket/queryX";
+    private static String QUERY_URL = "leftTicket/query";
 
     @Override
     public String checkUser() {

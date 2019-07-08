@@ -29,12 +29,12 @@ public class ExcelController {
     }
 
     @RequestMapping(value = "exportExcel", method = RequestMethod.GET)
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void exportExcel(){
         String path = "excel/aaa.xls";
         String tableName = "aaa表";
         List<ExcelCellEntity> list = new ArrayList<>();
         list.add(new ExcelCellEntity(0, 0, "aaa"));
-        ExcelUtils.exportExcel(path, tableName, list, response);
+        ExcelUtils.exportExcel(path, tableName, list);
         logger.info("excel导出完成");
     }
 }

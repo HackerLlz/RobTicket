@@ -446,21 +446,21 @@ public class RobServiceImpl implements RobService {
             String[] attrs = ticket.toString().split("\\|");
             String secretStr = attrs[SECRET_INDEX];
             if (!StringUtils.isEmpty(secretStr)) {
-                filterQueryResultBytrainDate(robParamsDTO, trainNumbers, attrs, secretStrList);
+                filterQueryResultByTrainDate(robParamsDTO, trainNumbers, attrs, secretStrList);
             }
         }
     }
 
-    private void filterQueryResultBytrainDate(RobParamsDTO robParamsDTO, String[] trainNumbers,
+    private void filterQueryResultByTrainDate(RobParamsDTO robParamsDTO, String[] trainNumbers,
                                               String[] attrs, List<String> secretStrList) {
         String leftTime = attrs[LEFT_TIME_INDEX];
         if (compareTime(leftTime, robParamsDTO.getLeftTimeBegin()) &&
                 !compareTime(leftTime, robParamsDTO.getLeftTimeEnd())) {
-            filterQueryResultBytrainNumbers(trainNumbers, attrs, secretStrList);
+            filterQueryResultByTrainNumbers(trainNumbers, attrs, secretStrList);
         }
     }
 
-    private void filterQueryResultBytrainNumbers(String[] trainNumbers, String[] attrs, List<String> secretStrList) {
+    private void filterQueryResultByTrainNumbers(String[] trainNumbers, String[] attrs, List<String> secretStrList) {
         String shortNum = attrs[SHORT_TRAIN_NUM_INDEX];
         String secretStr = attrs[SECRET_INDEX];
         if (!ObjectUtils.isEmpty(trainNumbers)) {

@@ -1,48 +1,24 @@
 package com.duriamuk.robartifact.common.excel;
 
+import lombok.Data;
+
 /**
  * @author: DuriaMuk
  * @description:
  * @create: 2018-12-07 16:00
  */
+@Data
 public class ExcelCellEntity {
     Integer sheet;
     Integer row;
     Integer col;
     Object value;
 
-    public Integer getSheet() {
-        return sheet;
-    }
-
-    public void setSheet(Integer sheet) {
-        this.sheet = sheet;
-    }
-
-    public Integer getRow() {
-        return row;
-    }
-
-    public void setRow(Integer row) {
+    public ExcelCellEntity(Integer row, Integer col) {
+        this.sheet = 0;
         this.row = row;
-    }
-
-    public Integer getCol() {
-        return col;
-    }
-
-    public void setCol(Integer col) {
         this.col = col;
     }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
 
     public ExcelCellEntity(Integer row, Integer col, Object value) {
         this.sheet = 0;
