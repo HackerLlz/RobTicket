@@ -285,7 +285,7 @@ public class RobServiceImpl implements RobService {
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
-        calendar.add(calendar.DATE,amount); // 正负代表往后往前
+        calendar.add(Calendar.DATE, amount); // 正负代表往后往前
         return calendar.getTime();
     }
 
