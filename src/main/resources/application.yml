@@ -30,8 +30,8 @@ mybatis:
   mapper-locations: classpath:META-INF/mybatis/*.xml
 
 constant:
-  # 本地系统验证码开关
-  authCodeEnable: false
+  # 本地系统验证码开关(若关闭 新用户则无法登陆)
+  authCodeEnable: true
 #  authCodeEnable: true
   # 抢票任务重启开关
   taskRunnerEnable: false
