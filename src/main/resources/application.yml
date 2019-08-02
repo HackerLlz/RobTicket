@@ -37,8 +37,7 @@ constant:
   taskRunnerEnable: false
 #  taskRunnerEnable: true
   # ocr语言训练库路径
-#  tessdataPath: "tessdata"
+  tessdataPath: "tessdata"
 #  tessdataPath: "/home/llz/web/robArtifact/tessdata/"
-  tessdataPath: "/Users/duriamuk/Documents/web/LMF/robArtifact/tessdata/"
   # 人工验证图片训练库路径
   codeImagePath: "O:\\图片\\12306\\图库\\"
