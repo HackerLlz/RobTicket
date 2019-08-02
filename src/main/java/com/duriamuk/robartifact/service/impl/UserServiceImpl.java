@@ -13,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: DuriaMuk
@@ -23,6 +27,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private static final int RETRY_TIMES = 3;
+
+    private static final String PHONE_NUMBER_REG = "^(1[3-9])\\d{9}$";
+    private static final Pattern pattern = Pattern.compile(PHONE_NUMBER_REG);
+    private static final int PHONE_PRE_NUM = 3;
+    private static final int PHONE_AFTER_NUM = 4;
+
 
     @Autowired
     private UserMapper userMapper;
@@ -103,6 +113,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUsernameByAlias(String alias) {
+        Matcher matcher = pattern.matcher(alias);
+        if (matcher.matches()) {
+            String phone = buildNewPhone(alias);
+            String username = userMapper.getUsernameByAlias(phone);
+            if (!StringUtils.isEmpty(username)) {
+                return username;
+            }
+        }
         return userMapper.getUsernameByAlias(alias);
     }
 
@@ -116,5 +134,14 @@ public class UserServiceImpl implements UserService {
         String url = UrlConstant.OTN_URL + "modifyUser/initQueryUserInfoApi";
         String result = HttpUtils.doPostForm(url, null, true);
         return result;
+    }
+
+    private String buildNewPhone(String oldPhone) {
+        StringBuilder newPhone = new StringBuilder(oldPhone.substring(0, PHONE_PRE_NUM));
+        for (int i = 0; i < oldPhone.length() - (PHONE_PRE_NUM + PHONE_AFTER_NUM); i ++) {
+            newPhone.append("*");
+        }
+        newPhone.append(oldPhone.substring(oldPhone.length() - PHONE_AFTER_NUM));
+        return newPhone.toString();
     }
 }

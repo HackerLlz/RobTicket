@@ -2445,11 +2445,11 @@ var az = new Array();
         W = $("#typeselect_update").val();
         if (aB == ticket_submit_order.passenger_card_type.two) {
             if ($.trim(aD) != "") {
-                if (!validateSecIdCard(aD)) {
-                    $("#error_update_tr").show();
-                    $("#error_for_update_nameandidno").html("非法的二代身份证号码").show();
-                    return false
-                }
+                // if (!validateSecIdCard(aD)) {
+                //     $("#error_update_tr").show();
+                //     $("#error_for_update_nameandidno").html("非法的二代身份证号码").show();
+                //     return false
+                // }
             } else {
                 $("#error_update_tr").show();
                 $("#error_for_update_nameandidno").html("请输入证件号码").show();
@@ -2458,11 +2458,11 @@ var az = new Array();
         } else {
             if (aB == ticket_submit_order.passenger_card_type.one) {
                 if ($.trim(aD) != "") {
-                    if (!validateFirIdCard(aD)) {
-                        $("#error_update_tr").show();
-                        $("#error_for_update_nameandidno").html("非法的一代身份证号码").show();
-                        return false
-                    }
+                    // if (!validateFirIdCard(aD)) {
+                    //     $("#error_update_tr").show();
+                    //     $("#error_for_update_nameandidno").html("非法的一代身份证号码").show();
+                    //     return false
+                    // }
                 } else {
                     $("#error_update_tr").show();
                     $("#error_for_update_nameandidno").html("请输入证件号码").show();
@@ -3147,9 +3147,9 @@ var az = new Array();
         if (aB == ticket_submit_order.passenger_card_type.two) {
             if ($.trim(aD) != "") {
                 if (!validateSecIdCard(aD)) {
-                    $("#error_tr").show();
-                    $("#error_for_nameandidno").html("非法的二代身份证号码").show();
-                    return false
+                    // $("#error_tr").show();
+                    // $("#error_for_nameandidno").html("非法的二代身份证号码").show();
+                    // return false
                 }
             } else {
                 $("#error_tr").show();
@@ -3160,9 +3160,9 @@ var az = new Array();
             if (aB == ticket_submit_order.passenger_card_type.one) {
                 if ($.trim(aD) != "") {
                     if (!validateFirIdCard(aD)) {
-                        $("#error_tr").show();
-                        $("#error_for_nameandidno").html("非法的一代身份证号码").show();
-                        return false
+                        // $("#error_tr").show();
+                        // $("#error_for_nameandidno").html("非法的一代身份证号码").show();
+                        // return false
                     }
                 } else {
                     $("#error_tr").show();
@@ -3637,9 +3637,9 @@ var az = new Array();
                 if (aA == ticket_submit_order.passenger_card_type.two) {
                     if ($.trim(aE) != "") {
                         if (!validateSecIdCard(aE)) {
-                            $("#tr_id_" + aD + "_check").show();
-                            $("#" + aB + "_check").show();
-                            $("#" + aB + "_check").html("非法的二代身份证号码")
+                            // $("#tr_id_" + aD + "_check").show();
+                            // $("#" + aB + "_check").show();
+                            // $("#" + aB + "_check").html("非法的二代身份证号码")
                         } else {
                             $("#" + aB + "_check").hide();
                             aa(aD)
@@ -3653,9 +3653,9 @@ var az = new Array();
                     if (aA == ticket_submit_order.passenger_card_type.one) {
                         if ($.trim(aE) != "") {
                             if (!validateFirIdCard(aE)) {
-                                $("#tr_id_" + aD + "_check").show();
-                                $("#" + aB + "_check").show();
-                                $("#" + aB + "_check").html("非法的一代身份证号码")
+                                // $("#tr_id_" + aD + "_check").show();
+                                // $("#" + aB + "_check").show();
+                                // $("#" + aB + "_check").html("非法的一代身份证号码")
                             } else {
                                 $("#" + aB + "_check").hide();
                                 aa(aD)
